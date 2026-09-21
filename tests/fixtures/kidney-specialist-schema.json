@@ -1,0 +1,80 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["MedicalClinic", "LocalBusiness"],
+      "@id": "https://www.kidneyspecialistinc.com/#clinic",
+      "name": "Kidney Specialist Inc.",
+      "alternateName": "Kidney Specialists Inc.",
+      "legalName": "Kidney Specialist Inc.",
+      "url": "https://www.kidneyspecialistinc.com",
+      "telephone": "+1-559-661-1965",
+      "faxNumber": "+1-559-661-1952",
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "National Provider Identifier (NPI)",
+        "value": "1356539423"
+      },
+      "medicalSpecialty": [
+        "https://health-lifesci.schema.org/Nephrology",
+        "https://health-lifesci.schema.org/InternalMedicine"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "451 E Almond Ave, Suite 101",
+        "addressLocality": "Madera",
+        "addressRegion": "CA",
+        "postalCode": "93637",
+        "addressCountry": "US"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 36.954,
+        "longitude": -120.0543
+      },
+      "priceRange": "$$",
+      "isAcceptingNewPatients": true,
+      "department": [
+        {
+          "@type": "MedicalClinic",
+          "name": "Kidney Specialist Inc. - Fresno Office",
+          "telephone": "+1-559-661-1965",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "6777 N Willow Ave",
+            "addressLocality": "Fresno",
+            "addressRegion": "CA",
+            "postalCode": "93710",
+            "addressCountry": "US"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Physician",
+      "@id": "https://www.kidneyspecialistinc.com/#dr-masood",
+      "name": "Dr. Sheikh Mohammad Masood, MD",
+      "jobTitle": "Founding President & Medical Director",
+      "telephone": "+1-559-661-1965",
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "Individual NPI",
+        "value": "1669422812"
+      },
+      "medicalSpecialty": "Nephrology"
+    },
+    {
+      "@type": "Physician",
+      "@id": "https://www.kidneyspecialistinc.com/#dr-siddiqui",
+      "name": "Dr. Mohammed Muhibbulla Siddiqui, MD",
+      "jobTitle": "Attending Nephrologist",
+      "telephone": "+1-559-661-1965",
+      "identifier": {
+        "@type": "PropertyValue",
+        "name": "Individual NPI",
+        "value": "1184916983"
+      },
+      "medicalSpecialty": "Nephrology"
+    }
+  ]
+}
