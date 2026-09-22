@@ -14,7 +14,7 @@ const PRICE = Number(calc.match(/id: "landing",[\s\S]*?price: (\d+)/)[1]);
 
 // ── Home page renders its content without JavaScript ──
 const home = read("index.html");
-for (const needle of ["tel:5595753014", "sms:+15595753014", `$${PRICE}`, "Fortune 500 craft", "<title>Fresno Web Design"]) {
+for (const needle of ["tel:+15595753014", "sms:+15595753014", `$${PRICE}`, "Fortune 500 craft", "<title>Fresno Web Design"]) {
   assert.ok(home.includes(needle), `index.html is missing ${needle}`);
 }
 for (const id of ["work", "pricing", "cost-of-slow", "ledger", "receipt", "process", "services", "faq"]) {
