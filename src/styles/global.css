@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@theme {
+  /* ——— Warm paper & stone canvas ——— */
+  --color-paper: #f6f0e6;
+  --color-paper-deep: #ede4d5;
+  --color-linen: #fbf7f0;
+  --color-parchment: #f1e9db;
+
+  /* ——— Ink ——— */
+  --color-ink: #221d17;
+  --color-ink-soft: #4a4239;
+  --color-stone: #6e6355;
+  --color-stone-light: #b6aa99;
+
+  /* ——— Organic accents ——— */
+  --color-clay: #b0503a;
+  --color-clay-deep: #8e3d2b;
+  --color-ember: #d2743f;
+  --color-olive: #5b6a4a;
+  --color-olive-deep: #43503a;
+  --color-ochre: #c08a2e;
+  --color-slate-blue: #4c5a66;
+
+  /* ——— Typography ——— */
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-serif: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ——— Animation Easings ——— */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: #b0503a;
+    color: #fbf7f0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 24, "WONK" 1;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #ede4d5;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #c3b6a2;
+    border-radius: 99px;
+    border: 3px solid #ede4d5;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a2937d;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* ——————————————————————————————————————————
+   Scroll reveal: pure CSS, content stays visible where unsupported or JS is off
+   —————————————————————————————————————————— */
+@supports (animation-timeline: view()) {
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 26px, 0);
+    }
+  }
+  [data-reveal] {
+    animation: reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 40%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  :root {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    animation: none !important;
+  }
+}
+
+/* ——————————————————————————————————————————
+   Cards & typography helpers
+   —————————————————————————————————————————— */
+.paper-card {
+  background: linear-gradient(163deg, #fdfaf5 0%, #f7f1e7 62%, #f2ebde 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 18px 40px -28px rgba(52, 40, 26, 0.42);
+}
+
+.t-h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 5.1vw, 4.35rem);
+  line-height: 1.02;
+  letter-spacing: -0.028em;
+}
+.t-eyebrow {
+  font-size: 0.688rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}

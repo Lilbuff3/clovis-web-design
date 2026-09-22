@@ -39,7 +39,7 @@ export const processSteps: ExtendedProcessStep[] = [
     title: "Build",
     duration: "Days 3–5",
     description:
-      "I write it by hand in React, TypeScript and Tailwind. No page builder, no template, nothing bolted on that slows it down. Your phone number goes everywhere it should be, and the whole thing is built to come up fast on a phone with two bars of signal, because that is where most people will see it.",
+      "I write it by hand. No page builder, no template, nothing bolted on that slows it down. Your phone number goes everywhere it should be, and the whole thing is built to come up fast on a phone with two bars of signal, because that is where most people will see it.",
     deliverables: [
       "Hand-written code, zero CMS lock-in, nothing to log into",
       "One tap to call or text you from anywhere on the page",

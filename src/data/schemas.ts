@@ -1,6 +1,6 @@
 /**
- * Authoritative Schema.org JSON-LD Graphs for Clovis Web Design and Authentic Case Studies
- * Validated against Schema.org and Google Rich Results guidelines.
+ * The clients' own JSON-LD, shown as a code sample on each /work page.
+ * Not emitted as structured data here: those entities belong on the clients' sites.
  */
 
 export const kidneySpecialistSchema = {
@@ -185,38 +185,6 @@ export const bigBrosSchema = {
       "provider": {
         "@id": "https://bigbrosdumpster.com/#business",
       },
-    },
-  ],
-};
-
-export const agencySchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": ["ProfessionalService", "LocalBusiness"],
-      "@id": "https://cloviswebdesign.com/#agency",
-      "name": "Clovis Web Design",
-      "legalName": "Clovis Web Design (Adam Youssef)",
-      "url": "https://cloviswebdesign.com",
-      "telephone": "+1-559-575-3014",
-      "email": "adam@cloviswebdesign.com",
-      "founder": {
-        "@type": "Person",
-        "name": "Adam Youssef",
-        "jobTitle": "Principal Craftsman & Founder",
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Old Town Clovis",
-        "addressLocality": "Clovis",
-        "addressRegion": "CA",
-        "postalCode": "93612",
-        "addressCountry": "US",
-      },
-      "priceRange": "$$$",
-      "description":
-        "Fortune 500 craft. Main Street soul. Handcrafted digital flagships, Google Business Profile dominance, and hyper-local SEO for independent Central Valley businesses.",
-      "areaServed": ["Clovis", "Fresno", "Madera", "San Joaquin Valley"],
     },
   ],
 };

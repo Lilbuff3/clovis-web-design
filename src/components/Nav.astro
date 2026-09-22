@@ -1,0 +1,148 @@
+---
+import Icon from "./Icon.astro";
+import Mark from "./Mark.astro";
+import { formatSmsUri, BRIEF_MAILTO, LAUNCH_PROMO } from "@/data/calculator";
+
+const NAV_ITEMS = [
+  { id: "work", label: "Work" },
+  { id: "pricing", label: "Pricing" },
+  { id: "ledger", label: "Why me" },
+  { id: "process", label: "How it works" },
+  { id: "faq", label: "FAQ" },
+];
+---
+
+<header class="fixed inset-x-0 top-0 z-50 py-2 sm:py-3">
+  <div class="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
+    <div
+      class="relative flex items-center justify-between rounded-full border border-ink/10 bg-paper/85 px-4 py-2 shadow-[0_18px_40px_-28px_rgba(34,29,23,0.85)] backdrop-blur-xl sm:px-6"
+    >
+      <a href="/" class="group flex items-center gap-3 text-left" aria-label="Clovis Web Design — home">
+        <Mark class="h-8 w-8 text-ink transition-transform duration-500 ease-out group-hover:rotate-6 sm:h-9 sm:w-9" />
+        <span class="flex flex-col leading-none">
+          <span class="font-serif text-[1.05rem] font-semibold tracking-[-0.02em] text-ink">Clovis Web Design</span>
+          <span class="mt-0.5 text-[0.58rem] font-medium tracking-[0.24em] text-stone uppercase">Central Valley Craft</span>
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-0.5 lg:gap-1" aria-label="Main">
+        {
+          NAV_ITEMS.map((item) => (
+            <a
+              href={`/#${item.id}`}
+              class="rounded-full px-2.5 lg:px-3.5 py-1.5 text-xs lg:text-[0.84rem] font-medium text-ink-soft/75 transition-colors duration-300 hover:text-ink hover:bg-ink/[0.04]"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <div
+          class="hidden items-center gap-2 rounded-full border border-olive/30 bg-olive/10 px-3 py-1 text-[0.72rem] font-medium text-olive xl:flex"
+        >
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-olive"></span>
+          </span>
+          <span>{LAUNCH_PROMO.seats} launch slots left</span>
+        </div>
+
+        <a
+          href="tel:5595753014"
+          class="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-paper/60 px-3.5 py-1.5 text-[0.8rem] font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+        >
+          <Icon name="phone" class="h-3.5 w-3.5 text-clay" />
+          <span>(559) 575-3014</span>
+        </a>
+
+        <a
+          href="/#pricing"
+          class="hidden whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.82rem] font-medium text-linen shadow-[0_10px_25px_-10px_rgba(34,29,23,0.8)] transition-all duration-300 hover:bg-clay sm:inline-flex"
+        >
+          See pricing ↗
+        </a>
+
+        <button
+          type="button"
+          popovertarget="mobile-menu"
+          aria-label="Menu"
+          class="flex h-11 w-11 items-center justify-center rounded-full border border-ink/15 bg-paper/80 backdrop-blur md:hidden"
+        >
+          <span class="flex w-4.5 flex-col gap-2" aria-hidden="true">
+            <span class="block h-0.5 w-full bg-ink"></span>
+            <span class="block h-0.5 w-full bg-ink"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div
+  id="mobile-menu"
+  popover
+  class="m-0 inset-x-0 top-0 bottom-auto w-full max-w-none rounded-b-[2rem] border-0 border-b border-ink/15 bg-paper px-6 pt-8 pb-8 text-ink shadow-2xl backdrop:bg-ink/35 backdrop:backdrop-blur-sm"
+>
+  <div class="flex items-center justify-between">
+    <span
+      class="inline-flex items-center gap-2 rounded-full border border-olive/30 bg-olive/10 px-3 py-1 text-[0.74rem] font-medium text-olive"
+    >
+      <span class="h-2 w-2 rounded-full bg-olive animate-pulse"></span>
+      <span>Launch offer &middot; {LAUNCH_PROMO.blurb}</span>
+    </span>
+    <button
+      type="button"
+      popovertarget="mobile-menu"
+      popovertargetaction="hide"
+      aria-label="Close menu"
+      class="flex h-11 w-11 items-center justify-center rounded-full border border-ink/15"
+    >
+      <Icon name="x" class="h-4 w-4" />
+    </button>
+  </div>
+
+  <nav class="mt-4 flex flex-col divide-y divide-ink/10" aria-label="Mobile">
+    {
+      NAV_ITEMS.map((item, index) => (
+        <a href={`/#${item.id}`} class="group flex items-center justify-between py-3.5">
+          <span class="font-serif text-[1.4rem] font-medium text-ink group-hover:text-clay">{item.label}</span>
+          <span class="text-[0.75rem] font-mono text-stone">0{index + 1}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="mt-6 flex flex-col gap-3 pt-2">
+    <a
+      href="tel:5595753014"
+      class="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3 text-center font-serif text-[0.92rem] font-semibold text-linen hover:bg-clay transition-colors"
+    >
+      <Icon name="phone" class="h-4 w-4 text-clay" />
+      <span>Call Adam: (559) 575-3014</span>
+    </a>
+    <div class="flex gap-2">
+      <a
+        href={formatSmsUri()}
+        class="flex-1 rounded-full border border-ink/20 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-ink/[0.04] transition-colors"
+      >
+        Text / SMS
+      </a>
+      <a
+        href={BRIEF_MAILTO}
+        class="flex-1 rounded-full border border-ink/20 bg-linen py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-paper-deep transition-colors"
+      >
+        Email details ↗
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Anchor links don't dismiss a popover on their own.
+  const menu = document.getElementById("mobile-menu")!;
+  menu.addEventListener("click", (e) => {
+    if ((e.target as Element).closest("a")) menu.hidePopover();
+  });
+</script>

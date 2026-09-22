@@ -1,0 +1,58 @@
+---
+import { services } from "@/data/services";
+---
+
+<section id="services" class="scroll-mt-24 border-t border-ink/10 py-24 sm:py-32" aria-labelledby="services-title">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" data-reveal>
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <div>
+        <span class="t-eyebrow text-stone">What I do</span>
+        <h2 id="services-title" class="t-h2 mt-3 text-ink">
+          Three things. <br />
+          <span class="italic text-clay">Done properly.</span>
+        </h2>
+      </div>
+      <p class="max-w-md text-sm text-ink-soft leading-relaxed">
+        No list of forty services. These are the three that actually make the phone ring for a local business.
+      </p>
+    </div>
+
+    <div class="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3">
+      {
+        services.map((service, idx) => (
+          <article
+            id={service.id}
+            class="paper-card group relative flex scroll-mt-24 flex-col overflow-hidden rounded-3xl border border-ink/10 bg-linen/80 p-8 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-clay/40 hover:shadow-xl"
+          >
+            <div
+              class="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-clay transition-transform duration-500 group-hover:scale-x-100"
+              aria-hidden="true"
+            />
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-semibold uppercase tracking-widest text-stone">0{idx + 1}</span>
+              <span class="rounded-full bg-paper-deep px-3 py-1 text-[11px] font-medium tracking-wider text-clay uppercase">
+                {service.deliverableTag}
+              </span>
+            </div>
+            <h3 class="mt-6 text-2xl font-serif font-bold text-ink transition-colors duration-300 group-hover:text-clay">
+              {service.title}
+            </h3>
+            <p class="mt-2 text-xs font-serif italic text-stone">{service.subtitle}</p>
+            <p class="mt-4 text-sm text-ink-soft leading-relaxed">{service.description}</p>
+            <div class="mt-8 border-t border-ink/10 pt-6">
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-ink">What you get</span>
+              <ul class="mt-3 space-y-2.5">
+                {service.highlights.map((item) => (
+                  <li class="flex items-start gap-2.5 text-xs text-ink-soft leading-snug">
+                    <span class="mt-0.5 text-olive font-bold" aria-hidden="true">✓</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

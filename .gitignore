@@ -35,3 +35,6 @@ Thumbs.db
 
 # Vercel CLI link metadata
 .vercel
+
+# Astro generated types
+.astro/

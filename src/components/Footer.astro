@@ -1,0 +1,115 @@
+---
+import Icon from "./Icon.astro";
+import Mark from "./Mark.astro";
+import { caseStudies } from "@/data/caseStudies";
+import { BRIEF_MAILTO } from "@/data/calculator";
+
+const LINKS = [
+  { label: "Work", id: "work" },
+  { label: "Pricing", id: "pricing" },
+  { label: "What a slow site costs", id: "cost-of-slow" },
+  { label: "Why me", id: "ledger" },
+  { label: "Test the sites yourself", id: "receipt" },
+  { label: "How it works", id: "process" },
+  { label: "What I do", id: "services" },
+  { label: "FAQ", id: "faq" },
+];
+const year = new Date().getFullYear();
+---
+
+<footer class="relative overflow-hidden border-t border-ink/10 bg-paper pt-20 pb-28 text-ink md:pb-12">
+  <div class="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <div class="flex items-center gap-3">
+          <Mark class="h-9 w-9 text-ink" />
+          <div class="flex flex-col leading-none">
+            <span class="font-serif text-[1.2rem] font-semibold tracking-[-0.02em]">Clovis Web Design</span>
+            <span class="mt-1 text-[0.6rem] font-medium tracking-[0.26em] text-stone uppercase">Studio of Adam Youssef</span>
+          </div>
+        </div>
+        <p class="mt-5 max-w-[36ch] text-[0.92rem] leading-relaxed text-ink-soft">
+          Fortune 500 craft. Main Street soul. I build websites by hand for Central Valley businesses &mdash; fast on a
+          phone, set up so Google can find you, and yours on day one.
+        </p>
+        <div class="mt-6 flex flex-col gap-2">
+          <a href="tel:5595753014" class="flex items-center gap-2 text-[0.95rem] font-semibold text-ink hover:text-clay transition-colors">
+            <Icon name="phone" class="h-4 w-4 text-clay" />
+            <span>(559) 575-3014</span>
+          </a>
+          <a
+            href="mailto:adam@cloviswebdesign.com"
+            class="text-[0.9rem] font-medium text-ink underline decoration-clay/50 underline-offset-4 hover:text-clay"
+          >
+            adam@cloviswebdesign.com
+          </a>
+          <span class="text-[0.82rem] text-stone">Clovis, CA 93612 · Direct cell &amp; text</span>
+        </div>
+        <a
+          href={BRIEF_MAILTO}
+          class="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[0.82rem] font-medium text-linen transition-colors hover:bg-clay"
+        >
+          Send me the details ↗
+        </a>
+      </div>
+
+      <nav class="lg:col-span-3" aria-label="Footer">
+        <h2 class="text-[0.72rem] font-medium tracking-[0.2em] text-stone uppercase">On this page</h2>
+        <ul class="mt-5 space-y-2.5 text-[0.9rem]">
+          {
+            LINKS.map((l) => (
+              <li>
+                <a href={`/#${l.id}`} class="text-ink-soft transition-colors hover:text-clay">
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="lg:col-span-4">
+        <h2 class="text-[0.72rem] font-medium tracking-[0.2em] text-stone uppercase">Case studies</h2>
+        <ul class="mt-5 space-y-4 text-[0.88rem]">
+          {
+            caseStudies.map((s) => (
+              <li>
+                <a href={`/work/${s.id}/`} class="group block">
+                  <span class="block font-medium text-ink group-hover:text-clay">{s.client} ↗</span>
+                  <span class="block text-[0.78rem] text-stone">
+                    {s.location} · {s.industry}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-6 border-t border-ink/10 pt-4">
+          <span class="text-[0.72rem] font-medium tracking-[0.16em] text-stone uppercase">Where I work</span>
+          <p class="mt-1 text-[0.8rem] text-ink-soft">Clovis, Fresno, Madera, Sanger, Selma, Fowler, and Kingsburg.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-16 overflow-hidden border-t border-ink/10 pt-8" aria-hidden="true">
+      <span
+        class="block select-none font-serif text-[clamp(2.6rem,11.8vw,12rem)] font-semibold leading-none tracking-[-0.045em] text-ink/[0.08] sm:text-ink/[0.11] whitespace-nowrap"
+      >
+        Clovis Web Design
+      </span>
+    </div>
+
+    <div class="mt-8 flex flex-col gap-6 border-t border-ink/10 pt-7 text-[0.78rem] text-stone sm:flex-row sm:items-center sm:justify-between">
+      <p class="max-w-[62ch] leading-relaxed">
+        © {year} Clovis Web Design. Handcrafted by Adam Youssef in Clovis, California. Set in Fraunces and Inter. You own
+        the code and the domain from day one.
+      </p>
+      <a
+        href="#top"
+        class="flex w-fit items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-ink transition-colors hover:border-ink hover:bg-ink hover:text-linen"
+      >
+        Back to top ↑
+      </a>
+    </div>
+  </div>
+</footer>

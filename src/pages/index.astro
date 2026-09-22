@@ -1,0 +1,41 @@
+---
+import Base from "@/layouts/Base.astro";
+import Nav from "@/components/Nav.astro";
+import Hero from "@/components/Hero.astro";
+import Work from "@/components/Work.astro";
+import Pricing from "@/components/Pricing.astro";
+import Ledger from "@/components/Ledger.astro";
+import Receipt from "@/components/Receipt.astro";
+import Process from "@/components/Process.astro";
+import Services from "@/components/Services.astro";
+import Faq from "@/components/Faq.astro";
+import Footer from "@/components/Footer.astro";
+import StickyCall from "@/components/StickyCall.astro";
+import { homeSchema } from "@/lib/schema";
+---
+
+<Base
+  title="Clovis Web Design — Fortune 500 craft. Main Street soul."
+  description="Hand-built websites for Central Valley businesses. Landing page $500, live in a week, and you own it on day one. Adam Youssef, Clovis, California — call or text (559) 575-3014."
+  schema={homeSchema()}
+>
+  <a
+    href="#main"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-medium focus:text-ink focus:shadow-xl focus:ring-2 focus:ring-clay"
+  >
+    Skip to main content
+  </a>
+  <Nav />
+  <main id="main">
+    <Hero />
+    <Work />
+    <Pricing />
+    <Ledger />
+    <Receipt />
+    <Process />
+    <Services />
+    <Faq />
+  </main>
+  <Footer />
+  <StickyCall />
+</Base>

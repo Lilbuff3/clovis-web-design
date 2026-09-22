@@ -65,10 +65,6 @@ export interface ServiceOffering {
 export type ScopeTier = 'landing' | 'business' | 'flagship';
 export type RetainerTier = 'none' | 'care';
 
-export interface CalculatorState {
-  tier: ScopeTier;
-  retainer: RetainerTier;
-}
 
 export interface CalculatorTierConfig {
   id: ScopeTier;
@@ -95,20 +91,6 @@ export interface RetainerTierConfig {
   features: string[];
 }
 
-// --- Client Project Brief (PROJECT.md line 63) ---
-export interface ProjectBrief {
-  name: string;
-  business: string;
-  email: string;
-  phone: string;
-  location: string;
-  currentWebsite: string;
-  selectedTier: ScopeTier;
-  retainerInterest: RetainerTier;
-  timeline: string;
-  description: string;
-  additionalNotes?: string;
-}
 
 // --- Process / Recipe Timeline ---
 export interface ProcessStep {
@@ -135,11 +117,4 @@ export interface FAQItem {
   question: string;
   answer: string;
   category?: 'ownership' | 'copywriting' | 'integrations' | 'pricing' | 'timeline';
-}
-
-// --- Navigation Item ---
-export interface NavItem {
-  id: string;
-  label: string;
-  href?: string;
 }

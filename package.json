@@ -4,27 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "type-check": "tsc --noEmit",
-    "preview": "vite preview",
-    "test": "node tests/run-e2e.mjs"
-  },
-  "dependencies": {
-    "clsx": "2.1.1",
-    "lucide-react": "^1.46.0",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "tailwind-merge": "3.4.0"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node --experimental-strip-types tests/speedCost.test.ts && npm run build && node tests/dist-check.mjs"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@tailwindcss/vite": "4.1.17",
     "@types/node": "22.19.17",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "5.1.1",
     "tailwindcss": "4.1.17",
-    "typescript": "5.9.3",
-    "vite": "7.3.2"
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "@astrojs/preact": "^6.0.5",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "astro": "^7.3.3",
+    "preact": "^10.29.8"
   }
 }

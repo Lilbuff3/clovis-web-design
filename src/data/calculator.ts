@@ -1,9 +1,4 @@
-import type {
-  ScopeTier,
-  RetainerTier,
-  CalculatorTierConfig,
-  RetainerTierConfig,
-} from "@/types";
+import type { CalculatorTierConfig, RetainerTierConfig } from "@/types";
 
 /** Launch promotion. When the seats are gone, drop PROMO and LANDING_PRICE falls back to regular. */
 export const LAUNCH_PROMO = {
@@ -110,39 +105,15 @@ export const PRICING_CONSTANTS = {
   },
 } as const;
 
-export interface Quote {
-  tierTitle: string;
-  retainerTitle: string;
-  /** null when the tier is quoted on a call rather than published. */
-  setupTotal: number | null;
-  monthlyTotal: number;
-}
-
-export function calculateQuote(
-  tierKey: ScopeTier,
-  retainerKey: RetainerTier
-): Quote {
-  const tier = PRICING_CONSTANTS.tiers[tierKey];
-  if (!tier) throw new Error(`Unknown tier: ${tierKey}`);
-
-  const retainer =
-    PRICING_CONSTANTS.retainers[retainerKey] ||
-    PRICING_CONSTANTS.retainers.none;
-
-  return {
-    tierTitle: tier.title,
-    retainerTitle: retainer.title,
-    setupTotal: tier.price,
-    monthlyTotal: retainer.monthly,
-  };
-}
+export const smsUri = (body: string) => `sms:+15595753014?body=${encodeURIComponent(body)}`;
 
 /** Prefilled text message. Kept short: long SMS bodies get truncated by the messaging app. */
 export function formatSmsUri(tierTitle?: string) {
-  const body = tierTitle
-    ? `Hi Adam, I'm interested in the ${tierTitle} for my business.`
-    : "Hi Adam, I'm interested in a website for my business.";
-  return `sms:+15595753014?body=${encodeURIComponent(body)}`;
+  return smsUri(
+    tierTitle
+      ? `Hi Adam, I'm interested in the ${tierTitle} for my business.`
+      : "Hi Adam, I'm interested in a website for my business."
+  );
 }
 
 export function formatMailtoUri(params: {
@@ -155,3 +126,9 @@ export function formatMailtoUri(params: {
   const body = encodeURIComponent(params.body || "");
   return `mailto:${email}?subject=${subject}&body=${body}`;
 }
+
+/** "Send details in writing": a prefilled email, so nobody has to find a form. */
+export const BRIEF_MAILTO = formatMailtoUri({
+  subject: "Website for my business",
+  body: "Name:\nBusiness:\nTown:\nCurrent website (if any):\n\nWhat I need:\n\nBest number to reach me:\n",
+});
