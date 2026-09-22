@@ -14,7 +14,7 @@ const PRICE = Number(calc.match(/id: "landing",[\s\S]*?price: (\d+)/)[1]);
 
 // ── Home page renders its content without JavaScript ──
 const home = read("index.html");
-for (const needle of ["tel:5595753014", "sms:+15595753014", `$${PRICE}`, "Fortune 500 craft"]) {
+for (const needle of ["tel:5595753014", "sms:+15595753014", `$${PRICE}`, "Fortune 500 craft", "<title>Fresno Web Design"]) {
   assert.ok(home.includes(needle), `index.html is missing ${needle}`);
 }
 for (const id of ["work", "pricing", "cost-of-slow", "ledger", "receipt", "process", "services", "faq"]) {
@@ -40,7 +40,7 @@ const workPages = pages.filter((p) => p.replaceAll("\\", "/").startsWith("work/"
 assert.equal(workPages.length, 2, "expected one page per case study");
 for (const page of workPages) {
   const article = graphs[page].find((n) => n["@type"] === "Article");
-  assert.ok(article?.about?.["@id"], `${page} Article should reference the client by @id`);
+  assert.match(article?.about?.url ?? "", /^https:\/\//, `${page} Article should point at the live client site`);
 }
 
 // ── JS budget: the calculator island is the only client code ──

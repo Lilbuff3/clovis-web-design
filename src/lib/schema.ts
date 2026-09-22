@@ -25,14 +25,17 @@ const agency = {
     postalCode: "93612",
     addressCountry: "US",
   },
-  areaServed: ["Clovis", "Fresno", "Madera"].map((name) => ({
-    "@type": "City",
-    name,
-    containedInPlace: { "@type": "State", name: "California" },
-  })),
+  areaServed: [
+    { "@type": "AdministrativeArea", name: "Fresno County, California" },
+    ...["Fresno", "Clovis", "Madera", "Sanger", "Selma", "Fowler", "Kingsburg"].map((name) => ({
+      "@type": "City",
+      name,
+      containedInPlace: { "@type": "State", name: "California" },
+    })),
+  ],
   priceRange: "$$",
   description:
-    "Hand-built websites for Central Valley businesses. Landing page live in a week, and you own it on day one.",
+    "Hand-built websites for Fresno, Clovis and Central Valley businesses. Landing page live in a week, and you own it on day one.",
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Website builds",
@@ -89,7 +92,6 @@ export function homeSchema() {
 
 /** The case study page is about the client; reference their entity by @id rather than redeclaring it. */
 export function caseStudySchema(study: ExtendedCaseStudy) {
-  const clientNode = (study.jsonLd["@graph"] as { "@id": string; url: string }[])[0];
   const url = `${SITE}/work/${study.id}/`;
   return graph([
     {
@@ -100,7 +102,7 @@ export function caseStudySchema(study: ExtendedCaseStudy) {
       description: study.summary,
       author: { "@id": ADAM },
       publisher: { "@id": AGENCY },
-      about: { "@id": clientNode["@id"], url: clientNode.url, name: study.client },
+      about: { ...(study.entityId && { "@id": study.entityId }), "@type": "LocalBusiness", name: study.client, url: study.url },
       dateCreated: study.year,
     },
     { "@type": "ProfessionalService", "@id": AGENCY, name: "Clovis Web Design", url: `${SITE}/` },

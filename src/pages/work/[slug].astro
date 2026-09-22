@@ -13,8 +13,9 @@ export function getStaticPaths() {
 }
 
 const { study } = Astro.props as { study: ExtendedCaseStudy };
-const siteUrl = (study.jsonLd["@graph"] as { url: string }[])[0].url;
+const siteUrl = study.url;
 const psi = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(siteUrl)}&form_factor=mobile`;
+const richResults = `https://search.google.com/test/rich-results?url=${encodeURIComponent(siteUrl)}`;
 const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay";
 ---
 
@@ -126,29 +127,12 @@ const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay
           </dl>
         )
       }
-      {
-        study.tradeSpanish && (
-          <dl class="mt-6 space-y-2 rounded-2xl border border-clay/20 bg-clay/5 p-6 text-sm text-ink-soft">
-            <div class="flex gap-2">
-              <dt class="shrink-0 font-mono font-bold text-clay">Roll-off:</dt>
-              <dd lang="es">{study.tradeSpanish.rollOff}</dd>
-            </div>
-            <div class="flex gap-2">
-              <dt class="shrink-0 font-mono font-bold text-clay">Driveway:</dt>
-              <dd lang="es">{study.tradeSpanish.driveway}</dd>
-            </div>
-            <div class="flex gap-2">
-              <dt class="shrink-0 font-mono font-bold text-clay">Appliances:</dt>
-              <dd lang="es">{study.tradeSpanish.appliances}</dd>
-            </div>
-          </dl>
-        )
-      }
     </section>
 
     <section class="mt-10 border-b border-ink/10 pb-10" aria-labelledby="result">
       <span class={chapter}>03</span>
       <h2 id="result" class="mt-2 font-serif text-2xl font-bold text-ink">The result</h2>
+      {study.outcome && <p class="mt-4 font-serif text-lg font-medium text-ink-soft">{study.outcome}</p>}
       <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {
           study.metrics.map((m) => (
@@ -176,11 +160,17 @@ const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay
       <span class={chapter}>04</span>
       <h2 id="markup" class="mt-2 font-serif text-2xl font-bold text-ink">What Google reads</h2>
       <p class="mt-3 text-sm text-ink-soft leading-relaxed">
-        The structured data on {new URL(siteUrl).hostname}, which tells search engines who the business is, where it works
-        and how to reach it.
+        Structured data is the part of a site that tells search engines who the business is, where it works and how to
+        reach it. Google&rsquo;s own tool will show you what it finds on {new URL(siteUrl).hostname} today.
       </p>
-      <pre
-        class="mt-4 max-h-96 overflow-auto rounded-2xl bg-ink p-5 font-mono text-[11px] leading-relaxed text-linen"><code>{JSON.stringify(study.jsonLd, null, 2)}</code></pre>
+      <a
+        href={richResults}
+        target="_blank"
+        rel="noopener"
+        class="mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+      >
+        Open Google&rsquo;s Rich Results Test <Icon name="arrow-up-right" class="h-4 w-4" />
+      </a>
     </section>
 
     <div class="mt-14 rounded-3xl border border-clay/30 bg-linen p-8 text-center">

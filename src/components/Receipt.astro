@@ -1,10 +1,11 @@
 ---
 import { caseStudies } from "@/data/caseStudies";
 
-const sites = caseStudies.map((s) => {
-  const url = (s.jsonLd["@graph"] as { url: string }[])[0].url;
-  return { client: s.client, host: new URL(url).hostname.replace(/^www\./, ""), psi: `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}&form_factor=mobile` };
-});
+const sites = caseStudies.map((s) => ({
+  client: s.client,
+  host: new URL(s.url).hostname.replace(/^www\./, ""),
+  psi: `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(s.url)}&form_factor=mobile`,
+}));
 
 const targets = [
   { value: "< 1.0s", label: "Largest Contentful Paint", note: "Google calls under 2.5s good" },
@@ -22,8 +23,9 @@ const targets = [
         <span class="italic text-clay">Test the sites yourself.</span>
       </h2>
       <p class="mt-4 text-base text-ink-soft sm:text-lg leading-relaxed">
-        Any agency can put &ldquo;100/100&rdquo; on a slide. These links run Google&rsquo;s own speed test on the live sites
-        right now, on a simulated phone &mdash; you see whatever it finds today, not a screenshot I picked.
+        Both sites score 100 on Google PageSpeed, on mobile and on desktop. Any agency can put that on a slide, so these
+        links run Google&rsquo;s own test on the live sites right now &mdash; you see whatever it finds today, not a
+        screenshot I picked.
       </p>
     </div>
 

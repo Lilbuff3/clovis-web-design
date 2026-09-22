@@ -16,7 +16,9 @@ export interface Metric {
 export interface CaseStudy {
   id: string;
   client: string; // e.g. "Kidney Specialist Inc." or "Big Bros Dumpster Rental"
-  location: string; // e.g. "Madera & Fresno, CA" or "Clovis & Fresno, CA"
+  url: string; // live client site
+  entityId?: string; // @id of the business in the client site's own JSON-LD, when it has one
+  location: string; // e.g. "Madera & Fresno, CA" or "Fresno & Clovis, CA"
   industry: string; // e.g. "Nephrology & Medical Practice" or "Local Trade & Roll-Off Hauling"
   tag: string; // Short badge label e.g. "Medical Compliance" or "Geo-SEO Lead Engine"
   headline: string; // Sharp one-line hook
@@ -39,7 +41,6 @@ export interface CaseStudy {
     role: string;
     entity?: string;
   };
-  jsonLd: Record<string, any>; // Embedded structured schema
   // Visual presentation tokens
   index: string; // e.g. "01", "02"
   year: string; // e.g. "2025"

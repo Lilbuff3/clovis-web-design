@@ -53,7 +53,7 @@ export const services: ExtendedServiceOffering[] = [
     subtitle:
       "The panel people see before they ever reach your website — set up properly.",
     description:
-      "When somebody searches for your trade near Clovis, Google shows a short list with a map above everything else. That panel is built from your Google Business Profile — the free listing Google keeps about your business — and for a local trade it matters more than the website. Most people never fill theirs in properly. I set yours up: the right category, real photos, your service area, your hours, and a simple way to keep reviews coming in. I cannot promise you a position on that list, and you should be wary of anyone who does — what I can do is make sure nothing about your listing is holding you back.",
+      "When somebody searches for your trade in Fresno, Google shows a short list with a map above everything else. That panel is built from your Google Business Profile — the free listing Google keeps about your business — and for a local trade it matters more than the website. Most people never fill theirs in properly. I set yours up: the right category, real photos, your service area, your hours, and a simple way to keep reviews coming in. I cannot promise you a position on that list, and you should be wary of anyone who does — what I can do is make sure nothing about your listing is holding you back.",
     deliverableTag: "Listing set up and looked after",
     threePackRanking: true,
     reviewDefense: true,
@@ -89,7 +89,7 @@ export const services: ExtendedServiceOffering[] = [
     subtitle:
       "Pages built around the neighborhoods you actually work in.",
     description:
-      "National booking sites outrank local trades because they have pages for every town and you have one page for everywhere. The fix is not complicated: give each area you serve its own page, written about that area rather than copy-pasted. Old Town Clovis, Harlan Ranch, Woodward Park, Fig Garden. I also mark the site up so Google can read what you do, where you do it, and how to reach you, instead of having to guess.",
+      "National booking sites outrank local trades because they have pages for every town and you have one page for everywhere. The fix is not complicated: give each area you serve its own page, written about that area rather than copy-pasted. Tower District, Fig Garden, Woodward Park, Old Town Clovis. I also mark the site up so Google can read what you do, where you do it, and how to reach you, instead of having to guess.",
     deliverableTag: "A page per area you serve",
     radiusLandingPages: true,
     schemaIntegration: ["LocalBusiness", "MedicalClinic", "Service", "Physician"],
