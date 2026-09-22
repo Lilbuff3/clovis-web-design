@@ -29,8 +29,9 @@ export default function Footer({ onOpenCaseStudy, onOpenBrief }: FooterProps) {
               </div>
             </div>
             <p className="mt-5 max-w-[36ch] text-[0.92rem] leading-relaxed text-ink-soft">
-              Fortune 500 craft. Main Street soul. Hand-coded digital flagships, Google Business
-              Profile dominance, and hyper-local Geo-SEO for independent Central Valley businesses.
+              Fortune 500 craft. Main Street soul. I build websites by hand for
+              Central Valley businesses &mdash; fast on a phone, set up so Google
+              can find you, and yours on day one.
             </p>
             <div className="mt-6 flex flex-col gap-2">
               <a
@@ -55,7 +56,7 @@ export default function Footer({ onOpenCaseStudy, onOpenBrief }: FooterProps) {
                 onClick={onOpenBrief ?? (() => scrollTo("calculator"))}
                 className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[0.82rem] font-medium text-linen transition-colors hover:bg-clay"
               >
-                Lock in 2026 Flagship Slot ↗
+                Send me the details ↗
               </button>
             </div>
           </div>
@@ -181,7 +182,7 @@ export default function Footer({ onOpenCaseStudy, onOpenBrief }: FooterProps) {
             </span>
             <div className="mt-2 flex items-center justify-between text-[0.75rem] text-stone uppercase tracking-[0.2em]">
               <span>Central Valley Craftsmanship</span>
-              <span className="hidden sm:inline">Handcrafted in California · Est. 2026</span>
+              <span className="hidden sm:inline">Handcrafted in Clovis, California</span>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ import { Phone } from "lucide-react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useActiveSection, useBodyLock, useScrollTo } from "@/hooks/helpers";
 import type { NavItem } from "@/types";
-import { formatSmsUri } from "@/data/calculator";
+import { formatSmsUri, LAUNCH_PROMO } from "@/data/calculator";
 
 const NAV_ITEMS: NavItem[] = [
   { id: "work", label: "Work" },
@@ -136,7 +136,7 @@ export default function Nav({ onOpenBrief }: NavProps) {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-olive" />
                 </span>
-                <span>Booking 2 Flagships for 2026</span>
+                <span>{LAUNCH_PROMO.seats} launch slots left</span>
               </div>
 
               {/* Direct Phone Line */}
@@ -152,9 +152,9 @@ export default function Nav({ onOpenBrief }: NavProps) {
               {/* Primary Consultation Trigger */}
               <button
                 onClick={onOpenBrief ?? (() => handleNavClick("calculator"))}
-                className="hidden rounded-full bg-ink px-4 py-2 text-[0.82rem] font-medium text-linen shadow-[0_10px_25px_-10px_rgba(34,29,23,0.8)] transition-all duration-300 hover:bg-clay hover:shadow-[0_12px_28px_-8px_rgba(176,80,58,0.7)] sm:inline-flex"
+                className="hidden whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.82rem] font-medium text-linen shadow-[0_10px_25px_-10px_rgba(34,29,23,0.8)] transition-all duration-300 hover:bg-clay hover:shadow-[0_12px_28px_-8px_rgba(176,80,58,0.7)] sm:inline-flex"
               >
-                Estimate Project ↗
+                See pricing ↗
               </button>
 
               {/* Mobile Hamburger Toggle */}
@@ -216,7 +216,7 @@ export default function Nav({ onOpenBrief }: NavProps) {
           {/* Availability Status in Drawer */}
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-olive/30 bg-olive/10 px-3 py-1 text-[0.74rem] font-medium text-olive">
             <span className="h-2 w-2 rounded-full bg-olive animate-pulse" />
-            <span>Booking two flagships for 2026</span>
+            <span>Launch offer &middot; {LAUNCH_PROMO.blurb}</span>
           </div>
 
           <nav className="flex flex-col divide-y divide-ink/10">
