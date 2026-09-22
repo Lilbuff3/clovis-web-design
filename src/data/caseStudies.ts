@@ -37,7 +37,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
     metrics: [
       { value: 100, suffix: "/100", label: "PageSpeed, mobile" },
       { value: 100, suffix: "/100", label: "PageSpeed, desktop" },
-      { value: 0, label: "Forms collecting patient data" },
+      { value: 0, label: "Online forms that collect patient data" },
       { value: 12.6, decimals: 1, suffix: ":1", label: "Text contrast ratio" },
     ],
     challenge: {
@@ -57,7 +57,17 @@ export const caseStudies: ExtendedCaseStudy[] = [
         {
           title: "No patient data on the web",
           detail:
-            "Every form was removed. Referrals go by fax and appointments by phone — channels the practice already handles under HIPAA.",
+            "Nothing on the site asks a patient to type in health information. Referrals go by fax and appointments by phone — channels the practice already handles under HIPAA.",
+        },
+        {
+          title: "Printable forms instead of online ones",
+          detail:
+            "Medication list, 24-hour urine collection protocol and change-of-nephrologist forms print in one click. Patients fill them in at home and bring them to the visit, so the information never touches a web server.",
+        },
+        {
+          title: "Guides patients actually use",
+          detail:
+            "Plain-language guides on eGFR below 60, potassium food swaps, HbA1c conversion and kidney-friendly vegetables.",
         },
         {
           title: "Built to the rules a medical practice answers to",
@@ -79,6 +89,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
     deliverables: [
       "Hand-coded site, 100 on PageSpeed mobile and desktop",
       "Print-ready physician referral packet routed to the clinic fax",
+      "One-click printable patient forms and plain-language clinical guides",
       "Structured data for the practice, both physicians and both locations",
       "WCAG 2.1 AA accessible design",
       "Separate listings for the Madera clinic and the Fresno office",
@@ -104,7 +115,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
     accentSoft: "#fbf0e8",
     headline: "Number one on Google for dumpster rental in Fresno.",
     summary:
-      "Big Bros is a family-owned roll-off dumpster company in Fresno. National booking brokers were outranking them and taking a cut of jobs Big Bros trucks were doing anyway. After the rebuild they ranked #1 on Google for “dumpster rental Fresno” and averaged position 1–2 across several other high-intent searches.",
+      "Big Bros is a family-owned roll-off dumpster company in Fresno. National booking brokers were outranking them and taking a cut of jobs Big Bros trucks were doing anyway. After the rebuild — in English and Spanish — they ranked #1 on Google for “dumpster rental Fresno” and averaged position 1–2 across several other high-intent searches.",
     outcome: "The new work kept coming — Big Bros bought more trucks and dumpsters to keep up with it.",
     founders: "Jessica Maldonado Ramirez & William A. Maldonado Ramirez",
     metrics: [
@@ -120,12 +131,13 @@ export const caseStudies: ExtendedCaseStudy[] = [
         "Losing Fresno and Clovis jobs to national booking brokers",
         "One page for every area, so no neighborhood searches found them",
         "Broker teaser prices made honest flat rates look expensive",
+        "English only, in a market where many customers and contractors speak Spanish",
         "Customers worried a steel roll-off would crack their driveway",
       ],
     },
     solution: {
-      headline: "A page for each area, flat prices up front, and one tap to text the owners.",
-      body: "I built a page for each area they work — Fresno, Clovis, Fig Garden and Old Town Clovis — each written about that area rather than a copy with the town name swapped. Prices are flat and on the page: $399 for a 14-yard, $499 for a 20-yard, seven days, mattresses and appliances included. Driveway protection is stated plainly, and booking is a text to (559) 495-8034.",
+      headline: "A page for each area, flat prices up front, in English and Spanish, and one tap to text the owners.",
+      body: "I built a page for each area they work — Fresno, Clovis, Fig Garden and Old Town Clovis — each written about that area rather than a copy with the town name swapped. Prices are flat and on the page: $399 for a 14-yard, $499 for a 20-yard, seven days, mattresses and appliances included. Driveway protection is stated plainly, the whole site switches to Spanish with one tap, and booking is a text to (559) 495-8034.",
       moves: [
         {
           title: "A page per service area",
@@ -140,6 +152,11 @@ export const caseStudies: ExtendedCaseStudy[] = [
           detail: "Boards go under the wheels. It's the first thing homeowners worry about, so it's the first thing they read.",
         },
         {
+          title: "The whole site in Spanish",
+          detail:
+            "One tap on EN/ES switches every line — sizes, prices, “Tablas bajo las ruedas — driveway protegido”. The top bar says it plainly: Hablamos español.",
+        },
+        {
           title: "Text to book",
           detail: "Not sure which size? Text a photo of the pile and they'll size it. Straight to the owners, no call center.",
         },
@@ -148,6 +165,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
     deliverables: [
       "Service-area pages for Fresno, Clovis, Fig Garden and Old Town Clovis",
       "Flat-rate pricing shown up front",
+      "Full English and Spanish versions",
       "Text-to-book straight to the owners",
       "LocalBusiness structured data with service area and offers",
       "100 on PageSpeed, mobile and desktop",
@@ -158,6 +176,6 @@ export const caseStudies: ExtendedCaseStudy[] = [
       role: "Co-Owner & Head of Operations, Big Bros Dumpster Rentals",
       entity: "Big Bros Dumpster Rentals",
     },
-    stack: ["Local SEO", "LocalBusiness schema", "Text-to-book", "PageSpeed 100"],
+    stack: ["Local SEO", "English + Spanish", "Text-to-book", "PageSpeed 100"],
   },
 ];
