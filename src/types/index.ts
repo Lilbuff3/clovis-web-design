@@ -62,27 +62,29 @@ export interface ServiceOffering {
 }
 
 // --- Dynamic Scope & Quote Calculator (PROJECT.md line 62) ---
-export type ScopeTier = 'storefront' | 'flagship' | 'multi-location';
-export type RetainerTier = 'none' | 'standard' | 'growth';
+export type ScopeTier = 'landing' | 'business' | 'flagship';
+export type RetainerTier = 'none' | 'care';
 
 export interface CalculatorState {
   tier: ScopeTier;
   retainer: RetainerTier;
-  addons: string[];
-  calculatedTotal: {
-    setup: number;
-    monthly: number;
-  };
 }
 
 export interface CalculatorTierConfig {
   id: ScopeTier;
   title: string;
   subtitle: string;
-  price: number;
+  /** Promo price in USD, or null when the tier is quoted on a call. */
+  price: number | null;
+  /** Regular price the promo is discounted from. Only set on promo tiers. */
+  regularPrice?: number;
+  /** Short label shown in place of a number on quote-only tiers. */
+  priceLabel?: string;
   timeline: string;
   bestFor: string;
   features: string[];
+  /** What this tier deliberately does not include. Keeps cheap scope honest. */
+  excludes?: string[];
 }
 
 export interface RetainerTierConfig {
@@ -91,13 +93,6 @@ export interface RetainerTierConfig {
   monthlyPrice: number;
   description: string;
   features: string[];
-}
-
-export interface CalculatorAddonConfig {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
 }
 
 // --- Client Project Brief (PROJECT.md line 63) ---

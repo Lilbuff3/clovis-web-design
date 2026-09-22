@@ -129,7 +129,6 @@ export const bigBrosSchema = {
         "Jessica Maldonado Ramirez & William A. Maldonado Ramirez DBA Big Bros Dumpster Rentals",
       "url": "https://bigbrosdumpster.com",
       "telephone": "+1-559-495-8034",
-      "priceRange": "$399 - $499",
       "description":
         "Family-owned roll-off dumpster rental service delivering 14-yard and 20-yard containers across Clovis, Fresno, and the Central Valley. Flat-rate pricing, free mattress/appliance disposal, and guaranteed driveway protection.",
       "address": {
@@ -186,20 +185,6 @@ export const bigBrosSchema = {
       "provider": {
         "@id": "https://bigbrosdumpster.com/#business",
       },
-      "offers": [
-        {
-          "@type": "Offer",
-          "name": "14-Yard Roll-Off Dumpster Rental (7 Days)",
-          "price": "399.00",
-          "priceCurrency": "USD",
-        },
-        {
-          "@type": "Offer",
-          "name": "20-Yard Roll-Off Dumpster Rental (7 Days)",
-          "price": "499.00",
-          "priceCurrency": "USD",
-        },
-      ],
     },
   ],
 };

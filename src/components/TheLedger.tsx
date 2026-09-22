@@ -3,54 +3,54 @@ import type { LedgerRow } from "@/types";
 
 const LEDGER_ROWS: LedgerRow[] = [
   {
-    category: "Team Structure & Communications",
+    category: "Who actually builds it",
     typicalAgency:
-      "14-person bloat: junior interns, account managers, and committee layers. Your project is handed off to entry-level freelancers.",
-    typicalCost: "30% overhead markup",
+      "You meet the senior people once, in the pitch. After that your site is handed to whoever is free that week.",
+    typicalCost: "You talk to an account manager",
     clovisCraft:
-      "Direct craftsman: 100% designed, coded, and deployed by Adam Youssef. Direct phone and SMS access to your engineer ((559) 575-3014).",
-    clovisCost: "Zero account bloat",
-    differenceNote: "Direct accountability with zero middleman translation loss.",
+      "I design it, I build it, I put it live. When you call (559) 575-3014, the person who wrote the code picks up.",
+    clovisCost: "You talk to me",
+    differenceNote: "Nothing gets lost being passed along.",
   },
   {
-    category: "Asset & Code Ownership",
+    category: "Who owns it when you walk away",
     typicalAgency:
-      "Hostage hosting on proprietary CMS with recurring vendor lock-in fees. Canceling means losing your design and data.",
-    typicalCost: "$350–$1,200/mo hostage retainer",
+      "The site sits on their system. Stop paying and it goes dark, and you do not get the design or the content back.",
+    typicalCost: "They hold the keys",
     clovisCraft:
-      "100% code, domain, and asset ownership transferred day one. Zero proprietary CMS lock-in. Host anywhere in the world.",
-    clovisCost: "100% Client Owned",
-    differenceNote: "Complete legal independence from day one.",
+      "The code and the domain are in your name from day one. Move it anywhere, any time, and you do not need my permission.",
+    clovisCost: "You hold the keys",
+    differenceNote: "You are never stuck with me to keep your own website.",
   },
   {
-    category: "Development & Performance Standard",
+    category: "How it behaves on a phone",
     typicalAgency:
-      "Bloated WordPress or Webflow templates loaded with 40+ plugins, resulting in 3.8s–7.4s mobile load times and 42/100 CWV scores.",
-    typicalCost: "High bounce rate & lost SEO",
+      "A heavy template with dozens of plugins bolted on. On a phone out in the field it takes long enough that people give up.",
+    typicalCost: "They leave before it loads",
     clovisCraft:
-      "Hand-coded React 19 + TypeScript + Tailwind CSS single-file bundle. Verified 100/100 Core Web Vitals with <600ms mobile LCP.",
-    clovisCost: "100/100 CWV Guaranteed",
-    differenceNote: "Sub-second speed on throttled 4G Android networks.",
+      "Built by hand with nothing in it that does not need to be there. It comes up fast on a phone, on real signal, not office wifi.",
+    clovisCost: "It is there before they wait",
+    differenceNote: "Most people looking you up are on a phone, often on bad signal.",
   },
   {
-    category: "Copywriting & Strategic Direction",
+    category: "Who writes the words",
     typicalAgency:
-      "Client is assigned a blank 30-page questionnaire and forced to write their own copy, or receives generic AI fluff.",
-    typicalCost: "6–12 weeks of client fatigue",
+      "You get a blank questionnaire and a deadline, or they run it through a machine and hand you something that sounds like everyone else.",
+    typicalCost: "You end up writing it",
     clovisCraft:
-      "Interview-driven copywriting authored entirely by Adam from a 45-minute founder session. Authentic bilingual EN/ES trade copy.",
-    clovisCost: "Turnkey craftsman copy",
-    differenceNote: "We do the heavy writing lifting based on your actual voice.",
+      "We talk for forty-five minutes, I record it, and I write the site out of what you actually said about your own trade.",
+    clovisCost: "I write it",
+    differenceNote: "This is the step that stalls most website projects for months.",
   },
   {
-    category: "Pricing Transparency & Invoicing",
+    category: "When you need something changed",
     typicalAgency:
-      "$80,000 – $180,000 with endless change orders and inflated hourly billing. Surprise invoices for basic text modifications.",
-    typicalCost: "$80k–$180k + hidden fees",
+      "Put in a ticket, wait for a change order, then get an invoice for a paragraph of text.",
+    typicalCost: "A form and a wait",
     clovisCraft:
-      "$9,500 – $22,000 flat-rate milestones with zero hidden fees. Fixed scope, guaranteed delivery date, and 90-day warranty.",
-    clovisCost: "$9,500 – $22,000 Flat",
-    differenceNote: "Zero surprise invoices. 100% milestone predictability.",
+      "Text me. Small things I just do. If it is genuinely a big job I will tell you that before I start, not after.",
+    clovisCost: "A text message",
+    differenceNote: "No invoice for fixing a phone number.",
   },
 ];
 
@@ -72,7 +72,7 @@ export default function TheLedger() {
             <span className="italic text-clay">bloated agency.</span>
           </h2>
           <p className="mt-4 text-base text-ink-soft sm:text-lg leading-relaxed">
-            Why Central Valley business owners choose direct engineering over account executives, $180,000 markups, and hostage hosting contracts — transparent, honest, and built by hand.
+            The same five things come up every time somebody tells me about their last website. Here is how I do them differently.
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export default function TheLedger() {
                 Typical Agency / Corporate Firm
               </h3>
               <p className="mt-1 text-xs text-stone">
-                14-person headcount, account layers, $80k–$180k retainers
+                A team you meet once, then a queue you wait in
               </p>
             </div>
 
@@ -119,7 +119,7 @@ export default function TheLedger() {
                 Clovis Web Design (Adam Youssef)
               </h3>
               <p className="mt-1 text-xs text-clay">
-                Solo senior engineering, $9,500–$22,000 flat, 100% day-one asset ownership
+                One person, your number in my phone, your site in your name
               </p>
             </div>
           </div>
@@ -186,14 +186,14 @@ export default function TheLedger() {
                 The Bottom Line
               </span>
               <p className="mt-1 text-sm font-serif font-bold text-ink">
-                $9,500 – $22,000 flat-rate delivery vs. $80,000 – $180,000 agency overhead.
+                You own it, it is fast, and the person who built it answers the phone.
               </p>
             </div>
             <a
               href="#calculator"
               className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-xs font-semibold uppercase tracking-wider text-linen shadow-md transition-all hover:bg-clay"
             >
-              <span>Build Your Exact Estimate</span>
+              <span>See what it costs</span>
               <span>↗</span>
             </a>
           </div>

@@ -3,15 +3,16 @@ import { Phone } from "lucide-react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useActiveSection, useBodyLock, useScrollTo } from "@/hooks/helpers";
 import type { NavItem } from "@/types";
+import { formatSmsUri } from "@/data/calculator";
 
 const NAV_ITEMS: NavItem[] = [
   { id: "work", label: "Work" },
-  { id: "ledger", label: "The Ledger" },
+  { id: "calculator", label: "Pricing" },
   { id: "services", label: "Services" },
+  { id: "ledger", label: "Why me" },
   { id: "receipt", label: "The Receipt" },
-  { id: "process", label: "The Recipe" },
+  { id: "process", label: "How it works" },
   { id: "faq", label: "FAQ" },
-  { id: "calculator", label: "Estimate Scope" },
 ];
 
 export function ClovisMark({ className }: { className?: string }) {
@@ -244,7 +245,7 @@ export default function Nav({ onOpenBrief }: NavProps) {
 
             <div className="flex gap-2">
               <a
-                href="sms:15595753014?body=Hi%20Adam,%20I'm%20interested%20in%20a%20website%20for%20my%20business."
+                href={formatSmsUri()}
                 className="flex-1 rounded-full border border-ink/20 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-ink/[0.04] transition-colors"
               >
                 Text / SMS

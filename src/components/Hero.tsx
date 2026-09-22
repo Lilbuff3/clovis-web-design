@@ -1,14 +1,22 @@
-import { Phone } from "lucide-react";
+import { Phone, MessageSquare, Check } from "lucide-react";
+import { LAUNCH_PROMO, SCOPE_TIERS, formatSmsUri } from "@/data/calculator";
+import { usePointerGlow } from "@/hooks/usePointerGlow";
+import { useCountUp } from "@/hooks/useCountUp";
 
 interface HeroProps {
   onOpenBrief?: () => void;
 }
 
+const landing = SCOPE_TIERS.find((t) => t.id === "landing")!;
+
 export default function Hero({ onOpenBrief }: HeroProps) {
+  const glowRef = usePointerGlow<HTMLDivElement>();
+  const { ref: scoreRef, display: score } = useCountUp(100, 0, 1600);
+
   return (
     <section
       id="hero"
-      className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-4 pt-32 pb-20 text-center sm:px-6 lg:px-8"
+      className="relative flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-4 pt-28 pb-16 text-center sm:px-6 sm:pt-32 lg:px-8"
       aria-label="Hero Introduction"
     >
       {/* Subtle organic radial background illumination */}
@@ -20,8 +28,8 @@ export default function Hero({ onOpenBrief }: HeroProps) {
       </div>
 
       <div className="mx-auto max-w-5xl" data-reveal>
-        {/* Availability Badge */}
-        <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-stone-light/70 bg-paper-deep/80 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-ink-soft shadow-xs backdrop-blur">
+        {/* Launch offer badge */}
+        <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-clay/40 bg-clay/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-ink shadow-xs backdrop-blur">
           <span className="relative flex h-2.5 w-2.5 items-center justify-center">
             <span
               className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
@@ -32,70 +40,121 @@ export default function Hero({ onOpenBrief }: HeroProps) {
               style={{ backgroundColor: "#5b6a4a" }}
             />
           </span>
-          <span className="font-sans font-semibold text-ink">
-            Booking two flagships for 2026
+          <span className="font-sans font-semibold">
+            Launch offer &middot; {LAUNCH_PROMO.blurb}
           </span>
         </div>
 
         {/* Display Headline */}
-        <h1 className="text-3xl font-display font-light tracking-tight text-ink sm:text-6xl md:text-7xl lg:text-8xl leading-[1.08]">
+        <h1 className="font-display text-4xl font-light leading-[1.08] tracking-tight text-ink sm:text-6xl md:text-7xl lg:text-8xl">
           Fortune 500 craft. <br />
           <span className="italic font-normal text-clay">Main Street soul.</span>
         </h1>
 
-        {/* Craftsman Narrative Copy */}
-        <p className="mx-auto mt-6 max-w-3xl text-base text-ink-soft sm:mt-8 sm:text-xl leading-relaxed">
-          Handcrafted digital flagships, Google Business Profile dominance, and hyper-local SEO for independent Central Valley businesses. Hand-crafted in Clovis, California by Adam Youssef — Principal Craftsman &amp; Founder.
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink-soft sm:mt-7 sm:text-xl">
+          I build websites for Central Valley businesses — by hand, one at
+          a time. I&rsquo;m Adam Youssef, and I work out of Clovis, California.
+          You get my mobile number, not a ticket queue.
         </p>
 
-        {/* Interactive Action CTAs */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+        {/* The offer, as a receipt */}
+        <div
+          ref={glowRef}
+          className="group relative mx-auto mt-10 max-w-md overflow-hidden rounded-2xl border border-ink/15 bg-linen/90 p-6 text-left shadow-lg backdrop-blur sm:p-7"
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            style={{
+              background:
+                "radial-gradient(400px circle at var(--mx,50%) var(--my,0%), rgb(176 80 58 / 0.08), transparent 65%)",
+            }}
+          />
+          <div className="flex items-center justify-between border-b border-dashed border-ink/20 pb-3">
+            <span className="font-mono text-[11px] uppercase tracking-widest text-stone">
+              {landing.title}
+            </span>
+            <span className="font-mono text-[11px] uppercase tracking-widest text-stone">
+              {landing.timeline}
+            </span>
+          </div>
+
+          <div className="flex items-baseline gap-3 pt-4">
+            <span className="font-serif text-5xl font-bold tracking-tight text-ink">
+              ${landing.price?.toLocaleString()}
+            </span>
+            {landing.regularPrice && (
+              <span className="font-serif text-xl text-stone line-through">
+                ${landing.regularPrice.toLocaleString()}
+              </span>
+            )}
+          </div>
+
+          <ul className="mt-4 space-y-2 border-t border-dashed border-ink/20 pt-4">
+            {["One page, live in a week", "Yours on day one", "No monthly required"].map(
+              (line) => (
+                <li key={line} className="flex gap-2.5 text-sm text-ink-soft">
+                  <Check
+                    className="mt-0.5 h-4 w-4 shrink-0 text-olive"
+                    aria-hidden="true"
+                  />
+                  <span>{line}</span>
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+
+        {/* Primary actions: call and text */}
+        <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <a
+            href="tel:5595753014"
+            className="group inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full bg-ink px-8 py-4 text-base font-semibold text-linen shadow-xl transition-all duration-300 hover:bg-clay hover:shadow-clay/25 focus:outline-none focus:ring-2 focus:ring-clay focus:ring-offset-2"
+          >
+            <Phone className="h-4.5 w-4.5" aria-hidden="true" />
+            <span>Call (559) 575-3014</span>
+          </a>
+          <a
+            href={formatSmsUri(landing.title)}
+            className="inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full border border-ink/25 bg-paper/60 px-8 py-4 text-base font-semibold text-ink backdrop-blur transition-all duration-300 hover:border-clay hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay focus:ring-offset-2"
+          >
+            <MessageSquare className="h-4.5 w-4.5" aria-hidden="true" />
+            <span>Text me instead</span>
+          </a>
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
           <a
             href="#calculator"
-            className="group inline-flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-sm font-medium text-linen shadow-xl transition-all duration-300 hover:bg-clay hover:shadow-clay/25 focus:outline-none focus:ring-2 focus:ring-clay focus:ring-offset-2"
+            className="text-ink-soft underline underline-offset-4 transition-colors hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay rounded"
           >
-            <span>Calculate Project Scope</span>
-            <span className="transition-transform duration-300 group-hover:translate-x-0.5">
-              ↗
-            </span>
+            See what everything costs
           </a>
-
           <a
             href="#case-studies"
-            className="inline-flex items-center gap-2 rounded-full border border-ink/20 bg-paper/50 px-7 py-4 text-sm font-medium text-ink backdrop-blur transition-all duration-300 hover:border-ink hover:bg-ink/[0.05] focus:outline-none focus:ring-2 focus:ring-ink focus:ring-offset-2"
+            className="text-ink-soft underline underline-offset-4 transition-colors hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay rounded"
           >
-            <span>View Verified Case Studies</span>
-            <span className="text-stone">↓</span>
+            See two sites I built
           </a>
-
           {onOpenBrief && (
             <button
               type="button"
               onClick={onOpenBrief}
-              className="inline-flex items-center gap-2 rounded-full border border-clay/30 bg-clay/5 px-6 py-4 text-sm font-medium text-clay transition-all duration-300 hover:bg-clay/10 focus:outline-none focus:ring-2 focus:ring-clay"
+              className="rounded text-ink-soft underline underline-offset-4 transition-colors hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay"
             >
-              <span>Quick Brief Generator</span>
-              <span>⚡</span>
+              Send details in writing
             </button>
           )}
         </div>
 
-        {/* Direct Call / SMS Line */}
-        <div className="mt-6 flex items-center justify-center">
-          <a
-            href="tel:5595753014"
-            className="group inline-flex items-center gap-2 rounded-full border border-ink/15 bg-paper/70 px-4 py-2 text-xs font-medium text-ink-soft transition-colors hover:border-clay hover:text-clay"
-          >
-            <Phone className="h-3.5 w-3.5 text-clay transition-transform group-hover:scale-110" />
-            <span>Direct Cell &amp; Text: <strong className="font-semibold text-ink group-hover:text-clay">(559) 575-3014</strong></span>
-          </a>
-        </div>
-
         {/* Proof Stats Row */}
-        <div className="mx-auto mt-16 grid max-w-3xl grid-cols-3 divide-x divide-ink/10 rounded-2xl border border-ink/10 bg-linen/70 p-4 shadow-sm backdrop-blur sm:p-6">
+        <div className="mx-auto mt-14 grid max-w-3xl grid-cols-3 divide-x divide-ink/10 rounded-2xl border border-ink/10 bg-linen/70 p-4 shadow-sm backdrop-blur sm:p-6">
           <div className="flex flex-col items-center justify-center px-2 sm:px-6">
-            <span className="font-serif text-2xl font-bold tracking-tight text-ink sm:text-4xl">
-              100/100
+            <span
+              ref={scoreRef as React.RefObject<HTMLSpanElement>}
+              className="font-serif text-2xl font-bold tracking-tight text-ink sm:text-4xl"
+            >
+              {score}/100
             </span>
             <span className="mt-1 text-xs font-medium uppercase tracking-wider text-stone">
               Core Web Vitals
@@ -104,10 +163,10 @@ export default function Hero({ onOpenBrief }: HeroProps) {
 
           <div className="flex flex-col items-center justify-center px-2 sm:px-6">
             <span className="font-serif text-2xl font-bold tracking-tight text-ink sm:text-4xl">
-              4–6 Wks
+              1 Week
             </span>
             <span className="mt-1 text-xs font-medium uppercase tracking-wider text-stone">
-              Turnaround
+              To live
             </span>
           </div>
 
@@ -135,16 +194,18 @@ export default function Hero({ onOpenBrief }: HeroProps) {
                   d="M 60, 60 m -45, 0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0"
                 />
               </defs>
-              <text
-                className="fill-current text-[10.5px] font-mono uppercase tracking-[0.24em]"
-              >
+              <text className="fill-current font-mono text-[10.5px] uppercase tracking-[0.24em]">
                 <textPath href="#circlePath">
-                  Craftsman Web Creation · Clovis, California ·
+                  Craftsman Web Creation &middot; Clovis, California &middot;
                 </textPath>
               </text>
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-serif text-sm font-bold text-clay">EST. 2026</span>
+              <span className="text-center font-serif text-[11px] font-bold leading-tight text-clay">
+                Clovis
+                <br />
+                CA
+              </span>
             </div>
           </div>
         </div>

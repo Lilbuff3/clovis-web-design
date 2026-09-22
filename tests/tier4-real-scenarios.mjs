@@ -6,6 +6,7 @@ import {
   assert,
   assertEqual,
   assertMatch,
+  assertNotMatch,
   assertGreaterThanOrEqual,
   assertContrast,
   readProjectFile,
@@ -61,9 +62,9 @@ registerTest('T4.03', 'Scenario 1.3 - Practice Manager validates Schema.org NPI 
   assertEqual(drMasood.identifier.value, '1669422812', 'Dr. Masood NPI verified in knowledge graph');
 });
 
-registerTest('T4.04', 'Scenario 1.4 - Practice Manager configures Flagship tier + Compliance add-on in calculator', () => {
-  const quote = calculateQuote('flagship', 'none', ['compliance']);
-  assertEqual(quote.setupTotal, 25000, 'Flagship ($22,000) + Compliance Add-on ($3,000) = $25,000');
+registerTest('T4.04', 'Scenario 1.4 - Practice Manager finds the Flagship tier is quoted, not published', () => {
+  const quote = calculateQuote('flagship', 'none');
+  assertEqual(quote.setupTotal, null, 'Flagship is quoted on a call');
   assertEqual(quote.monthlyTotal, 0);
 });
 
@@ -106,11 +107,11 @@ registerTest('T4.07', 'Scenario 2.2 - Contractor verifies Clovis ZIP 93611 same-
   assert(supportedZips.includes(targetZip), 'ZIP 93611 verified for Clovis delivery');
 });
 
-registerTest('T4.08', 'Scenario 2.3 - Contractor verifies flat-rate 20-yard pricing ($499) with zero mattress surcharge', () => {
+registerTest('T4.08', 'Scenario 2.3 - Contractor sees the 20-yard service without a published price', () => {
   const schemas = loadSchemas();
   const service = schemas.bigBrosSchema['@graph'].find((n) => n['@type'] === 'Service');
-  const twentyYardOffer = service.offers.find((o) => o.name.includes('20-Yard'));
-  assertEqual(twentyYardOffer.price, '499.00');
+  assertMatch(service.name, /Roll-Off/i);
+  assertEqual(service.offers, undefined);
 });
 
 registerTest('T4.09', 'Scenario 2.4 - Contractor clicks mobile SMS dispatch link to William & Jessica Ramirez', () => {
@@ -123,53 +124,51 @@ registerTest('T4.09', 'Scenario 2.4 - Contractor clicks mobile SMS dispatch link
   assertMatch(smsUri, /^sms:\+15594958034\?body=Hola%20Big%20Bros/);
 });
 
-registerTest('T4.10', 'Scenario 2.5 - Contractor explores Clovis Web Design services to build similar trade site', () => {
-  const contractorLead = calculateQuote('storefront', 'standard', ['bilingual']);
-  assertEqual(contractorLead.setupTotal, 12000, 'Storefront ($9,500) + Bilingual Add-on ($2,500) = $12,000');
-  assertEqual(contractorLead.monthlyTotal, 600, 'GBP Dominance retainer = $600/mo');
+registerTest('T4.10', 'Scenario 2.5 - Contractor prices the entry offer with the care plan', () => {
+  const contractorLead = calculateQuote('landing', 'care');
+  assertEqual(contractorLead.setupTotal, 500, 'Landing Page launch price = $500');
+  assertEqual(contractorLead.monthlyTotal, 99, 'Care plan = $99/mo');
 });
 
-// =========================================================================
-// SCENARIO 3: Old Town Clovis Restaurant / Boutique Owner
-// Reviewing The Ledger, evaluating GBP 3-Pack, calculating Storefront + GBP
-// =========================================================================
-
-registerTest('T4.11', 'Scenario 3.1 - Restaurant owner contrasts $180k agency quote with The Ledger', () => {
+registerTest('T4.11', 'Scenario 3.1 - Restaurant owner reads the Ledger and finds an argument, not a price', () => {
   const ledgerSource = readProjectFile('src/components/TheLedger.tsx');
-  assertMatch(ledgerSource, /\$180,000/);
-  assertMatch(ledgerSource, /\$9,500/);
+  assertNotMatch(ledgerSource, /\$[0-9]/);
+  assertMatch(ledgerSource, /in your name/i);
+  assertMatch(ledgerSource, /phone|text|picks up/i);
 });
 
-registerTest('T4.12', 'Scenario 3.2 - Restaurant owner verifies Google Business Profile 3-Pack review defense', () => {
+registerTest('T4.12', 'Scenario 3.2 - Restaurant owner reads an honest account of Google listings', () => {
   const services = loadServices();
   const gbp = services.find((s) => s.id === 'gbp-dominance');
   assert(Boolean(gbp), 'GBP service required');
-  assertMatch(gbp.posSync || '', /Toast|Square/i);
   assertEqual(gbp.reviewDefense, true);
+  assertMatch(gbp.description, /cannot promise|no guarantee|wary/i,
+    'Must not promise a ranking position');
+  const blob = JSON.stringify(gbp);
+  assertNotMatch(blob, /Toast|Clover|Mindbody|Kareo|Epic/i,
+    'Must not claim integrations that have not been verified');
+  assertNotMatch(blob, /fake review removal/i, 'Must not promise removal of content Adam does not control');
 });
 
-registerTest('T4.13', 'Scenario 3.3 - Restaurant owner configures Storefront tier + GBP Dominance in calculator', () => {
-  const quote = calculateQuote('storefront', 'standard', []);
-  assertEqual(quote.setupTotal, 9500);
-  assertEqual(quote.monthlyTotal, 600);
+registerTest('T4.13', 'Scenario 3.3 - Restaurant owner picks the entry offer plus care plan', () => {
+  const quote = calculateQuote('landing', 'care');
+  assertEqual(quote.setupTotal, 500);
+  assertEqual(quote.monthlyTotal, 99);
 });
 
-registerTest('T4.14', 'Scenario 3.4 - Restaurant owner formats mailto dispatch with Toast POS integration inquiry', () => {
-  const quote = calculateQuote('storefront', 'standard', []);
+registerTest('T4.14', 'Scenario 3.4 - Restaurant owner sends a written follow-up about Toast POS', () => {
+  const quote = calculateQuote('landing', 'care');
   const mailtoUri = formatMailtoUri({
     to: 'adam@cloviswebdesign.com',
-    subject: `Old Town Clovis Restaurant Scope: ${quote.tierTitle} ($${quote.setupTotal})`,
-    body: `Hi Adam,\n\nWe run a bistro on Pollasky Ave in Old Town Clovis.\nNeed Storefront setup ($${quote.setupTotal}) and monthly GBP ($${quote.monthlyTotal}/mo).\nMust integrate our Toast POS online menu.\n\nCheers,\nMarco`,
+    subject: 'Old Town Clovis Restaurant: ' + quote.tierTitle,
+    body: 'Hi Adam, we run a bistro on Pollasky Ave in Old Town Clovis. '
+      + 'We want the ' + quote.tierTitle + ' plus the care plan ($' + quote.monthlyTotal + '/mo). '
+      + 'Must integrate our Toast POS online menu.',
   });
   const parsed = parseMailtoUri(mailtoUri);
   assertMatch(parsed.body, /Pollasky Ave in Old Town Clovis/);
   assertMatch(parsed.body, /Toast POS/);
 });
-
-// =========================================================================
-// SCENARIO 4: Central Valley Agricultural Equipment Supplier
-// Evaluating rural mobile speed on throttled 4G Android in Madera
-// =========================================================================
 
 registerTest('T4.15', 'Scenario 4.1 - Ag supplier inspects "The Receipt" for throttled 4G mobile proof', () => {
   const receiptSource = readProjectFile('src/components/TheReceipt.tsx');
@@ -184,10 +183,10 @@ registerTest('T4.16', 'Scenario 4.2 - Ag supplier reviews The Recipe 4-stage pro
   assertMatch(steps[3].title, /Launch & 90-Day Tuning/);
 });
 
-registerTest('T4.17', 'Scenario 4.3 - Ag supplier configures Multi-Location tier for Madera and Selma yards', () => {
-  const quote = calculateQuote('multi-location', 'growth', []);
-  assertEqual(quote.setupTotal, 45000, 'Multi-Location base is $45,000');
-  assertEqual(quote.monthlyTotal, 1200, 'Growth Geo/SEO Radar is $1,200/mo');
+registerTest('T4.17', 'Scenario 4.3 - Ag supplier with multiple yards gets a quote, not a price tag', () => {
+  const quote = calculateQuote('flagship', 'care');
+  assertEqual(quote.setupTotal, null, 'Multi-yard work is scoped on a call');
+  assertEqual(quote.monthlyTotal, 99, 'Care plan is the only monthly');
 });
 
 registerTest('T4.18', 'Scenario 4.4 - Ag supplier generates and downloads project brief text file', () => {
@@ -236,20 +235,22 @@ registerTest('T4.21', 'Scenario 5.3 - Healthcare executive tests full keyboard n
   assertMatch(briefSource, /Escape|onClose/, 'Brief Dialog must support Escape/close navigation');
 });
 
-registerTest('T4.22', 'Scenario 5.4 - Healthcare executive configures Flagship build with Compliance and Bilingual add-ons', () => {
-  const quote = calculateQuote('flagship', 'growth', ['bilingual', 'compliance']);
-  assertEqual(quote.setupTotal, 27500, 'Flagship ($22k) + Bilingual ($2.5k) + Compliance ($3k) = $27,500');
-  assertEqual(quote.monthlyTotal, 1200, 'Geo/SEO Radar monthly retainer = $1,200/mo');
+registerTest('T4.22', 'Scenario 5.4 - Healthcare executive finds compliance work is quoted', () => {
+  const quote = calculateQuote('flagship', 'care');
+  assertEqual(quote.setupTotal, null, 'Compliance-heavy builds are quoted, never published');
+  assertEqual(quote.monthlyTotal, 99, 'Care plan = $99/mo');
 });
 
-registerTest('T4.23', 'Scenario 5.5 - Healthcare executive verifies pre-formatted mailto subject and body', () => {
-  const quote = calculateQuote('flagship', 'growth', ['bilingual', 'compliance']);
+registerTest('T4.23', 'Scenario 5.5 - Healthcare executive written follow-up quotes no setup figure', () => {
+  const quote = calculateQuote('flagship', 'care');
   const mailtoUri = formatMailtoUri({
     to: 'adam@cloviswebdesign.com',
-    subject: `Medical Practice Web Consultation: ${quote.tierTitle} ($${quote.setupTotal.toLocaleString('en-US')})`,
-    body: `Executive inquiry for regional medical practice flagship build.\nSetup: $${quote.setupTotal.toLocaleString('en-US')}\nRetainer: $${quote.monthlyTotal}/mo`,
+    subject: 'Medical Practice Web Consultation: ' + quote.tierTitle,
+    body: 'Executive inquiry for regional medical practice flagship build. '
+      + 'Setup: to be quoted. Care plan: $' + quote.monthlyTotal + '/mo.',
   });
   const parsed = parseMailtoUri(mailtoUri);
   assertMatch(parsed.subject, /Medical Practice Web Consultation/);
-  assertMatch(parsed.body, /\$27,500/);
+  assertMatch(parsed.body, /to be quoted/);
+  assertMatch(parsed.body, /[$]99[/]mo/);
 });

@@ -6,6 +6,7 @@ import {
   assert,
   assertEqual,
   assertMatch,
+  assertNotMatch,
   assertGreaterThanOrEqual,
   assertLessThanOrEqual,
   assertContrast,
@@ -33,22 +34,25 @@ function registerTest(id, name, featureId, fn) {
 // FEATURE 1: Central Valley Craftsman Tone & Copy (Boundaries)
 // =========================================================================
 
-registerTest('T2.01', 'F1 - Acronyms (NPI, HIPAA, WCAG, CWV) handle uppercase correctly', 1, () => {
-  const caseStudiesSource = readProjectFile('src/data/caseStudies.ts');
-  const servicesSource = readProjectFile('src/data/services.ts');
-  const ledgerSource = readProjectFile('src/components/TheLedger.tsx');
-  const combined = caseStudiesSource + '\n' + servicesSource + '\n' + ledgerSource;
-  const acronyms = ['NPI', 'HIPAA', 'WCAG', 'CWV'];
-  for (const acr of acronyms) {
-    assertMatch(combined, new RegExp(`\\b${acr}\\b`), `Acronym ${acr} must appear in uppercase in source data`);
+registerTest('T2.01', 'F1 - Acronyms (NPI, HIPAA, WCAG) handle uppercase correctly', 1, () => {
+  const combined = [
+    readProjectFile('src/data/caseStudies.ts'),
+    readProjectFile('src/data/services.ts'),
+  ].join('\n');
+  for (const acr of ['NPI', 'HIPAA', 'WCAG']) {
+    assertMatch(combined, new RegExp('\\b' + acr + '\\b'), `Acronym ${acr} must appear in uppercase in source data`);
   }
+  const ledger = readProjectFile('src/components/TheLedger.tsx');
+  assertNotMatch(ledger, /\bCWV\b|\bWCAG\b|Core Web Vitals/, 'The Ledger speaks plain English by design');
 });
 
 registerTest('T2.02', 'F1 - Typographic quotes, em-dashes, and Spanish accents render properly', 1, () => {
-  const caseStudiesSource = readProjectFile('src/data/caseStudies.ts');
-  const ledgerSource = readProjectFile('src/components/TheLedger.tsx');
-  const combined = caseStudiesSource + '\n' + ledgerSource;
-  assertMatch(combined, /—/, 'Em-dash must be present in source copy');
+  const combined = [
+    readProjectFile('src/data/caseStudies.ts'),
+    readProjectFile('src/components/Hero.tsx'),
+    readProjectFile('src/components/TheLedger.tsx'),
+  ].join('\n');
+  assertMatch(combined, /\u2014/, 'Em-dash must be present in source copy');
   assertMatch(combined, /Dómpers|Protección/, 'Spanish diacritics must be present in source copy');
 });
 
@@ -252,12 +256,9 @@ registerTest('T2.30', 'F6 - Technical jargon includes plain-English explanation'
   const services = loadServices();
   const gbp = services.find((s) => s.id === 'gbp-dominance');
   assert(Boolean(gbp), 'GBP service must exist');
-  assertMatch(gbp.description, /Google Business Profile|3-Pack/i, 'Jargon must be accompanied by plain-English context');
+  assertMatch(gbp.description, /Google Business Profile/i, 'Name the product people will search for');
+  assertMatch(gbp.description, /short list|map|free listing/i, 'Jargon must be explained in plain words');
 });
-
-// =========================================================================
-// FEATURE 7: "The Receipt" Performance Audit (Boundaries)
-// =========================================================================
 
 registerTest('T2.31', 'F7 - Score values strictly clamped between 0 and 100', 7, () => {
   const receiptSource = readProjectFile('src/components/TheReceipt.tsx');
@@ -319,16 +320,14 @@ registerTest('T2.39', 'F8 - Interactive checklist toggles accessible aria-expand
   assertMatch(recipeSource, /deliverables|step/i, 'Recipe component must render deliverables');
 });
 
-registerTest('T2.40', 'F8 - Total estimated process duration equals 4–6 weeks', 8, () => {
+registerTest('T2.40', 'F8 - Process states a coherent, honest timeline', 8, () => {
   const steps = loadProcessSteps();
   const combined = steps.map((s) => s.duration).join(' ');
-  assertMatch(combined, /Week 1/, 'Must start at Week 1');
-  assertMatch(combined, /Week 6|Weeks 4–6|Weeks 3–5/, 'Must conclude within 4–6 weeks');
+  assertMatch(combined, /Day 1/, 'Must start at day one');
+  assertMatch(combined, /Day 6|Days 3–5/, 'One-page build must conclude within about a week');
+  const source = readProjectFile('src/data/process.ts');
+  assertMatch(source, /three to four weeks/i, 'Larger builds must state their longer timeline');
 });
-
-// =========================================================================
-// FEATURE 9: Objection-Crushing FAQ (Boundaries)
-// =========================================================================
 
 registerTest('T2.41', 'F9 - Keyboard Enter and Space trigger accordion toggling', 9, () => {
   const faqSource = readProjectFile('src/components/FAQ.tsx');
@@ -431,14 +430,14 @@ registerTest('T2.54', 'F11 - LocalBusiness schema validates areaServed and openi
   const schemas = loadSchemas();
   const biz = schemas.bigBrosSchema['@graph'].find((n) => n['@type'] === 'LocalBusiness');
   assertGreaterThanOrEqual(biz.areaServed.length, 3);
-  assertEqual(biz.priceRange, '$399 - $499');
+  assertEqual(biz.priceRange, undefined);
 });
 
-registerTest('T2.55', 'F11 - Flat-rate currency formatting produces exact dollar amounts without cents drift', 11, () => {
+registerTest('T2.55', 'F11 - Case study carries no client dollar figures', 11, () => {
   const caseStudies = loadCaseStudies();
   const cs2 = caseStudies.find((s) => s.id === 'big-bros-dumpster');
-  assertEqual(cs2.fleetPricing?.fourteenYard, 399);
-  assertEqual(cs2.fleetPricing?.twentyYard, 499);
+  assertEqual(cs2.fleetPricing, undefined);
+  assertEqual(/\$[0-9]/.test(JSON.stringify(cs2)), false);
 });
 
 // =========================================================================
@@ -477,25 +476,23 @@ registerTest('T2.60', 'F12 - Focus trap wraps around from last element to first 
 // FEATURE 13: Interactive Scope & Quote Calculator (Boundaries)
 // =========================================================================
 
-registerTest('T2.61', 'F13 - Minimum boundary: Storefront + No retainer + 0 addons = $9,500, $0/mo', 13, () => {
-  const quote = calculateQuote('storefront', 'none', []);
-  assertEqual(quote.setupTotal, 9500);
+registerTest('T2.61', 'F13 - Floor boundary: entry tier, no care plan', 13, () => {
+  const quote = calculateQuote('landing', 'none');
+  assertEqual(quote.setupTotal, 500);
   assertEqual(quote.monthlyTotal, 0);
 });
 
-registerTest('T2.62', 'F13 - Maximum boundary: Multi-Location + Growth retainer + All addons = $50,500, $1,200/mo', 13, () => {
-  const quote = calculateQuote('multi-location', 'growth', ['bilingual', 'compliance']);
-  assertEqual(quote.setupTotal, 50500);
-  assertEqual(quote.monthlyTotal, 1200);
+registerTest('T2.62', 'F13 - Ceiling boundary: quoted tier plus care plan', 13, () => {
+  const quote = calculateQuote('flagship', 'care');
+  assertEqual(quote.setupTotal, null, 'Quoted tiers must not publish a number');
+  assertEqual(quote.monthlyTotal, 99);
 });
 
-registerTest('T2.63', 'F13 - Idempotent add-on toggle preserves base pricing', 13, () => {
-  const base = calculateQuote('flagship', 'none', []).setupTotal;
-  const withAddon = calculateQuote('flagship', 'none', ['bilingual']).setupTotal;
-  const afterToggleOff = calculateQuote('flagship', 'none', []).setupTotal;
-  assertEqual(base, 22000);
-  assertEqual(withAddon, 24500);
-  assertEqual(afterToggleOff, base);
+registerTest('T2.63', 'F13 - Unknown retainer key falls back to no plan rather than throwing', 13, () => {
+  const quote = calculateQuote('landing', 'bogus');
+  assertEqual(quote.setupTotal, 500);
+  assertEqual(quote.monthlyTotal, 0);
+  assertEqual(quote.retainerTitle, 'No plan');
 });
 
 registerTest('T2.64', 'F13 - Mailto URI encodes commas, dollar signs, and newlines without corruption', 13, () => {

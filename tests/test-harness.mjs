@@ -186,21 +186,29 @@ export function loadSchemas() {
   };
 }
 
-// Load and evaluate dynamic calculator logic directly from src/data/calculator.ts
-export function loadCalculator() {
+// Strip TypeScript from src/data/calculator.ts so other loaders can share its constants.
+function calculatorSource() {
   const code = readProjectFile('src/data/calculator.ts');
-  const cleanCode = code
+  return code
     .replace(/import\s+type[\s\S]*?from\s+["'][^"']+["'];?/g, '')
     .replace(/export\s+interface[\s\S]*?^}/gm, '')
     .replace(/:\s*CalculatorTierConfig\[\]/g, '')
     .replace(/:\s*RetainerTierConfig\[\]/g, '')
     .replace(/:\s*CalculatorAddonConfig\[\]/g, '')
+    .replace(/\s+as\s+const/g, '')
+    .replace(/\?:\s*string/g, '')
+    .replace(/\)\s*:\s*Quote\s*\{/g, ') {')
     .replace(/:\s*ScopeTier/g, '')
     .replace(/:\s*RetainerTier/g, '')
     .replace(/:\s*string\[\]\s*=\s*\[\]/g, ' = []')
     .replace(/params:\s*\{[\s\S]*?\}/g, 'params')
     .replace(/export\s+const\s+/g, 'const ')
     .replace(/export\s+function\s+/g, 'function ');
+}
+
+// Load and evaluate dynamic calculator logic directly from src/data/calculator.ts
+export function loadCalculator() {
+  const cleanCode = calculatorSource();
 
   const sandbox = {
     console,
@@ -212,16 +220,17 @@ export function loadCalculator() {
   vm.createContext(sandbox);
   vm.runInContext(
     cleanCode +
-    '\nthis.SCOPE_TIERS = SCOPE_TIERS;\nthis.RETAINER_TIERS = RETAINER_TIERS;\nthis.ADDON_CONFIGS = ADDON_CONFIGS;\nthis.PRICING_CONSTANTS = PRICING_CONSTANTS;\nthis.calculateQuote = calculateQuote;\nthis.formatMailtoUri = formatMailtoUri;',
+    '\nthis.SCOPE_TIERS = SCOPE_TIERS;\nthis.RETAINER_TIERS = RETAINER_TIERS;\nthis.LAUNCH_PROMO = LAUNCH_PROMO;\nthis.PRICING_CONSTANTS = PRICING_CONSTANTS;\nthis.calculateQuote = calculateQuote;\nthis.formatMailtoUri = formatMailtoUri;\nthis.formatSmsUri = formatSmsUri;',
     sandbox
   );
   return {
     SCOPE_TIERS: sandbox.SCOPE_TIERS,
     RETAINER_TIERS: sandbox.RETAINER_TIERS,
-    ADDON_CONFIGS: sandbox.ADDON_CONFIGS,
+    LAUNCH_PROMO: sandbox.LAUNCH_PROMO,
     PRICING_CONSTANTS: sandbox.PRICING_CONSTANTS,
     calculateQuote: sandbox.calculateQuote,
     formatMailtoUri: sandbox.formatMailtoUri,
+    formatSmsUri: sandbox.formatSmsUri,
   };
 }
 
@@ -280,13 +289,14 @@ export function loadProcessSteps() {
 // Load and evaluate FAQ items directly from src/data/faq.ts
 export function loadFaqs() {
   const code = readProjectFile('src/data/faq.ts');
-  const cleanCode = code
+  const cleanCode = calculatorSource() + '\n' + code
     .replace(/import\s+type[\s\S]*?from\s+["'][^"']+["'];?/g, '')
+    .replace(/import\s+\{[^}]+\}\s+from\s+["'][^"']+["'];?/g, '')
     .replace(/export\s+interface[\s\S]*?^}/gm, '')
     .replace(/:\s*ExtendedFAQItem\[\]/g, '')
     .replace(/export\s+const\s+/g, 'const ');
 
-  const sandbox = { console };
+  const sandbox = { console, Math, encodeURIComponent, decodeURIComponent, URLSearchParams };
   vm.createContext(sandbox);
   vm.runInContext(cleanCode + '\nthis.faqs = faqs;', sandbox);
   return sandbox.faqs;
@@ -304,9 +314,14 @@ export function loadBriefGenerator() {
     .replace(/,\s*config\??:\s*[^)]+/, ', config')
     .replace('export function', 'function');
 
-  const sandbox = {};
+  const preamble = calculatorSource()
+    + '\nconst ENTRY = PRICING_CONSTANTS.tiers.landing;'
+    + '\nconst CARE = PRICING_CONSTANTS.retainers.care;'
+    + '\nconst ENTRY_LABEL = `${ENTRY.title} ($${ENTRY.price})`;\n';
+
+  const sandbox = { console, Math, encodeURIComponent, decodeURIComponent, URLSearchParams };
   vm.createContext(sandbox);
-  vm.runInContext(fnCode + '\nthis.generateProjectBriefText = generateProjectBriefText;', sandbox);
+  vm.runInContext(preamble + fnCode + '\nthis.generateProjectBriefText = generateProjectBriefText;', sandbox);
   return sandbox.generateProjectBriefText;
 }
 
@@ -330,6 +345,10 @@ const _calc = loadCalculator();
 export const SPEC_PRICING = _calc.PRICING_CONSTANTS;
 export const calculateQuote = _calc.calculateQuote;
 export const formatMailtoUri = _calc.formatMailtoUri;
+export const formatSmsUri = _calc.formatSmsUri;
+export const SCOPE_TIERS = _calc.SCOPE_TIERS;
+export const RETAINER_TIERS = _calc.RETAINER_TIERS;
+export const LAUNCH_PROMO = _calc.LAUNCH_PROMO;
 
 export const generateProjectBriefText = loadBriefGenerator();
 

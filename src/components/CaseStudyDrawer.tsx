@@ -297,31 +297,6 @@ export default function CaseStudyDrawer({
               </div>
             )}
 
-            {study.fleetPricing && (
-              <div className="mt-4 rounded-2xl border border-ink/10 bg-linen/90 p-6">
-                <span className="block font-mono text-xs font-bold uppercase tracking-wider text-ink">
-                  Transparent Contractor Fleet Pricing:
-                </span>
-                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4 text-center">
-                  <div className="rounded-xl border border-ink/5 bg-paper p-3">
-                    <span className="block text-[10px] font-mono text-stone uppercase">14-Yard Roll-Off</span>
-                    <span className="mt-1 block font-serif text-base font-bold text-ink">${study.fleetPricing.fourteenYard} flat</span>
-                  </div>
-                  <div className="rounded-xl border border-ink/5 bg-paper p-3">
-                    <span className="block text-[10px] font-mono text-stone uppercase">20-Yard Roll-Off</span>
-                    <span className="mt-1 block font-serif text-base font-bold text-ink">${study.fleetPricing.twentyYard} flat</span>
-                  </div>
-                  <div className="rounded-xl border border-ink/5 bg-paper p-3">
-                    <span className="block text-[10px] font-mono text-stone uppercase">Mattress Surcharge</span>
-                    <span className="mt-1 block font-serif text-base font-bold text-olive">${study.fleetPricing.mattressSurcharge} (Free)</span>
-                  </div>
-                  <div className="rounded-xl border border-ink/5 bg-paper p-3">
-                    <span className="block text-[10px] font-mono text-stone uppercase">Driveway Planks</span>
-                    <span className="mt-1 block font-serif text-base font-bold text-olive">Included</span>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Chapter 03: Transformation & Metrics */}

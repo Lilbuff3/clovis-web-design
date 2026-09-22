@@ -1,4 +1,5 @@
 import { Phone, MessageSquare, ArrowUpRight } from "lucide-react";
+import { formatSmsUri } from "@/data/calculator";
 
 interface StickyMobileCallProps {
   onOpenCalculator?: () => void;
@@ -23,7 +24,7 @@ export default function StickyMobileCall({ onOpenCalculator }: StickyMobileCallP
 
         {/* SMS Text Direct Dispatch */}
         <a
-          href="sms:15595753014?body=Hi%20Adam,%20I'm%20interested%20in%20a%20website%20for%20my%20business."
+          href={formatSmsUri()}
           className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-ink/20 bg-linen px-3.5 py-3 text-center font-sans text-xs font-semibold text-ink shadow-xs transition-all active:scale-[0.98] hover:bg-paper-deep"
           aria-label="Text Adam Youssef at (559) 575-3014"
         >

@@ -2,6 +2,11 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useBodyLock } from "@/hooks/useBodyLock";
 import type { ScopeTier, RetainerTier } from "@/types";
+import { PRICING_CONSTANTS } from "@/data/calculator";
+
+const ENTRY = PRICING_CONSTANTS.tiers.landing;
+const CARE = PRICING_CONSTANTS.retainers.care;
+const ENTRY_LABEL = `${ENTRY.title} ($${ENTRY.price})`;
 
 interface BriefConfig {
   tier?: ScopeTier;
@@ -38,11 +43,6 @@ export function generateProjectBriefText(
     formattedAddons =
       rawAddons.length > 0
         ? rawAddons
-            .map((a) => {
-              if (a === "bilingual") return "Bilingual EN/ES UX (+$2,500)";
-              if (a === "compliance") return "HIPAA & Regulatory Compliance (+$3,000)";
-              return a;
-            })
             .join(", ")
         : "None";
   } else if (typeof rawAddons === "string" && rawAddons.trim()) {
@@ -59,7 +59,7 @@ export function generateProjectBriefText(
     `Location:         ${draft.location?.trim() || "Central Valley, CA"}`,
     `Direct Email:     ${draft.email?.trim() || "N/A"}`,
     `Phone / SMS:      ${draft.phone?.trim() || "N/A"}`,
-    `Selected Tier:    ${draft.selectedTier || "Flagship ($22,000)"}`,
+    `Selected Tier:    ${draft.selectedTier || ENTRY_LABEL}`,
     `Selected Add-ons: ${formattedAddons}`,
     `Monthly Retainer: ${draft.retainerInterest || "None"}`,
     `Target Timeline:  ${draft.timeline || "4–6 Weeks"}`,
@@ -92,10 +92,10 @@ export default function BriefDialog({
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("Central Valley, CA");
-  const [selectedTier, setSelectedTier] = useState("Flagship ($22,000)");
+  const [selectedTier, setSelectedTier] = useState(ENTRY_LABEL);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [retainerInterest, setRetainerInterest] = useState("None");
-  const [timeline, setTimeline] = useState("4–6 Weeks");
+  const [timeline, setTimeline] = useState("1 Week");
   const [description, setDescription] = useState("");
 
   const [copied, setCopied] = useState(false);
@@ -109,18 +109,16 @@ export default function BriefDialog({
     if (initialConfig) {
       if (initialConfig.tier) {
         const tierName =
-          initialConfig.tier === "storefront"
-            ? "Storefront"
-            : initialConfig.tier === "flagship"
-            ? "Flagship"
-            : "Multi-Location";
+          initialConfig.tier === "landing"
+            ? "Landing Page"
+            : initialConfig.tier === "business"
+            ? "Business Site"
+            : "Flagship";
         const price = initialConfig.setupTotal
           ? `$${initialConfig.setupTotal.toLocaleString()}`
-          : initialConfig.tier === "storefront"
-          ? "$9,500"
-          : initialConfig.tier === "flagship"
-          ? "$22,000"
-          : "$45,000";
+          : initialConfig.tier === "landing"
+          ? `$${ENTRY.price}`
+          : "quote";
         setSelectedTier(`${tierName} (${price})`);
       }
       if (initialConfig.addons) {
@@ -129,12 +127,10 @@ export default function BriefDialog({
         setSelectedAddons([]);
       }
       if (initialConfig.retainer) {
-        if (initialConfig.retainer === "none") {
+        if (initialConfig.retainer === "care") {
+          setRetainerInterest(`${CARE.title} ($${CARE.monthly}/mo)`);
+        } else {
           setRetainerInterest("None");
-        } else if (initialConfig.retainer === "standard") {
-          setRetainerInterest("GBP Dominance / Standard ($600/mo)");
-        } else if (initialConfig.retainer === "growth") {
-          setRetainerInterest("Geo/SEO Radar / Growth ($1,200/mo)");
         }
       }
     }
@@ -423,9 +419,9 @@ export default function BriefDialog({
                 onChange={(e) => setTimeline(e.target.value)}
                 className="mt-1.5 w-full rounded-xl border border-ink/15 bg-linen px-4 py-2.5 text-sm text-ink focus:border-clay focus:outline-none focus:ring-1 focus:ring-clay"
               >
-                <option value="3–4 Weeks">3–4 Weeks (Expedited)</option>
-                <option value="4–6 Weeks">4–6 Weeks (Standard Craftsman)</option>
-                <option value="6–8 Weeks">6–8 Weeks (Multi-Location Hub)</option>
+                <option value="1 Week">1 Week (Landing Page)</option>
+                <option value="3–4 Weeks">3–4 Weeks (Business Site)</option>
+                <option value="4–6 Weeks">4–6 Weeks (Flagship)</option>
               </select>
             </div>
 

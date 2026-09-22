@@ -1,72 +1,98 @@
 import type { FAQItem } from "@/types";
+import { PRICING_CONSTANTS, LAUNCH_PROMO } from "@/data/calculator";
+
+const entry = PRICING_CONSTANTS.tiers.landing;
+const care = PRICING_CONSTANTS.retainers.care;
+/** Written once here so a price change never leaves the FAQ contradicting the pricing section. */
+const PRICE = `$${entry.price}`;
+const REGULAR = `$${entry.regularPrice}`;
+const CARE = `$${care.monthly}`;
 
 export interface ExtendedFAQItem extends FAQItem {
-  q: string;
-  a: string;
+  /** One-line version used in collapsed and structured-data contexts. */
+  short: string;
 }
 
 export const faqs: ExtendedFAQItem[] = [
   {
     id: "code-ownership",
     category: "ownership",
-    question: "Who owns the website code and domain once we launch?",
-    q: "Who owns the website code and domain once we launch?",
+    question: "Who owns the website and the domain once it's live?",
     answer:
-      "You do. 100%. Day one. The code repository, domain DNS, and hosting accounts are in your name. Unlike traditional agencies that hold websites hostage on proprietary CMS platforms and bill monthly ransom fees to keep your pages online, you receive the full, clean source code and asset bundle. If you ever decide to work with someone else, you can take your code anywhere without penalty.",
-    a: "You do. 100%. Day one. The code repository, domain DNS, and hosting accounts are in your name.",
+      "You do, completely, from day one. The code, the domain, and the hosting account are all in your name. Plenty of companies keep your site on their own system and charge you every month to leave it switched on — cancel and you lose the design, the text, the lot. That isn't how this works. You get the whole thing, and if you ever want someone else to take over, you hand it to them and walk.",
+    short:
+      "You do. Completely, from day one — code, domain and hosting, all in your name.",
+  },
+  {
+    id: "landing-page-offer",
+    category: "pricing",
+    question: `What do I actually get for ${PRICE}?`,
+    answer:
+      "One page, built by hand, live in about a week. Your phone number sits at the top, the bottom, and on a bar that follows people down the page, so calling or texting you is one tap. It loads fast on a phone. It's set up so Google understands who you are and where you work. And it's yours the day it goes live. What it isn't: a multi-page site, a blog, or a logo. If you need those, say so and I'll quote it properly rather than pretend a one-page job covers it.",
+    short:
+      "One hand-built page, live in about a week, with one round of changes — yours on day one.",
+  },
+  {
+    id: "why-so-cheap",
+    category: "pricing",
+    question: `Why is it ${PRICE} when everyone else wants thousands?`,
+    answer:
+      `Because it's a launch offer and it's limited to the first ${LAUNCH_PROMO.seats} businesses, and because one page really is about a day of my time once we've talked. After those ${LAUNCH_PROMO.seats} it goes to ${REGULAR}, which is still less than most shops around here charge for a template. The bigger builds cost more because they take longer — there's no trick to it.`,
+    short:
+      `It's a launch offer for the first ${LAUNCH_PROMO.seats} businesses, and one page is genuinely about a day's work.`,
   },
   {
     id: "copywriting-burden",
     category: "copywriting",
-    question: "Do I have to write all the copy and articles myself?",
-    q: "Do I have to write all the copy and articles myself?",
+    question: "Do I have to write all the words myself?",
     answer:
-      "No. I write every headline and paragraph based on a 45-minute recorded founder interview. Most business owners procrastinate on new websites for months because an agency dumped a blank 20-page Word document on their desk. I extract your stories, customer objections, and technical advantages directly from our interview, authoring sharp, high-converting English and bilingual Spanish trade copy.",
-    a: "No. I write every headline and paragraph based on a 45-minute recorded founder interview.",
+      "No. We talk for about forty-five minutes, I record it, and I write the site from what you actually said. Most people put off getting a website for months because someone handed them a blank twenty-page document and told them to fill it in. That's the step that kills these projects, so I do it.",
+    short:
+      "No. We talk for forty-five minutes and I write the site from what you said.",
+  },
+  {
+    id: "monthly-plan",
+    category: "pricing",
+    question: "Do I have to sign up for anything monthly?",
+    answer:
+      `No. The care plan is there if you want it — ${CARE} a month covers hosting, backups, security updates, and small changes whenever you need them — but the site is yours whether you take it or not. Cancel any month, no notice period, no penalty, and you keep everything. If you'd rather host it yourself and call me when something comes up, that's completely fine.`,
+    short:
+      `No. The ${CARE}/mo care plan is optional, cancel any month, and the site is yours either way.`,
   },
   {
     id: "third-party-integrations",
     category: "integrations",
-    question: "Can we keep our existing POS, booking software, or EHR (Toast, Square, Kareo)?",
-    q: "Can we keep our existing POS, booking software, or EHR (Toast, Square, Kareo)?",
+    question: "Can we keep our existing booking or ordering system?",
     answer:
-      "Yes. We seamlessly embed and integrate with your existing operational software without disruption. Whether your business runs on Toast, Square, Mindbody, Kareo, Epic, Jobber, or Clover, we embed your existing booking workflows or ordering widgets without compromising sub-second page performance or regulatory compliance.",
-    a: "Yes. We seamlessly embed and integrate with your existing operational software without disruption.",
+      "Usually, yes. If your customers already book or order through something that gives you a link or an embed — most of the common ones do — I can put it on the page without slowing the site down. Tell me what you're running when we talk and I'll confirm before you pay me anything, rather than promising first and finding out afterwards.",
+    short:
+      "Usually yes — tell me what you're running and I'll confirm before you pay anything.",
   },
   {
     id: "warranty-and-maintenance",
     category: "timeline",
     question: "What happens if something breaks after launch?",
-    q: "What happens if something breaks after launch?",
     answer:
-      "Every build includes a 90-day comprehensive craftsman warranty with direct phone support. You have my direct mobile phone number ((559) 575-3014) and email. If a browser update causes a display issue or you need an emergency text adjustment, I resolve it directly. For ongoing Google Business Profile growth and neighborhood SEO, we offer optional month-to-month retainers with zero long-term contracts.",
-    a: "Every build includes a 90-day comprehensive craftsman warranty with direct phone support.",
+      "You text me and I fix it. You have my mobile — (559) 575-3014 — not a ticket queue. For the first ninety days after a build, anything that's genuinely broken I fix at no charge. After that, small things I'll still usually just do; if something turns into real work I'll tell you what it costs before I start, not after.",
+    short:
+      "You text me and I fix it. Ninety days of repairs after launch at no charge.",
   },
   {
     id: "delivery-timeline",
     category: "timeline",
-    question: "How long does a typical build take from deposit to launch?",
-    q: "How long does a typical build take from deposit to launch?",
+    question: "How long does it take?",
     answer:
-      "Standard delivery in 4 to 6 weeks. No endless committee review cycles. Because you work directly with me rather than an account manager relaying notes to junior interns, design revisions and code iterations happen within hours, not weeks.",
-    a: "Standard delivery in 4 to 6 weeks. No endless committee review cycles.",
+      "About a week for the one-page build, three to four weeks for a multi-page site, longer if there's booking or compliance work in it. You're dealing with me directly rather than passing notes through an account manager, so changes happen the same day instead of next sprint.",
+    short:
+      "About a week for one page, three to four weeks for a multi-page site.",
   },
   {
-    id: "hipaa-and-medical-compliance",
+    id: "medical-privacy",
     category: "integrations",
-    question: "How do you handle medical HIPAA liability on healthcare websites?",
-    q: "How do you handle medical HIPAA liability on healthcare websites?",
+    question: "We're a medical practice. How do you handle patient privacy?",
     answer:
-      "We implement a zero-HIPAA-liability architecture. Rather than collecting sensitive Protected Health Information (PHI) through unencrypted, non-compliant web forms that expose clinics to $50,000+ OCR penalties, we architect dedicated clinical referral fax channels and direct click-to-call patient triage. The site stores zero patient data on web servers.",
-    a: "We implement a zero-HIPAA-liability architecture with direct fax/call clinical channels and zero PHI stored on web servers.",
-  },
-  {
-    id: "bilingual-spanish-copy",
-    category: "copywriting",
-    question: "Why do you emphasize bilingual English/Spanish copy for Central Valley businesses?",
-    q: "Why do you emphasize bilingual English/Spanish copy for Central Valley businesses?",
-    answer:
-      "Over 53% of Fresno and Madera County residents identify as Hispanic or Latino. In residential construction, roofing, hauling, landscaping, and agriculture, Spanish is the everyday operational language. We write authentic Central Valley trade Spanish rather than awkward Google Translate, opening high-converting SMS direct booking channels.",
-    a: "Over 53% of Fresno County is Hispanic. Authentic trade Spanish unlocks a massive underserved contractor and residential market.",
+      "By not collecting patient information on the website at all. Web forms that gather health details create a compliance problem most small practices don't want and don't need — HIPAA penalties run into tens of thousands of dollars. Instead the site routes people to a phone call or a referral fax, which are channels your practice already handles correctly. Nothing sensitive is stored on the web server, because nothing sensitive is collected there.",
+    short:
+      "By not collecting patient information on the site at all — calls and referral fax instead.",
   },
 ];

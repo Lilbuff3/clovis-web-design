@@ -18,8 +18,13 @@ import {
   loadFaqs,
   loadCssTokens,
   SPEC_PRICING,
+  loadCalculator,
   calculateQuote,
   formatMailtoUri,
+  formatSmsUri,
+  SCOPE_TIERS,
+  RETAINER_TIERS,
+  LAUNCH_PROMO,
   parseMailtoUri,
   generateProjectBriefText,
   loadFixture,
@@ -79,16 +84,12 @@ registerTest('T1.04', 'F1 - Craftsman contact email points to adam@cloviswebdesi
   assertMatch(calcSource, /adam@cloviswebdesign\.com/, 'Calculator must default to adam@cloviswebdesign.com');
 });
 
-registerTest('T1.05', 'F1 - Authentic honest timeline and pricing transparency copy verified', 1, () => {
+registerTest('T1.05', 'F1 - Honest timeline and ownership copy verified', 1, () => {
   const processSource = readProjectFile('src/data/process.ts');
   const faqSource = readProjectFile('src/data/faq.ts');
-  assertMatch(processSource, /4[–-]6\s*weeks/i, 'Process must guarantee 4-6 weeks');
-  assertMatch(faqSource, /100%\.?\s*Day one/i, 'FAQ must guarantee 100% Day one ownership');
+  assertMatch(processSource, /week/i, 'Process must state a timeline');
+  assertMatch(faqSource, /day one/i, 'FAQ must promise day-one ownership');
 });
-
-// =========================================================================
-// FEATURE 2: Project Scaffold & Build Setup
-// =========================================================================
 
 registerTest('T1.06', 'F2 - Core stack dependencies include React 19 and TypeScript', 2, () => {
   const pkg = JSON.parse(readProjectFile('package.json'));
@@ -175,9 +176,12 @@ registerTest('T1.16', 'F4 - Hero displays headline and core subheadline', 4, () 
   assertMatch(heroCode, /Central Valley businesses/i);
 });
 
-registerTest('T1.17', 'F4 - Live availability indicator displays 2026 booking badge', 4, () => {
+registerTest('T1.17', 'F4 - Hero leads with the bounded launch offer', 4, () => {
   const heroCode = readProjectFile('src/components/Hero.tsx');
-  assertMatch(heroCode, /Booking two flagships for 2026/i);
+  assertMatch(heroCode, /Launch offer/i);
+  assertMatch(heroCode, /LAUNCH_PROMO\.blurb/, 'Badge must read from the single promo source');
+  const calc = readProjectFile('src/data/calculator.ts');
+  assertMatch(calc, /seats:\s*[1-9]/, 'Promo must be limited to a seat count');
 });
 
 registerTest('T1.18', 'F4 - Hero attributes craftsman identity to Adam Youssef', 4, () => {
@@ -194,15 +198,12 @@ registerTest('T1.19', 'F4 - Hero primary CTAs link to Scope Calculator and Case 
 
 registerTest('T1.20', 'F4 - Hero displays core proof metric tags (Lighthouse 100, Day-One Ownership)', 4, () => {
   const heroCode = readProjectFile('src/components/Hero.tsx');
-  assertMatch(heroCode, /100\/100/);
+  assertMatch(heroCode, /useCountUp\(100/, 'Performance score must count up to 100');
   assertMatch(heroCode, /Core Web Vitals/);
   assertMatch(heroCode, /100%/);
   assertMatch(heroCode, /Asset Ownership/);
+  assertMatch(heroCode, /1 Week/, 'Hero must state the entry build timeline');
 });
-
-// =========================================================================
-// FEATURE 5: The Ledger Comparison Table
-// =========================================================================
 
 registerTest('T1.21', 'F5 - The Ledger presents two contrasting delivery models', 5, () => {
   const ledgerCode = readProjectFile('src/components/TheLedger.tsx');
@@ -210,22 +211,25 @@ registerTest('T1.21', 'F5 - The Ledger presents two contrasting delivery models'
   assertMatch(ledgerCode, /Adam Youssef/i);
 });
 
-registerTest('T1.22', 'F5 - Ledger contrasts bloated agency teams with direct solo delivery', 5, () => {
+registerTest('T1.22', 'F5 - Ledger contrasts a queue with direct access to the builder', 5, () => {
   const ledgerCode = readProjectFile('src/components/TheLedger.tsx');
-  assertMatch(ledgerCode, /14-person/i);
-  assertMatch(ledgerCode, /Adam Youssef/i);
+  assertMatch(ledgerCode, /Adam Youssef|picks up|answers/i);
+  assertMatch(ledgerCode, /559\)?[ -]?575[ -]?3014/);
+  assertMatch(ledgerCode, /queue|wait|handed/i);
 });
 
-registerTest('T1.23', 'F5 - Ledger contrasts proprietary CMS lock-in with 100% asset ownership', 5, () => {
+registerTest('T1.23', 'F5 - Ledger contrasts lock-in with day-one ownership', 5, () => {
   const ledgerCode = readProjectFile('src/components/TheLedger.tsx');
-  assertMatch(ledgerCode, /hostage|proprietary CMS/i);
-  assertMatch(ledgerCode, /100% code.*ownership/i);
+  assertMatch(ledgerCode, /stop paying|their system|goes dark/i);
+  assertMatch(ledgerCode, /in your name/i);
+  assertMatch(ledgerCode, /day one/i);
 });
 
-registerTest('T1.24', 'F5 - Ledger contrasts transparent $9.5k-$22k pricing with $80k-$180k bloat', 5, () => {
+registerTest('T1.24', 'F5 - Ledger argues without quoting a single figure', 5, () => {
   const ledgerCode = readProjectFile('src/components/TheLedger.tsx');
-  assertMatch(ledgerCode, /\$80,000|\$180,000/);
-  assertMatch(ledgerCode, /\$9,500|\$22,000/);
+  assertNotMatch(ledgerCode, /\$[0-9]/, 'The money angle was deliberately cut');
+  const rows = ledgerCode.match(/category:/g) || [];
+  assertGreaterThanOrEqual(rows.length, 5, 'Ledger must still make its full case');
 });
 
 registerTest('T1.25', 'F5 - Ledger comparison container supports interactive pointer glow', 5, () => {
@@ -364,33 +368,38 @@ registerTest('T1.40', 'F8 - Stage 4 provides Launch and 90-Day tuning deliverabl
 // FEATURE 9: Objection-Crushing FAQ
 // =========================================================================
 
-registerTest('T1.41', 'F9 - FAQ disarms Code and Domain Ownership objections', 9, () => {
+registerTest('T1.41', 'F9 - FAQ disarms code and domain ownership objections', 9, () => {
   const faqs = loadFaqs();
   const item = faqs.find((f) => f.id === 'code-ownership' || /who owns/i.test(f.question));
   assert(Boolean(item), 'Code ownership FAQ must exist');
-  assertMatch(item.answer, /100%/);
-  assertMatch(item.answer, /Day one/i);
+  assertMatch(item.answer, /completely|entirely|all of it/i);
+  assertMatch(item.answer, /day one/i);
+  assertMatch(item.answer, /in your name/i);
 });
 
-registerTest('T1.42', 'F9 - FAQ disarms Client Copywriting Burden objections', 9, () => {
+registerTest('T1.42', 'F9 - FAQ disarms the copywriting burden objection', 9, () => {
   const faqs = loadFaqs();
-  const item = faqs.find((f) => f.id === 'copywriting-burden' || /write all the copy/i.test(f.question));
+  const item = faqs.find((f) => f.id === 'copywriting-burden' || /write all the words/i.test(f.question));
   assert(Boolean(item), 'Copywriting burden FAQ must exist');
-  assertMatch(item.answer, /45-minute recorded founder interview/i);
+  assertMatch(item.answer, /forty-five minutes|45 minutes/i);
+  assertMatch(item.answer, /I write/i, 'Must be first person singular');
 });
 
-registerTest('T1.43', 'F9 - FAQ disarms Third-Party Software / POS / EHR Integration objections', 9, () => {
+registerTest('T1.43', 'F9 - Integrations answer promises a check, not unverified platforms', 9, () => {
   const faqs = loadFaqs();
-  const item = faqs.find((f) => f.id === 'third-party-integrations' || /POS.*EHR/i.test(f.question));
+  const item = faqs.find((f) => f.id === 'third-party-integrations');
   assert(Boolean(item), 'Integrations FAQ must exist');
-  assertMatch(item.answer, /Toast|Square|Kareo|Epic/i);
+  assertMatch(item.answer, /confirm/i, 'Must promise to confirm before taking money');
+  assertNotMatch(item.answer, /Kareo|Epic|Mindbody|Clover/i,
+    'Must not name platforms whose support has not been verified');
 });
 
-registerTest('T1.44', 'F9 - FAQ disarms Technical Jargon and Post-Launch Maintenance objections', 9, () => {
+registerTest('T1.44', 'F9 - FAQ answers what happens when something breaks', 9, () => {
   const faqs = loadFaqs();
   const item = faqs.find((f) => f.id === 'warranty-and-maintenance' || /breaks after launch/i.test(f.question));
   assert(Boolean(item), 'Maintenance FAQ must exist');
-  assertMatch(item.answer, /90-day/i);
+  assertMatch(item.answer, /ninety days|90 days|90-day/i);
+  assertMatch(item.answer, /text me/i, 'Contact route must be call or text');
 });
 
 registerTest('T1.45', 'F9 - FAQ items support expandable accordion interaction state', 9, () => {
@@ -475,13 +484,14 @@ registerTest('T1.53', 'F11 - Authentic Central Valley trade Spanish copy verifie
   assertMatch(cs2.tradeSpanish?.appliances || '', /colchones/i);
 });
 
-registerTest('T1.54', 'F11 - Driveway Protection Protocol and flat rate pricing ($399/$499) documented', 11, () => {
+registerTest('T1.54', 'F11 - Driveway protection and flat-rate offering documented without client prices', 11, () => {
   const studies = loadCaseStudies();
   const cs2 = studies.find((s) => s.id === 'big-bros-dumpster');
-  assertEqual(cs2.fleetPricing?.fourteenYard, 399);
-  assertEqual(cs2.fleetPricing?.twentyYard, 499);
-  assertEqual(cs2.fleetPricing?.mattressSurcharge, 0);
-  assertEqual(cs2.fleetPricing?.drivewayPlanksIncluded, true);
+  assertEqual(cs2.fleetPricing, undefined);
+  const blob = JSON.stringify(cs2);
+  assertMatch(blob, /driveway/i);
+  assertMatch(blob, /flat-rate/i);
+  assertEqual(/\$[0-9]/.test(blob), false);
 });
 
 registerTest('T1.55', 'F11 - Schema fixture contains (559) 495-8034 and Clovis/Fresno ZIPs', 11, () => {
@@ -537,46 +547,40 @@ registerTest('T1.60', 'F12 - Close button closes drawer and resets active state'
 // FEATURE 13: Interactive Scope & Quote Calculator
 // =========================================================================
 
-registerTest('T1.61', 'F13 - Default scope tier calculates correct base pricing', 13, () => {
-  const quote = calculateQuote('flagship', 'none', []);
-  assertEqual(quote.setupTotal, 22000, 'Flagship tier default must be $22,000');
-  assertEqual(quote.monthlyTotal, 0, 'No retainer default must be $0/mo');
+registerTest('T1.61', 'F13 - Entry tier publishes the launch promo price', 13, () => {
+  const quote = calculateQuote('landing', 'none');
+  assertEqual(quote.setupTotal, 500, 'Landing Page launch price must be $500');
+  assertEqual(quote.monthlyTotal, 0, 'No care plan must be $0/mo');
 });
 
-registerTest('T1.62', 'F13 - Scope tier selection dynamically updates setup total', 13, () => {
-  const storefront = calculateQuote('storefront', 'none', []);
-  assertEqual(storefront.setupTotal, 9500, 'Storefront must be $9,500');
-  const flagship = calculateQuote('flagship', 'none', []);
-  assertEqual(flagship.setupTotal, 22000, 'Flagship must be $22,000');
-  const multiLocation = calculateQuote('multi-location', 'none', []);
-  assertEqual(multiLocation.setupTotal, 45000, 'Multi-Location must be $45,000');
+registerTest('T1.62', 'F13 - Only the entry tier publishes a number; the rest are quoted', 13, () => {
+  assertEqual(calculateQuote('landing', 'none').setupTotal, 500);
+  assertEqual(calculateQuote('business', 'none').setupTotal, null);
+  assertEqual(calculateQuote('flagship', 'none').setupTotal, null);
 });
 
-registerTest('T1.63', 'F13 - Monthly retainer toggle updates recurring monthly total', 13, () => {
-  const standardRetainer = calculateQuote('flagship', 'standard', []);
-  assertEqual(standardRetainer.monthlyTotal, 600, 'Standard retainer must be $600/mo');
-  const growthRetainer = calculateQuote('flagship', 'growth', []);
-  assertEqual(growthRetainer.monthlyTotal, 1200, 'Growth retainer must be $1,200/mo');
+registerTest('T1.63', 'F13 - Care plan is the single optional monthly', 13, () => {
+  assertEqual(calculateQuote('landing', 'care').monthlyTotal, 99, 'Care plan must be $99/mo');
+  assertEqual(calculateQuote('landing', 'none').monthlyTotal, 0, 'Opting out must be $0/mo');
+  assertEqual(RETAINER_TIERS.length, 2, 'Exactly one paid plan plus the opt-out');
 });
 
-registerTest('T1.64', 'F13 - Optional add-ons (Bilingual, Compliance) add exact amounts to setup total', 13, () => {
-  const withBilingual = calculateQuote('flagship', 'none', ['bilingual']);
-  assertEqual(withBilingual.setupTotal, 24500, 'Flagship + Bilingual must be $24,500');
-  const withBoth = calculateQuote('flagship', 'none', ['bilingual', 'compliance']);
-  assertEqual(withBoth.setupTotal, 27500, 'Flagship + Bilingual + Compliance must be $27,500');
+registerTest('T1.64', 'F13 - Launch promo is bounded and anchored against a regular price', 13, () => {
+  const landing = SCOPE_TIERS.find((t) => t.id === 'landing');
+  assertEqual(landing.price, 500);
+  assertEqual(landing.regularPrice, 750, 'Promo must anchor against the regular price');
+  assert(landing.regularPrice > landing.price, 'Promo must actually be a discount');
+  assert(LAUNCH_PROMO.seats > 0, 'Promo must be limited, otherwise it is just the price');
+  assert(Array.isArray(landing.excludes) && landing.excludes.length > 0,
+    'Cheap tier must state what it leaves out');
 });
 
-registerTest('T1.65', 'F13 - Pre-formatted mailto quote URI encodes selection correctly', 13, () => {
-  const quote = calculateQuote('flagship', 'standard', ['bilingual']);
-  const mailtoUri = formatMailtoUri({
-    to: 'adam@cloviswebdesign.com',
-    subject: `Project Scope Estimate: Flagship ($${quote.setupTotal.toLocaleString('en-US')})`,
-    body: `Scope: Flagship\nRetainer: Standard ($600/mo)\nSetup: $${quote.setupTotal.toLocaleString('en-US')}`,
-  });
-  const parsed = parseMailtoUri(mailtoUri);
-  assertEqual(parsed.to, 'adam@cloviswebdesign.com');
-  assertMatch(parsed.subject, /Flagship/);
-  assertMatch(parsed.body, /\$24,500/);
+registerTest('T1.65', 'F13 - Text-message CTA prefills a short, encoded message', 13, () => {
+  const uri = formatSmsUri('Landing Page');
+  assertMatch(uri, /^sms:\+15595753014\?body=/, 'Must be an E.164 sms: deep link');
+  const body = decodeURIComponent(uri.split('body=')[1]);
+  assertMatch(body, /Landing Page/);
+  assert(body.length <= 160, `Prefilled SMS body must fit one segment, got ${body.length}`);
 });
 
 // =========================================================================
@@ -692,9 +696,13 @@ registerTest('T1.76', 'F15 - Clovis Web Design real phone (559) 575-3014 verifie
 registerTest('T1.77', 'F15 - Sticky mobile call action bar mounted with direct call and SMS dispatch', 15, () => {
   const stickyCode = readProjectFile('src/components/StickyMobileCall.tsx');
   assertMatch(stickyCode, /tel:5595753014/, 'Sticky call must link to tel:5595753014');
-  assertMatch(stickyCode, /sms:15595753014/, 'Sticky bar must support direct SMS');
+  assertMatch(stickyCode, /formatSmsUri\(\)/, 'Sticky bar must build its SMS link from the shared helper');
   assertMatch(stickyCode, /fixed.*bottom-0.*md:hidden/, 'Sticky bar must be fixed at bottom on mobile');
   assertMatch(stickyCode, /min-w-0/, 'Sticky bar call button must support min-w-0 for flex truncation');
+
+  const calc = loadCalculator();
+  assertMatch(calc.formatSmsUri(), /^sms:\+15595753014\?body=/,
+    'Shared helper must emit an E.164 sms: link');
 
   const appCode = readProjectFile('src/App.tsx');
   assertMatch(appCode, /<StickyMobileCall/, 'App.tsx must mount StickyMobileCall');

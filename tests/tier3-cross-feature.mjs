@@ -6,6 +6,7 @@ import {
   assert,
   assertEqual,
   assertMatch,
+  assertNotMatch,
   assertGreaterThanOrEqual,
   assertLessThanOrEqual,
   assertContrast,
@@ -19,6 +20,7 @@ import {
   loadCalculator,
   calculateQuote,
   formatMailtoUri,
+  formatSmsUri,
   parseMailtoUri,
   generateProjectBriefText,
   loadFixture,
@@ -34,8 +36,8 @@ function registerTest(id, name, fn) {
 // 1. Calculator State -> Project Brief Dialog Integration
 // -------------------------------------------------------------------------
 
-registerTest('T3.01', 'Calculator Storefront selection syncs into Project Brief draft', () => {
-  const calcState = calculateQuote('storefront', 'none', []);
+registerTest('T3.01', 'Entry tier selection syncs into Project Brief draft', () => {
+  const calcState = calculateQuote('landing', 'none');
   const briefDraft = {
     name: 'Sarah Jenkins',
     business: 'Old Town Antiques',
@@ -43,80 +45,55 @@ registerTest('T3.01', 'Calculator Storefront selection syncs into Project Brief 
     retainerInterest: calcState.retainerTitle,
   };
   const briefText = generateProjectBriefText(briefDraft);
-  assertMatch(briefText, /Selected Tier:\s*Storefront \(\$9,500\)/);
-  assertMatch(briefText, /Monthly Retainer:\s*None/);
+  assertMatch(briefText, /Selected Tier:\s*Landing Page \(\$500\)/);
+  assertMatch(briefText, /Monthly Retainer:\s*No plan/);
 });
 
-registerTest('T3.02', 'Calculator Flagship + Growth Retainer syncs into Project Brief draft', () => {
-  const calcState = calculateQuote('flagship', 'growth', ['bilingual']);
+registerTest('T3.02', 'Quoted tier plus care plan syncs into Project Brief draft', () => {
+  const calcState = calculateQuote('flagship', 'care');
   const briefDraft = {
     name: 'Dr. Robert Vance',
     business: 'Vance Orthopedics',
-    selectedTier: `${calcState.tierTitle} ($${calcState.setupTotal.toLocaleString()})`,
-    retainerInterest: `${calcState.retainerTitle} ($${calcState.monthlyTotal.toLocaleString()}/mo)`,
+    selectedTier: `${calcState.tierTitle} (quote)`,
+    retainerInterest: `${calcState.retainerTitle} ($${calcState.monthlyTotal}/mo)`,
   };
   const briefText = generateProjectBriefText(briefDraft);
-  assertMatch(briefText, /Selected Tier:\s*Flagship \(\$24,500\)/);
-  assertMatch(briefText, /Monthly Retainer:\s*Geo\/SEO Radar \/ Growth \(\$1,200\/mo\)/);
+  assertMatch(briefText, /Selected Tier:\s*Flagship \(quote\)/);
+  assertMatch(briefText, /Monthly Retainer:\s*Care Plan \(\$99\/mo\)/);
 });
 
-registerTest('T3.03', 'Calculator Multi-Location + Full Add-ons syncs into Project Brief draft', () => {
-  const calcState = calculateQuote('multi-location', 'standard', ['bilingual', 'compliance']);
-  const briefDraft = {
+registerTest('T3.03', 'Brief never fabricates a price for a quoted tier', () => {
+  const calcState = calculateQuote('business', 'none');
+  assertEqual(calcState.setupTotal, null);
+  const briefText = generateProjectBriefText({
     name: 'Elena Rostova',
     business: 'Valley Multi-Care Group',
-    selectedTier: `${calcState.tierTitle} ($${calcState.setupTotal.toLocaleString()})`,
-    retainerInterest: `${calcState.retainerTitle} ($${calcState.monthlyTotal.toLocaleString()}/mo)`,
-  };
-  const briefText = generateProjectBriefText(briefDraft);
-  assertMatch(briefText, /Selected Tier:\s*Multi-Location \(\$50,500\)/);
-  assertMatch(briefText, /Monthly Retainer:\s*GBP Dominance \/ Standard \(\$600\/mo\)/);
+    selectedTier: `${calcState.tierTitle} (quote)`,
+    retainerInterest: calcState.retainerTitle,
+  });
+  assertNotMatch(briefText, /Selected Tier:.*\$[0-9]/);
 });
 
-// -------------------------------------------------------------------------
-// 2. Calculator State -> Mailto URI Generation
-// -------------------------------------------------------------------------
+registerTest('T3.04', 'Entry tier text CTA carries the tier name', () => {
+  const uri = formatSmsUri('Landing Page');
+  const body = decodeURIComponent(uri.split('body=')[1]);
+  assertMatch(body, /Landing Page/);
+  assertMatch(uri, /^sms:\+15595753014/);
+});
 
-registerTest('T3.04', 'Calculator Storefront mailto URI matches calculated totals', () => {
-  const calc = calculateQuote('storefront', 'none', []);
-  const uri = formatMailtoUri({
-    to: 'adam@cloviswebdesign.com',
-    subject: `Project Scope Estimate: ${calc.tierTitle} ($${calc.setupTotal.toLocaleString()})`,
-    body: `Tier: ${calc.tierTitle}\nSetup: $${calc.setupTotal}\nMonthly: $${calc.monthlyTotal}`,
-  });
+registerTest('T3.05', 'Text CTA without a tier still produces a usable message', () => {
+  const uri = formatSmsUri();
+  const body = decodeURIComponent(uri.split('body=')[1]);
+  assertMatch(body, /website/i);
+  assert(body.length <= 160, 'Default SMS body must fit one segment');
+});
+
+registerTest('T3.06', 'Mailto fallback still targets the business address', () => {
+  const uri = formatMailtoUri({ subject: 'Landing Page', body: 'Details to follow.' });
   const parsed = parseMailtoUri(uri);
   assertEqual(parsed.to, 'adam@cloviswebdesign.com');
-  assertMatch(parsed.subject, /\$9,500/);
-  assertMatch(parsed.body, /Monthly: \$0/);
+  assertMatch(parsed.subject, /Landing Page/);
 });
-
-registerTest('T3.05', 'Calculator Flagship mailto URI includes retainer and add-on breakdown', () => {
-  const calc = calculateQuote('flagship', 'standard', ['bilingual']);
-  const uri = formatMailtoUri({
-    to: 'adam@cloviswebdesign.com',
-    subject: `Project Scope Estimate: ${calc.tierTitle} ($${calc.setupTotal.toLocaleString()})`,
-    body: `Tier: ${calc.tierTitle}\nAdd-ons: Bilingual EN/ES\nRetainer: $${calc.monthlyTotal}/mo\nTotal Setup: $${calc.setupTotal.toLocaleString('en-US')}`,
-  });
-  const parsed = parseMailtoUri(uri);
-  assertMatch(parsed.body, /Bilingual EN\/ES/);
-  assertMatch(parsed.body, /Total Setup: \$24,500/);
-});
-
-registerTest('T3.06', 'Calculator Multi-Location mailto URI handles maximum price boundaries', () => {
-  const calc = calculateQuote('multi-location', 'growth', ['bilingual', 'compliance']);
-  const uri = formatMailtoUri({
-    to: 'adam@cloviswebdesign.com',
-    subject: `Project Scope Estimate: ${calc.tierTitle} ($${calc.setupTotal.toLocaleString()})`,
-    body: `Tier: ${calc.tierTitle}\nTotal Setup: $${calc.setupTotal.toLocaleString('en-US')}\nMonthly Retainer: $${calc.monthlyTotal.toLocaleString('en-US')}`,
-  });
-  const parsed = parseMailtoUri(uri);
-  assertMatch(parsed.body, /\$50,500/);
-  assertMatch(parsed.body, /\$1,200/);
-});
-
-// -------------------------------------------------------------------------
-// 3. Case Study 1 (Kidney Specialist) Schema vs Rendered Facts
-// -------------------------------------------------------------------------
 
 registerTest('T3.07', 'Kidney Specialist schema organization NPI matches rendered case study text', () => {
   const schemas = loadSchemas();
@@ -172,12 +149,12 @@ registerTest('T3.11', 'Big Bros schema telephone matches direct dispatch SMS/pho
   assertMatch(caseStudiesSource, /495-8034/, 'Direct hotline must be referenced in case study data');
 });
 
-registerTest('T3.12', 'Big Bros schema flat-rate pricing range ($399 - $499) matches fleet offers', () => {
+registerTest('T3.12', 'Big Bros schema publishes no client prices or offers', () => {
   const schemas = loadSchemas();
   const service = schemas.bigBrosSchema['@graph'].find((n) => n['@type'] === 'Service');
-  const offers = service.offers.map((o) => o.price);
-  assert(offers.includes('399.00'));
-  assert(offers.includes('499.00'));
+  assertEqual(service.offers, undefined);
+  const biz = schemas.bigBrosSchema['@graph'].find((n) => n['@type'] === 'LocalBusiness');
+  assertEqual(biz.priceRange, undefined);
 });
 
 registerTest('T3.13', 'Big Bros schema areaServed includes Clovis and Fresno municipal coverage', () => {
@@ -234,16 +211,14 @@ registerTest('T3.19', 'The Receipt 100/100 CWV synchronizes with Big Bros 100 sc
   assertEqual(cwvMetric.value, 100);
 });
 
-registerTest('T3.20', 'The Receipt throttled mobile Android audit supports sub-second LCP claims', () => {
+registerTest('T3.20', 'Performance proof lives in The Receipt, not in sales copy', () => {
   const receiptSource = readProjectFile('src/components/TheReceipt.tsx');
   const servicesSource = readProjectFile('src/data/services.ts');
-  assertMatch(receiptSource, /throttled 4G Android/i);
-  assertMatch(servicesSource, /<600ms|sub-second/i);
+  assertMatch(receiptSource, /throttled 4G Android/i, 'The audit section keeps the measured detail');
+  assertNotMatch(servicesSource, /<600ms|first contentful paint|Core Web Vitals/i,
+    'Service copy must describe the outcome, not the metric');
+  assertMatch(servicesSource, /fast on a phone|comes up fast|loads/i);
 });
-
-// -------------------------------------------------------------------------
-// 7. FAQ Accordion vs Scroll Progress Indicator
-// -------------------------------------------------------------------------
 
 registerTest('T3.21', 'Expanding multiple FAQ items recalculates scroll height smoothly', () => {
   const faqSource = readProjectFile('src/components/FAQ.tsx');
@@ -302,23 +277,21 @@ registerTest('T3.26', 'Modal and Drawer scrim opacity provides distinct layer se
 // 9. The Ledger Pricing vs Calculator Tiers Alignment
 // -------------------------------------------------------------------------
 
-registerTest('T3.27', 'The Ledger advertised $9.5k flat price anchors Storefront tier exactly', () => {
+registerTest('T3.27', 'The Ledger argues ownership and access, not money', () => {
   const ledgerSource = readProjectFile('src/components/TheLedger.tsx');
-  const calc = loadCalculator();
-  assertMatch(ledgerSource, /\$9,500/);
-  assertEqual(calc.PRICING_CONSTANTS.tiers.storefront.price, 9500);
+  assertNotMatch(ledgerSource, /\$[0-9]/, 'The Ledger must carry no dollar figures');
+  assertMatch(ledgerSource, /own|ownership|in your name/i);
 });
 
-registerTest('T3.28', 'The Ledger advertised $22k flagship price anchors Flagship tier exactly', () => {
-  const ledgerSource = readProjectFile('src/components/TheLedger.tsx');
+registerTest('T3.28', 'The pricing section is the only place a price is published', () => {
   const calc = loadCalculator();
-  assertMatch(ledgerSource, /\$22,000/);
-  assertEqual(calc.PRICING_CONSTANTS.tiers.flagship.price, 22000);
+  assertEqual(calc.PRICING_CONSTANTS.tiers.landing.price, 500);
+  assertEqual(calc.PRICING_CONSTANTS.tiers.business.price, null);
+  assertEqual(calc.PRICING_CONSTANTS.tiers.flagship.price, null);
+  for (const f of ['src/components/Hero.tsx', 'src/components/TheReceipt.tsx', 'src/components/TheRecipe.tsx']) {
+    assertNotMatch(readProjectFile(f), /\$[0-9]/, `${f} must not hardcode a price`);
+  }
 });
-
-// -------------------------------------------------------------------------
-// 10. Navigation Link Resolution & Anchor Consistency
-// -------------------------------------------------------------------------
 
 registerTest('T3.29', 'All navigation items correspond to valid main landmark section IDs', () => {
   const navSource = readProjectFile('src/components/Nav.tsx');

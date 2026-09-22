@@ -14,12 +14,6 @@ export interface ExtendedCaseStudy extends CaseStudy {
     driveway: string;
     appliances: string;
   };
-  fleetPricing?: {
-    fourteenYard: number;
-    twentyYard: number;
-    mattressSurcharge: number;
-    drivewayPlanksIncluded: boolean;
-  };
 }
 
 export const caseStudies: ExtendedCaseStudy[] = [
@@ -152,12 +146,6 @@ export const caseStudies: ExtendedCaseStudy[] = [
         "Protección garantizada de su driveway o pavimento (usamos tablones de madera)",
       appliances: "Sin recargos por colchones o electrodomésticos",
     },
-    fleetPricing: {
-      fourteenYard: 399,
-      twentyYard: 499,
-      mattressSurcharge: 0,
-      drivewayPlanksIncluded: true,
-    },
     metrics: [
       {
         value: 3.4,
@@ -183,8 +171,8 @@ export const caseStudies: ExtendedCaseStudy[] = [
     ],
     challenge: {
       headline:
-        "National middleman brokers were pocketing $200+ per order while local trucks did the work.",
-      body: "National aggregators with multi-million dollar ad budgets dominated local search with misleading $299 teaser rates that ballooned to $550 with hidden delivery fees, fuel surcharges, and mattress fines. Big Bros was doing the heavy hauling while brokers skimmed the margin. Their previous site lacked localized neighborhood pages, offered zero Spanish support for the Valley's contractor demographic, and looked like an aggressive 2008 industrial template.",
+        "National middleman brokers were pocketing a cut of every order while local trucks did the work.",
+      body: "National aggregators with multi-million dollar ad budgets dominated local search with misleading teaser rates that ballooned with hidden delivery fees, fuel surcharges, and mattress fines. Big Bros was doing the heavy hauling while brokers skimmed the margin. Their previous site lacked localized neighborhood pages, offered zero Spanish support for the Valley's contractor demographic, and looked like an aggressive 2008 industrial template.",
       pains: [
         "Losing high-margin Clovis residential remodel jobs to national internet brokers",
         "Zero organic visibility in affluent enclaves (Old Fig Garden, Woodward Park, Harlan Ranch)",
@@ -215,7 +203,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
         {
           title: "Zero-Broker Flat Rate Calculator",
           detail:
-            "Transparent $399 (14yd) and $499 (20yd) pricing with free mattress and appliance disposal explicitly highlighted against corporate broker surcharges.",
+            "Transparent flat-rate 14yd and 20yd pricing with free mattress and appliance disposal explicitly highlighted against corporate broker surcharges.",
         },
       ],
     },
@@ -224,7 +212,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
       "Bilingual EN/ES contractor interface with instant 2-tap SMS dispatch",
       "'Calm Concierge' visual brand system with Driveway Protection badges",
       "Full LocalBusiness, Service, and AreaServed Schema.org JSON-LD graphs",
-      "Interactive 14-yard ($399) and 20-yard ($499) flat-rate quote visualizer",
+      "Interactive 14-yard and 20-yard flat-rate quote visualizer",
     ],
     quote: {
       text: "Before Adam rebuilt our site, national brokers were taking a huge chunk of every rental. Now, contractors and homeowners in Clovis text us directly. Our trucks are booked two weeks out.",

@@ -58,18 +58,21 @@ export default function App() {
       {/* Floating Pill Navigation */}
       <Nav onOpenBrief={() => handleOpenBrief()} />
 
-      <main id="main-content" data-landmarks="hero, case-studies, ledger, services, receipt, recipe, faq, calculator">
+      <main id="main-content" data-landmarks="hero, case-studies, calculator, services, ledger, receipt, recipe, faq">
         {/* Hero & Identity Section */}
         <Hero onOpenBrief={() => handleOpenBrief()} />
 
-        {/* Selected Flagships / Authentic Case Studies Section */}
+        {/* Proof first: two real builds */}
         <CaseStudies onOpenCaseStudy={handleOpenCaseStudy} />
 
-        {/* The Anti-Agency Ledger Comparison Section */}
-        <TheLedger />
+        {/* Then the price, while they still have the proof in mind */}
+        <BookingCalculator onOpenBrief={handleOpenBrief} />
 
         {/* Three Core Services Section */}
         <Services />
+
+        {/* The Anti-Agency Ledger Comparison Section */}
+        <TheLedger />
 
         {/* The Receipt (100/100 Core Web Vitals) Section */}
         <TheReceipt />
@@ -79,9 +82,6 @@ export default function App() {
 
         {/* Objection-Crushing FAQ Section */}
         <FAQ />
-
-        {/* Interactive Scope & Quote Calculator Section */}
-        <BookingCalculator onOpenBrief={handleOpenBrief} />
       </main>
 
       {/* Studio Footer with bottom padding on mobile for sticky bar */}
