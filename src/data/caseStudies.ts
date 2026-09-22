@@ -67,12 +67,22 @@ export const caseStudies: ExtendedCaseStudy[] = [
         {
           title: "Guides patients actually use",
           detail:
-            "Plain-language guides on eGFR below 60, potassium food swaps, HbA1c conversion and kidney-friendly vegetables.",
+            "Plain-language guides on eGFR below 60, potassium food swaps, HbA1c conversion and kidney-friendly vegetables, plus pages for the symptoms that bring people in — swelling, protein in the urine, blood pressure that won't come down.",
+        },
+        {
+          title: "Every page in English and Spanish",
+          detail:
+            "A full Spanish site at /es/, each page linked to its English twin so Google shows the right language to the right patient.",
+        },
+        {
+          title: "A first visit with no surprises",
+          detail:
+            "A what-to-bring checklist and an insurance plan search, so patients know before they call whether their plan is accepted.",
         },
         {
           title: "Built to the rules a medical practice answers to",
           detail:
-            "Designed to 2026 HIPAA and HITECH requirements, WCAG 2.1 AA accessibility, and California's patient-privacy law (CMIA).",
+            "Designed to 2026 HIPAA and HITECH requirements, WCAG 2.1 AA accessibility, and California's patient-privacy law (CMIA), with a published Notice of Privacy Practices and accessibility statement in both languages.",
         },
         {
           title: "Readable for older patients",
@@ -90,6 +100,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
       "Hand-coded site, 100 on PageSpeed mobile and desktop",
       "Print-ready physician referral packet routed to the clinic fax",
       "One-click printable patient forms and plain-language clinical guides",
+      "Full Spanish version with language-linked pages",
       "Structured data for the practice, both physicians and both locations",
       "WCAG 2.1 AA accessible design",
       "Separate listings for the Madera clinic and the Fresno office",
@@ -100,7 +111,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
       role: "Founding President & Medical Director",
       entity: "Kidney Specialist Inc.",
     },
-    stack: ["React 19", "WCAG 2.1 AA", "No-PHI design", "MedicalClinic schema"],
+    stack: ["Astro", "English + Spanish", "WCAG 2.1 AA", "No-PHI design"],
   },
   {
     id: "big-bros-dumpster",
