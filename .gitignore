@@ -29,3 +29,9 @@ Thumbs.db
 # Temporary screenshot captures
 *.png
 *.log
+
+# ...but public/ holds real, shipped assets (og card, icons)
+!public/**/*.png
+
+# Vercel CLI link metadata
+.vercel
