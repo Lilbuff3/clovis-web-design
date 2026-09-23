@@ -16,6 +16,9 @@ export interface ExtendedCaseStudy extends CaseStudy {
   imageAlt: string;
 }
 
+/** Screenshots ship at 1280px plus a 640px copy (`-640.webp`) so phones download the small one. */
+export const srcsetFor = (image: string) => `${image.replace(/\.webp$/, "-640.webp")} 640w, ${image} 1280w`;
+
 export const caseStudies: ExtendedCaseStudy[] = [
   {
     id: "kidney-specialist-inc",

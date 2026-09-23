@@ -1,6 +1,6 @@
 ---
 import SectionHead from "./SectionHead.astro";
-import { caseStudies } from "@/data/caseStudies";
+import { caseStudies, srcsetFor } from "@/data/caseStudies";
 import { work } from "@/data/fovea";
 import type { Metric } from "@/types";
 
@@ -30,6 +30,8 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
                 <div class="relative aspect-[16/9]">
                   <img
                     src={s.image}
+                    srcset={srcsetFor(s.image)}
+                    sizes="(min-width: 1024px) 55vw, 100vw"
                     alt={s.imageAlt}
                     width={s.imageWidth}
                     height={s.imageHeight}

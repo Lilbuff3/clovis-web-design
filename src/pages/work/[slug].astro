@@ -4,7 +4,7 @@ import Nav from "@/components/Nav.astro";
 import Footer from "@/components/Footer.astro";
 import StickyCall from "@/components/StickyCall.astro";
 import Icon from "@/components/Icon.astro";
-import { caseStudies, type ExtendedCaseStudy } from "@/data/caseStudies";
+import { caseStudies, srcsetFor, type ExtendedCaseStudy } from "@/data/caseStudies";
 import { formatSmsUri } from "@/data/calculator";
 import { caseStudyPage as t, work } from "@/data/fovea";
 import { caseStudySchema } from "@/lib/schema";
@@ -62,6 +62,8 @@ const h2 = "mt-2 text-4xl leading-none text-ink sm:text-5xl";
         <figcaption class="label border-b border-ink/10 px-4 py-3 text-muted">{host}</figcaption>
         <img
           src={study.image}
+          srcset={srcsetFor(study.image)}
+          sizes="(min-width: 1100px) 1100px, 100vw"
           alt={study.imageAlt}
           width={study.imageWidth}
           height={study.imageHeight}

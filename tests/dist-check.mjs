@@ -55,6 +55,11 @@ for (const page of pages) {
   for (const [, src] of read(page).matchAll(/<img[^>]+src="(\/[^"]+)"/g)) {
     assert.ok(fs.existsSync(path.join(DIST, src)), `${page} points at missing image ${src}`);
   }
+  for (const [, set] of read(page).matchAll(/srcset="([^"]+)"/g)) {
+    for (const src of set.split(",").map((s) => s.trim().split(/\s+/)[0])) {
+      assert.ok(fs.existsSync(path.join(DIST, src)), `${page} srcset points at missing image ${src}`);
+    }
+  }
 }
 for (const f of ["robots.txt", "sitemap.xml"]) assert.ok(fs.existsSync(path.join(DIST, f)), `missing ${f}`);
 

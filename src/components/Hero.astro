@@ -1,7 +1,7 @@
 ---
 import Mark from "./Mark.astro";
 import { hero, ticker } from "@/data/fovea";
-import { caseStudies } from "@/data/caseStudies";
+import { caseStudies, srcsetFor } from "@/data/caseStudies";
 import { PRICING_CONSTANTS, formatSmsUri } from "@/data/calculator";
 
 const price = PRICING_CONSTANTS.tiers.landing.price;
@@ -90,6 +90,9 @@ const sizes = [
         <div class="aspect-[4/5] overflow-hidden rounded-t-full border border-ink/15 bg-panel">
           <img
             src={bigBros.image}
+            srcset={srcsetFor(bigBros.image)}
+            sizes="(min-width: 1024px) 40vw, (min-width: 448px) 448px, 100vw"
+            fetchpriority="low"
             alt={hero.figure.alt}
             width={bigBros.imageWidth}
             height={bigBros.imageHeight}
