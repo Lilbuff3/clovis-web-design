@@ -24,7 +24,7 @@ for (const needle of [
 ]) {
   assert.ok(home.includes(needle), `index.html is missing ${needle}`);
 }
-for (const id of ["work", "pricing", "cost-of-slow", "ledger", "receipt", "process", "exam", "services", "about", "faq"]) {
+for (const id of ["work", "pricing", "cost-of-slow", "ledger", "process", "exam", "services", "about", "letters", "book", "faq"]) {
   assert.ok(home.includes(`id="${id}"`), `index.html is missing section #${id}`);
 }
 assert.match(home, /<table[\s>]/, "comparison should be a real <table>");
@@ -85,18 +85,19 @@ const ratio = (a, b) => {
   return (hi + 0.05) / (lo + 0.05);
 };
 for (const [fg, bg, min] of [
-  ["ink", "paper", 7],
-  ["ink-soft", "paper", 4.5],
-  ["muted", "paper", 4.5],
-  ["muted", "panel", 4.5],
-  ["cobalt", "paper", 4.5],
-  ["cobalt", "panel", 4.5],
-  ["paper", "ink", 7],
-  ["paper", "cobalt", 4.5],
-  ["paper", "duo-red", 4.5],
-  ["paper", "duo-green", 4.5],
+  ["ink", "bone", 7],
+  ["ink-2", "bone", 4.5],
+  ["ink-2", "bone-2", 4.5],
+  ["muted", "bone", 4.5],
+  ["muted", "bone-2", 4.5],
+  ["vermilion", "bone", 4.5],
+  ["vermilion", "bone-2", 4.5],
+  ["optic", "bone-2", 4.5],
+  ["bone", "ink", 7],
+  ["bone", "vermilion", 4.5],
+  ["bone", "optic", 4.5],
   ["ink", "butter", 7],
-  ["ink-soft", "butter", 4.5],
+  ["ink-2", "butter", 4.5],
 ]) {
   const r = ratio(fg, bg);
   assert.ok(r >= min, `${fg} on ${bg} is ${r.toFixed(2)}:1, needs ${min}:1`);

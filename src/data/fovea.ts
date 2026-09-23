@@ -1,28 +1,53 @@
 /**
  * Every word on the homepage, one export per section. Edit copy here; layout lives in the components.
  * Prices come from calculator.ts and case study facts from caseStudies.ts. Don't retype them here.
+ *
+ * Section heads: `n` is the number in the eyebrow, `accent` is the italic word on its own line,
+ * and `after` (optional) finishes the sentence after it.
  */
 
 export const brand = {
   name: "Clovis Web Design",
-  tagline: "Websites in focus · Fresno",
+  tagline: "Websites in focus",
 };
 
 /** Section ids are load-bearing (tests, case study breadcrumbs); change labels freely. */
 export const nav = [
-  { id: "work", label: "Prescriptions" },
-  { id: "pricing", label: "Fees" },
-  { id: "exam", label: "Eye exam" },
+  { id: "work", label: "The work" },
   { id: "process", label: "How it works" },
-  { id: "faq", label: "FAQ" },
+  { id: "exam", label: "Eye exam" },
+  { id: "pricing", label: "Fees" },
 ];
 
+/** The ruler across the top, the eye-chart rail on the right, and the card that lifts on load. */
+export const chrome = {
+  depth: "Reading depth",
+  acuity: "Acuity",
+  /** The ruler's acuity reading as you scroll, top of the page to the bottom. */
+  steps: ["20/200", "20/100", "20/70", "20/50", "20/40", "20/25", "20/15"],
+  /** `name` is what screen readers hear for each rail link. */
+  rail: [
+    { id: "hero", label: "20/200", name: "Top" },
+    { id: "ledger", label: "20/100", name: "The duochrome test" },
+    { id: "work", label: "20/70", name: "The work" },
+    { id: "process", label: "20/50", name: "How it works" },
+    { id: "exam", label: "20/40", name: "The eye exam" },
+    { id: "about", label: "20/25", name: "The practice" },
+    { id: "pricing", label: "20/20", name: "Fees" },
+    { id: "book", label: "20/15", name: "Reception" },
+  ],
+  curtain: "Chart № 1 · Snellen, revised",
+  textMe: "Text me",
+};
+
 export const hero = {
-  eyebrow: "Chart № 1 · Fresno & the Central Valley",
   status: "Taking new work",
+  line: "Hand-built websites · Clovis, CA",
+  area: "Fresno & the Central Valley",
+  chartNo: "Chart № 1 — Snellen, revised",
   /** The full sentence screen readers and Google get. The chart below is the visual version of it. */
   h1: "Websites that load before your customer gives up. Hand-built in Clovis for Fresno businesses.",
-  /** Eye-chart rows, biggest first. `accent` colors a row cobalt. Keep row text short: it's set very large. */
+  /** Eye-chart rows, biggest first. `accent` colors a row vermilion; `link` makes the last row a link to Reception. */
   chart: [
     { text: "Websites", acuity: "20/200" },
     { text: "that load", acuity: "20/100" },
@@ -31,20 +56,23 @@ export const hero = {
     { text: "gives up —", acuity: "20/40", accent: true },
     { text: "Hand-built in Clovis for Fresno businesses", acuity: "20/30" },
     { text: "Live in a week. Yours on day one. No monthly hostage fees.", acuity: "20/25" },
-    { text: "If you can read this line, your website should be this easy to read too.", acuity: "20/20" },
+    { text: "If you can read this line, your website should be this easy to read too.", acuity: "20/20", link: true },
   ],
   pitch: "I build fast, hand-made websites for Fresno businesses. You get my cell number, not a ticket queue.",
   priceLine: (price: number) => `Landing pages $${price} · live in a week · you own it`,
   ctaText: "Text me a question",
-  ctaPrices: "See the prices",
+  ctaPrices: "See the fees",
   lensOn: "Glasses on",
   lensOff: "Glasses off",
   lensHint: "Move to focus",
+  examLink: "or take the two-minute eye exam →",
   /** Shown only when the visitor's real load time is known. {time} and {acuity} are filled in live. */
   reading: "This page on your device: {time} · {acuity}",
-  figure: {
-    caption: "Fig. 1 — Big Bros Dumpster Rentals. #1 on Google for “dumpster rental Fresno.”",
-    alt: "The Big Bros Dumpster Rentals homepage I built: flat-rate dumpster prices and a text-for-a-quote button",
+  figure: { caption: "Fig. 1 — light through a window", meta: "1/60 · f2" },
+  plate: {
+    alt: "An optician's trial lens case, a trial frame and a pair of round glasses on warm paper, next to a Landolt C eye chart",
+    caption: "Trial case № 1",
+    meta: "Clovis, CA",
   },
   /** Runs around a circle; about 30–40 characters fits best. */
   seal: "Clovis Web Design · Fresno, CA · ",
@@ -59,77 +87,36 @@ export const ticker = (price: number) => [
   "Text me: (559) 575-3014",
 ];
 
-/** Case study facts come from caseStudies.ts; these are only the labels around them. */
-export const work = {
-  head: {
-    acuity: "20/100",
-    label: "Prescriptions on file",
-    title: "Two practices,",
-    accent: "seen clearly.",
-    lede: "Both sites are live. Open either one on your phone and time it yourself.",
-  },
-  record: "Record",
-  complaint: "Presenting complaint",
-  prescription: "What I prescribed",
-  showBefore: "Show before",
-  showAfter: "Show after",
-  beforeNote: "Before: an illustration of a typical slow template, not the client’s old site.",
-  read: "Read the full case study",
-  visit: "Open the live site ↗",
-};
-
-export const fees = {
-  head: {
-    acuity: "20/70",
-    label: "Fees, plainly",
-    title: "Prices on the wall,",
-    accent: "not in a drawer.",
-    lede: "No call to find out what it costs. Every price is right here, and every site is yours to keep.",
-  },
-  /** Display names per tier id in calculator.ts. The plain tier title shows underneath. */
-  tiers: {
-    landing: { code: "SV", name: "Single Vision" },
-    business: { code: "BF", name: "Bifocal" },
-    flagship: { code: "VF", name: "Varifocal" },
-  } as Record<string, { code: string; name: string }>,
-  featured: "landing",
-  launchNote: "Launch price",
-  text: "Text me about this",
-  call: "Call",
-  bestFor: "Best for",
-  followUp: {
-    title: "Follow-up visits",
-    accent: "Optional, and I mean it.",
-    lede: "Your site runs fine without me. It’s plain files: no plugins to update, nothing that breaks at 2 a.m. These are for people who’d rather send one text than think about their website.",
-    promise:
-      "Cancel with one text. No contract, no exit fee, no “migration charge.” You already have the code, the domain and the logins, because you had them from day one.",
-  },
-  unsure: "Not sure which one you need? Text me and I’ll tell you straight, even if the answer is that you don’t need me yet.",
-  brief: "Or send me the details by email ↗",
-};
-
 export const duochrome = {
   head: {
-    acuity: "20/50",
+    n: "01",
     label: "The duochrome test",
     title: "Which half looks",
-    accent: "clearer to you?",
+    accent: "clearer",
+    after: " to you?",
     lede: "In an eye exam, the red and green test tells the doctor whether a prescription is too strong or too weak. Websites go wrong the same way.",
   },
   red: {
-    title: "Over-built",
     note: "The $5,000 agency site",
+    title: "Over-built",
     items: ["A slideshow nobody waits for", "Plugins that need updating every week", "Four seconds to load on a phone", "A monthly fee to keep it alive"],
     foot: "Loud, expensive, and gone before it loads.",
   },
   green: {
-    title: "In focus",
     note: "What I build",
+    title: "In focus",
     items: ["One clear promise at the top", "Prices right on the page", "Text or call in one tap", "Up before anyone waits"],
     foot: "Quiet, fast, and read in four seconds.",
   },
   sliderLabel: "Slide between the over-built site and the one in focus",
   hint: "Drag the handle, or use the arrow keys",
+  evidenceTitle: "What I build to",
+  evidence: [
+    { value: "< 1.0s", label: "Largest Contentful Paint", note: "Google calls under 2.5s good" },
+    { value: "0.0", label: "Cumulative Layout Shift", note: "Nothing jumps around while it loads" },
+    { value: "< 50ms", label: "Interaction to Next Paint", note: "Buttons answer the moment you tap" },
+    { value: "1 wk", label: "First text to live", note: "For a one-page site" },
+  ],
   tableCaption: "The same five things, side by side",
   columns: { topic: "What you’d ask", agency: "Typical agency", me: "With me" },
   rows: [
@@ -171,63 +158,44 @@ export const duochrome = {
   ],
 };
 
-export const lensTray = {
+/** Case study facts come from caseStudies.ts; these are only the labels around them. */
+export const work = {
   head: {
-    acuity: "20/40",
-    label: "The lens tray",
-    title: "Real interfaces,",
-    accent: "held up to the light.",
-    lede: "Three small pieces of the sites, rebuilt here in plain HTML. Pick one up to read why every line is where it is.",
+    n: "02",
+    label: "The dispensary",
+    title: "Frames I’ve",
+    accent: "fitted",
+    lede: "Two practices, both live. Pick a frame off the shelf to read what I prescribed, then open either site on your phone and time it yourself.",
   },
-  /** `kind` picks the mock markup in Receipt.astro; `source` says honestly where it comes from. */
-  lenses: [
-    {
-      kind: "bigbros",
-      name: "The price card",
-      source: "Recreated from bigbrosdumpster.com",
-      notes: [
-        ["The price sits beside the size", "Nobody should scroll to find out what a dumpster costs."],
-        ["Flat, and it says so", "“Flat” next to each price answers the broker teaser rates before anyone asks."],
-        ["The worry answered in the list", "Boards under the wheels. It’s the first thing homeowners ask, so it’s on the card."],
-      ],
-    },
-    {
-      kind: "kidney",
-      name: "The call bar",
-      source: "Recreated from kidneyspecialistinc.com",
-      notes: [
-        ["The question people actually have", "“Not sure if you need a kidney specialist?” Call and ask. No form, no patient data."],
-        ["Spanish in one tap", "Se habla español, and the whole site switches, not just a banner."],
-        ["The phone number is the button", "Big, high-contrast, and the same number everywhere."],
-      ],
-    },
-    {
-      kind: "sample",
-      name: "A landing page",
-      source: "Sample layout, not a client",
-      notes: [
-        ["One promise at the top", "What you do, where, and how fast. Read in four seconds."],
-        ["Text a photo", "The easiest first step for someone standing in their yard looking at the problem."],
-        ["Call and text, side by side", "Some people call, some text. Neither should have to hunt."],
-      ],
-    },
-  ],
-  targetsTitle: "What I build to",
-  targets: [
-    { value: "< 1.0s", label: "Largest Contentful Paint", note: "Google calls under 2.5s good" },
-    { value: "0.0", label: "Cumulative Layout Shift", note: "Nothing jumps around while it loads" },
-    { value: "< 50ms", label: "Interaction to Next Paint", note: "Buttons answer the moment you tap" },
-  ],
+  record: "Record card",
+  /** Short names for the frame shelf, by case study id. */
+  short: { "kidney-specialist-inc": "Kidney", "big-bros-dumpster": "Big Bros" } as Record<string, string>,
+  complaint: "Presenting complaint",
+  prescription: "What I prescribed",
+  before: "Before",
+  after: "After",
+  showBefore: "Show the before view",
+  pick: "Pick a frame",
+  beforeNote: "Before: an illustration of a typical slow template, not the client’s old site.",
+  yours: "Yours?",
+  yoursLabel: "Your business could be the next frame. Text me.",
+  read: "Read the full case study",
+  visit: "Open the live site ↗",
 };
 
 export const exam = {
   head: {
-    acuity: "20/30",
+    n: "03",
     label: "The examination",
     title: "Four lenses,",
-    accent: "turned in order.",
+    accent: "turned",
+    after: " in order",
     lede: "Every site goes through the same four steps in the same order, so nothing gets made up on the day it should have been decided.",
   },
+  /** One trial lens per step, turned into place on the dial. Decoration, not a measurement. */
+  lenses: ["+0.25", "−1.75", "−3.00", "+1.00"],
+  lens: "Lens",
+  nextLens: "next lens",
   of: "of",
   prev: "Previous step",
   next: "Next step",
@@ -236,10 +204,11 @@ export const exam = {
 
 export const eyeExam = {
   head: {
-    acuity: "20/25",
+    n: "04",
     label: "The eye exam · two minutes · free",
     title: "Test your",
-    accent: "website’s eyes.",
+    accent: "website’s",
+    after: " eyes",
     lede: "Five questions. No email address, no follow-up sequence. You get a straight answer, even if the answer is that you don’t need me.",
   },
   practiceLabel: "Your business name (optional)",
@@ -248,32 +217,49 @@ export const eyeExam = {
   questions: [
     {
       q: "When someone nearby searches for what you do, what happens?",
+      hint: "Be honest. I will be.",
       options: ["They find a directory, a competitor, or nothing", "They find me eventually, on page two", "They find me first, with the right number"],
     },
     {
       q: "Pull your website up on your phone right now. How long until you can read it?",
+      hint: "That’s how most of your customers meet it.",
       options: ["I gave up waiting", "Three or four seconds", "It’s just there"],
     },
     {
       q: "Where do your new customers come from?",
+      hint: "Follow the money, not the hope.",
       options: ["Word of mouth, and I couldn’t tell you more", "Some from Google, I think", "Google and my website, and I know which"],
     },
     {
       q: "When did you last change something on your website yourself?",
+      hint: "Not a developer. You.",
       options: ["I can’t. Someone else has the login", "Last year, and it took a week", "This month"],
     },
     {
       q: "Is your Google Business Profile filled in, with photos and your hours?",
+      hint: "The map is the new shop window.",
       options: ["What’s a Google Business Profile?", "Some of it", "All of it, and I answer reviews"],
     },
   ],
+  answerHonestly: "Answer honestly",
+  pick: "pick →",
   back: "← One question back",
   progress: "Chart № 5 · your progress",
   chartRow: "E Z O P N",
-  resultTitle: "Your prescription",
-  resultFor: "For",
-  resultAcuity: "Reading",
+  doneHint: "Exam done. Your prescription is written up and ready to take away.",
+  resultTitle: "Prescription",
+  patient: "Patient",
+  patientFallback: "Your business",
+  patientLine: "Somewhere in the Central Valley",
+  dispenser: "Dispenser",
+  dispenserName: "Adam Youssef",
+  dispenserLine: "Clovis Web Design · Clovis, CA",
+  resultAcuity: "Reading today",
+  corrected: "With correction",
   resultRecommend: "Recommended",
+  nothingYet: "Nothing yet",
+  signed: "Signed, Clovis Web Design",
+  stamp: "Tested",
   /** Chosen by number of problems (0–10). `tier` is a calculator.ts tier id, or null for "you don't need me". */
   results: [
     { max: 2, acuity: "20/20", tier: null, verdict: "Your site is doing its job. Honestly, you don’t need me yet. Text me if that changes." },
@@ -285,26 +271,32 @@ export const eyeExam = {
   noScript: "Answer the questions, then text me your letters (like A, C, B, B, A) and I’ll send your prescription back.",
 };
 
-export const servicesHead = {
-  acuity: "20/20",
-  label: "What’s in the case",
-  title: "Three things,",
-  accent: "done properly.",
-  lede: "A website on its own doesn’t get you found. These three work together, and I do all of them myself.",
+/** The butter strip. Every number is a fact from caseStudies.ts: a metric, or the clients' own words in their quotes. */
+export const stats = {
+  label: "Results so far",
+  items: [
+    { n: "#1", k: "Big Bros, on Google for “dumpster rental Fresno”" },
+    { n: "100/100", k: "Google PageSpeed on both client sites" },
+    { n: "+140%", k: "Kidney Specialist’s provider referrals, by Dr. Masood’s count" },
+    { n: "4", k: "more trucks Big Bros bought to keep up" },
+  ],
 };
 
 export const practice = {
-  head: {
-    acuity: "20/15",
-    label: "The practice",
-    title: "One person,",
-    accent: "one town at a time.",
-  },
+  n: "05",
+  label: "The practice",
+  /** The headline, one line per entry. */
+  title: ["One person,", "one town at a time"],
+  figure: { caption: "Fig. 4 — made by hand", meta: "∞ loop", videoLabel: "Hands filing a ring on a workbench" },
+  callout: { k: "Works from", v: "Clovis, CA" },
   body: [
     "I’m Adam Youssef. I build websites by hand from Clovis for businesses across Fresno and the Central Valley. You get my cell number, not a ticket queue, and the person who answers is the person who wrote the code.",
     "A local business doesn’t need a brand platform. It needs to be found by someone standing forty feet away with a phone in one hand, and understood in the four seconds before they give up. Everything I build is for those four seconds.",
-    "So I listen before I design, I write before I build, and I hand you the keys at the end. An eye doctor doesn’t keep your glasses.",
   ],
+  closing: {
+    text: "So I listen before I design, I write before I build, and I hand you the keys at the end.",
+    accent: "An eye doctor doesn’t keep your glasses.",
+  },
   rulesTitle: "Rules of the practice",
   rules: [
     "No templates sold as custom. Ever.",
@@ -313,17 +305,104 @@ export const practice = {
     "I don’t disappear. When you text, I answer.",
     "If one page is enough, that’s what I’ll tell you.",
   ],
+  cta: "Text Adam",
+};
+
+export const fees = {
+  head: {
+    n: "06",
+    label: "Fees, plainly",
+    title: "Prices on the",
+    accent: "wall",
+    after: ", not in a drawer",
+    lede: "No call to find out what it costs. Every price is right here, and every site is yours to keep.",
+  },
+  /** Display names per tier id in calculator.ts. The plain tier title shows underneath. */
+  tiers: {
+    landing: { code: "SV", name: "Single Vision" },
+    business: { code: "BF", name: "Bifocal" },
+    flagship: { code: "VF", name: "Varifocal" },
+  } as Record<string, { code: string; name: string }>,
+  featured: "landing",
+  badge: "Launch price",
+  launchNote: "Launch price",
+  oneOff: "one-off",
+  text: "Text me about this",
+  followUp: {
+    label: "Loose lenses",
+    title: "Follow-up visits.",
+    accent: "Optional, and I mean it.",
+    lede: "Your site runs fine without me. It’s plain files: no plugins to update, nothing that breaks at 2 a.m. These are for people who’d rather send one text than think about their website.",
+    promise:
+      "Cancel with one text. No contract, no exit fee, no “migration charge.” You already have the code, the domain and the logins, because you had them from day one.",
+  },
+  unsure: "Not sure which one you need? Text me and I’ll tell you straight, even if the answer is that you don’t need me yet.",
+  brief: "Or send me the details by email ↗",
+};
+
+export const servicesHead = {
+  label: "What’s in the case",
+  title: "Three things,",
+  accent: "done properly.",
+  lede: "A website on its own doesn’t get you found. These three work together, and I do all of them myself.",
+};
+
+export const letters = {
+  head: {
+    n: "07",
+    label: "Letters from patients",
+    title: "They wrote",
+    accent: "back",
+    lede: "Two clients, in their own words, unedited.",
+  },
+  postmark: "Fitted",
+};
+
+export const reception = {
+  head: {
+    n: "08",
+    label: "Reception",
+    title: "Start with",
+    accent: "a text",
+    lede: "No forms to wade through and no call you didn’t ask for. Tell me what you need and I’ll get back to you, even if you don’t have a website yet.",
+  },
+  card: {
+    title: "Appointment card",
+    number: "№ 001",
+    rows: [
+      ["Cost to ask", "Nothing"],
+      ["Who answers", "Adam, who builds it"],
+      ["How", "Text, call or email"],
+    ],
+    priceLabel: "Landing page",
+    price: (price: number) => `$${price} · live in a week`,
+    askLabel: "What I’ll ask you",
+    ask: "What you do, who you do it for, and where. That’s most of it.",
+  },
+  form: {
+    name: "Your name",
+    business: "Business",
+    businessPlaceholder: "Tower District Roofing",
+    need: "What do you need?",
+    needs: ["I don’t have a website yet", "My site is slow on phones", "Customers can’t find me on Google", "I can’t update my site myself", "Something else"],
+    note: "Anything else? (optional)",
+    notePlaceholder: "We’re a two-truck landscaping crew in Clovis. No website yet, just a Facebook page.",
+    send: "Send to Adam",
+    email: "or email it instead ↗",
+    help: "Opens a text to (559) 575-3014 with this filled in. Nothing sends until you press send.",
+    promise: "No newsletter. No sales sequence. One reply, from me.",
+  },
 };
 
 export const faqHead = {
-  acuity: "20/10",
+  n: "09",
   label: "Questions before the exam",
   title: "What people ask",
   accent: "before they call.",
 };
 
 export const caseStudyPage = {
-  crumb: "Prescriptions",
+  crumb: "The work",
   visit: "Open the live site",
   doctors: "Physicians",
   owners: "Owners",
@@ -352,6 +431,20 @@ export const footer = {
     "Hand-built websites for Fresno and Central Valley businesses. Fast on a phone, set up so Google can find you, and yours on day one.",
   based: "Based in Clovis · Serving all of Fresno County",
   towns: "Fresno, Clovis, Madera, Sanger, Selma, Fowler, and Kingsburg.",
-  cta: "Send me the details ↗",
-  sign: "20/20",
+  cta: "Text me",
+  linksTitle: "Waiting room",
+  links: [
+    { id: "work", label: "The work" },
+    { id: "process", label: "How it works" },
+    { id: "exam", label: "The eye exam" },
+    { id: "about", label: "The practice" },
+    { id: "pricing", label: "Fees, plainly" },
+    { id: "faq", label: "Questions" },
+  ],
+  receptionTitle: "Reception",
+  wordmark: "Clovis",
+  wordmarkNote: "Clovis Web Design · hand-built in Clovis, California",
+  legal: "No cookies · No trackers · No templates",
+  craft: "Built by hand, like a good pair of glasses",
+  sign: "20/15 — if you can read this line without squinting, text me.",
 };

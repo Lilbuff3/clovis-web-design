@@ -1,28 +1,30 @@
 ---
-// Section header. `acuity` is the next Snellen line: the page reads like one eye chart, finer as you scroll.
+// Section header, as in the original: a numbered eyebrow, a serif headline whose italic word sits on its own line,
+// and the lede on the right. The acuity reading lives on the ruler and the side rail instead.
 interface Props {
   id: string;
-  acuity: string;
+  n?: string;
   label: string;
   title: string;
   accent?: string;
+  after?: string;
   lede?: string;
-  tone?: "light" | "dark";
 }
-const { id, acuity, label, title, accent, lede, tone = "light" } = Astro.props;
-const dark = tone === "dark";
+const { id, n, label, title, accent, after, lede } = Astro.props;
 ---
 
-<div class="grid items-end gap-6 lg:grid-cols-12">
-  <div class="lg:col-span-7">
-    <p class:list={["label flex items-center gap-3", dark ? "text-paper/70" : "text-muted"]}>
-      <span class={dark ? "text-paper" : "text-cobalt"}>{acuity}</span>
-      <span class:list={["h-px w-10", dark ? "bg-paper/30" : "bg-ink/25"]} aria-hidden="true"></span>
+<div class="flex flex-wrap items-end justify-between gap-6 border-b border-ink/12 pb-6" data-reveal>
+  <div>
+    <p class="label flex items-center gap-3 text-muted">
+      {n && <span class="tightnum text-vermilion">{n}</span>}
+      <span class="h-px w-8 bg-ink/25" aria-hidden="true"></span>
       {label}
     </p>
-    <h2 id={id} class:list={["t-h2 mt-4", dark ? "text-paper" : "text-ink"]}>
-      {title}{accent && " "}{accent && <em class={dark ? "text-paper/80" : "text-cobalt"}>{accent}</em>}
+    <h2 id={id} class="t-h2 mt-5 max-w-[18ch] text-ink">
+      {title}
+      {accent && <br />}
+      {accent && <em>{accent}</em>}{after}
     </h2>
   </div>
-  {lede && <p class:list={["text-lg leading-relaxed lg:col-span-5", dark ? "text-paper/80" : "text-ink-soft"]}>{lede}</p>}
+  {lede && <p class="max-w-sm text-[15px] leading-relaxed text-ink-2">{lede}</p>}
 </div>

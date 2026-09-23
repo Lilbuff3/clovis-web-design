@@ -1,0 +1,117 @@
+---
+import AmbientVideo from "./AmbientVideo.astro";
+import SectionHead from "./SectionHead.astro";
+import { BRIEF_MAILTO, PRICING_CONSTANTS, formatSmsUri, smsUri } from "@/data/calculator";
+import { reception as r } from "@/data/fovea";
+
+const price = PRICING_CONSTANTS.tiers.landing.price;
+const input =
+  "mt-2 min-h-[48px] w-full border-b border-ink/25 bg-transparent pb-2.5 text-[16px] text-ink outline-none transition-colors placeholder:text-muted/70 focus:border-vermilion";
+---
+
+<section id="book" class="paper relative scroll-mt-28 overflow-hidden border-b border-ink/12" aria-labelledby="book-title">
+  <AmbientVideo name="cafe" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[.14] mix-blend-multiply" />
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-bone via-bone/85 to-bone" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
+    <SectionHead id="book-title" {...r.head} />
+
+    <div class="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <!-- appointment card -->
+      <div class="lg:col-span-4" data-reveal>
+        <div class="relative rounded-[22px] border border-ink/20 bg-bone-2 p-7">
+          <div class="flex items-center justify-between border-b-2 border-ink pb-4">
+            <span class="label text-muted">{r.card.title}</span>
+            <span class="tightnum text-[0.6875rem] text-vermilion">{r.card.number}</span>
+          </div>
+          <dl class="mt-5 space-y-4">
+            {
+              [...r.card.rows, [r.card.priceLabel, r.card.price(price)]].map(([k, v]) => (
+                <div class="flex items-baseline justify-between gap-4">
+                  <dt class="label text-muted">{k}</dt>
+                  <dd class="text-right text-[14.5px] text-ink">{v}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <div class="mt-6 rounded-2xl bg-butter/60 p-5">
+            <span class="label text-ink-2">{r.card.askLabel}</span>
+            <p class="mt-2 text-[14px] leading-relaxed text-ink">{r.card.ask}</p>
+          </div>
+          <div class="mt-6 border-t border-dashed border-ink/25 pt-3">
+            <a href={formatSmsUri()} class="group flex min-h-[48px] items-center justify-between">
+              <span class="label text-ink group-hover:text-vermilion">Text (559) 575-3014</span>
+              <span class="tightnum text-muted" aria-hidden="true">→</span>
+            </a>
+            <a href="tel:+15595753014" class="group flex min-h-[48px] items-center justify-between">
+              <span class="label text-ink group-hover:text-vermilion">Call (559) 575-3014</span>
+              <span class="tightnum text-muted" aria-hidden="true">→</span>
+            </a>
+            <a href="mailto:adam@cloviswebdesign.com" class="group flex min-h-[48px] items-center justify-between">
+              <span class="label text-ink group-hover:text-vermilion">adam@cloviswebdesign.com</span>
+              <span class="tightnum text-muted" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- the form: turns into a pre-filled text message; nothing is stored or sent from the page -->
+      <div class="lg:col-span-8" data-reveal>
+        <form data-reception data-sms={smsUri("")} action="mailto:adam@cloviswebdesign.com" method="post" enctype="text/plain" class="rounded-[26px] border border-ink/15 bg-bone p-7 sm:p-10">
+          <div class="grid grid-cols-1 gap-7 sm:grid-cols-2">
+            <label class="block">
+              <span class="label text-muted">{r.form.name}</span>
+              <input name="name" autocomplete="name" class={input} />
+            </label>
+            <label class="block">
+              <span class="label text-muted">{r.form.business}</span>
+              <input name="business" autocomplete="organization" placeholder={r.form.businessPlaceholder} class={input} />
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="label text-muted">{r.form.need}</span>
+              <select name="need" class={`${input} cursor-pointer`}>
+                {r.form.needs.map((n) => <option>{n}</option>)}
+              </select>
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="label text-muted">{r.form.note}</span>
+              <textarea name="note" rows="4" placeholder={r.form.notePlaceholder} class={`${input} resize-none leading-relaxed`}></textarea>
+            </label>
+          </div>
+
+          <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <button type="submit" class="wipe inline-flex min-h-[52px] items-center rounded-full bg-ink px-8 text-bone">
+              <span class="label relative z-10">{r.form.send}</span>
+            </button>
+            <a data-email href={BRIEF_MAILTO} class="label inline-flex min-h-[48px] items-center text-muted underline decoration-ink/25 underline-offset-4 hover:text-vermilion">
+              {r.form.email}
+            </a>
+          </div>
+          <p data-help hidden class="mt-4 max-w-[52ch] text-[13.5px] leading-relaxed text-ink-2">{r.form.help}</p>
+          <p class="label mt-3 max-w-[40ch] leading-relaxed text-muted">{r.form.promise}</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Builds the text from what they typed and opens their messages app. The email link carries the same words.
+  // Without script the form posts to a mailto: address, so the button still opens an email to Adam with their answers.
+  const form = document.querySelector<HTMLFormElement>("[data-reception]");
+  if (form) {
+    const email = form.querySelector<HTMLAnchorElement>("[data-email]")!;
+    const brief = email.href.split("&body=")[0];
+    form.querySelector<HTMLElement>("[data-help]")!.hidden = false;
+    const message = () => {
+      const v = (name: string) => (form.elements.namedItem(name) as HTMLInputElement).value.trim();
+      const who = [v("name"), v("business") && `from ${v("business")}`].filter(Boolean).join(" ");
+      return [`Hi Adam${who ? `, this is ${who}` : ""}.`, `${v("need")}.`, v("note")].filter(Boolean).join(" ");
+    };
+    form.addEventListener("input", () => (email.href = `${brief}&body=${encodeURIComponent(message())}`));
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      location.href = form.dataset.sms + encodeURIComponent(message());
+    });
+  }
+</script>

@@ -1,0 +1,57 @@
+---
+// The Snellen ladder down the right edge on wide screens: the section you're reading lights up,
+// and the dot below tracks how far down the page you are (fed by the ruler script in Base.astro).
+// Below 1640px the page runs right up to it, so it shows tick marks only and opens its labels on hover or focus.
+import { chrome } from "@/data/fovea";
+---
+
+<nav
+  data-rail
+  aria-label="Page sections"
+  class="group/rail fixed top-1/2 right-0 z-40 hidden -translate-y-1/2 flex-col items-end rounded-l-2xl border border-r-0 border-transparent py-3 pr-1 pl-1 transition-colors duration-300 focus-within:border-ink/12 focus-within:bg-bone/90 hover:border-ink/12 hover:bg-bone/90 xl:flex min-[1640px]:hover:border-transparent min-[1640px]:hover:bg-transparent"
+>
+  {
+    chrome.rail.map((it) => (
+      <a href={`#${it.id}`} data-rail-link={it.id} aria-label={it.name} class="group flex items-center gap-2 py-[5px] pr-2 pl-1">
+        <span class="rail-num tightnum hidden text-[0.6875rem] text-muted transition-colors duration-500 group-hover:text-ink group-hover/rail:inline group-focus-within/rail:inline min-[1640px]:inline">
+          {it.label}
+        </span>
+        <span class="rail-line h-px w-3.5 bg-ink/25 transition-all duration-500 group-hover:w-6 group-hover:bg-ink/60" />
+      </a>
+    ))
+  }
+  <div class="relative mt-2 mr-2 h-24 w-px bg-ink/15" aria-hidden="true">
+    <div class="absolute -left-[2px] h-2 w-[5px] rounded-full bg-vermilion transition-[top] duration-200" style="top:calc(var(--p, 0) * 92%)"></div>
+  </div>
+</nav>
+
+<style>
+  [aria-current] .rail-num {
+    color: var(--color-vermilion);
+  }
+  [aria-current] .rail-line {
+    width: 2rem;
+    background: var(--color-vermilion);
+  }
+</style>
+
+<script>
+  // The section crossing the middle of the screen is the current one.
+  const links = document.querySelectorAll<HTMLAnchorElement>("[data-rail-link]");
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        for (const a of links) {
+          if (a.dataset.railLink === e.target.id) a.setAttribute("aria-current", "location");
+          else a.removeAttribute("aria-current");
+        }
+      }
+    },
+    { rootMargin: "-45% 0px -45% 0px" }
+  );
+  links.forEach((a) => {
+    const section = document.getElementById(a.dataset.railLink!);
+    if (section) io.observe(section);
+  });
+</script>

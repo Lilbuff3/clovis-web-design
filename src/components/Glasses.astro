@@ -1,0 +1,106 @@
+---
+// A pair of glasses in SVG, ported from the prototype. With an `image`, the client's site shows through both lenses.
+// The "before" look (grey and blurred, a generic slow template in the left lens) is off by default; the parent
+// switches it on by showing .lens-before and setting `filter: var(--before-fx)` on .lens-img.
+type Silhouette = "panto" | "round" | "rect";
+interface Props {
+  uid: string;
+  silhouette: Silhouette;
+  image?: string;
+  tint?: string;
+  dashed?: boolean;
+  class?: string;
+}
+
+/* Lens outlines drawn around the origin; the left lens is the right one mirrored. */
+const SHAPES: Record<Silhouette, string> = {
+  round: "M -62,0 A 62,62 0 1,1 62,0 A 62,62 0 1,1 -62,0 Z",
+  panto: "M -66,0 A 66,57 0 1,1 66,0 A 66,57 0 1,1 -66,0 Z",
+  rect: "M -70,-40 L 48,-44 Q 70,-45 70,-23 L 68,23 Q 67,45 45,44 L -48,44 Q -70,45 -70,23 Z",
+};
+const STROKE: Record<Silhouette, number> = { round: 7, panto: 6, rect: 8 };
+
+const { uid, silhouette, image, tint = "#b93b21", dashed = false, class: className } = Astro.props;
+const d = SHAPES[silhouette];
+const sw = STROKE[silhouette];
+const dash = dashed ? "7 8" : undefined;
+---
+
+<svg viewBox="0 0 420 168" class={className} fill="none" aria-hidden="true">
+  <defs>
+    <clipPath id={`L${uid}`}><path d={d} transform="translate(144,86) scale(-1,1)"></path></clipPath>
+    <clipPath id={`R${uid}`}><path d={d} transform="translate(292,86)"></path></clipPath>
+    <clipPath id={`B${uid}`}>
+      <path d={d} transform="translate(144,86) scale(-1,1)"></path>
+      <path d={d} transform="translate(292,86)"></path>
+    </clipPath>
+    <linearGradient id={`g${uid}`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".55"></stop>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0"></stop>
+    </linearGradient>
+    {
+      image && (
+        <filter id={`F${uid}`}>
+          <feColorMatrix type="saturate" values="0" />
+          <feComponentTransfer>
+            <feFuncR type="linear" slope=".76" intercept=".15" />
+            <feFuncG type="linear" slope=".76" intercept=".15" />
+            <feFuncB type="linear" slope=".76" intercept=".15" />
+          </feComponentTransfer>
+          <feGaussianBlur stdDeviation="1.6" />
+        </filter>
+      )
+    }
+  </defs>
+
+  <!-- temples -->
+  <path d="M 82,72 L 14,50 M 354,72 L 418,50" stroke="currentColor" stroke-width={sw * 0.55} stroke-linecap="round" stroke-dasharray={dash}></path>
+
+  <!-- One 16:9 screenshot behind both lenses: the headline reads through the left, the right side through the right. -->
+  {
+    image && (
+      <g style={`--before-fx:url(#F${uid})`}>
+        <g clip-path={`url(#B${uid})`}>
+          <image class="lens-img" href={image} x="30" y="-25" width="360" height="202.5" />
+        </g>
+        <g class="lens-before" clip-path={`url(#L${uid})`} opacity=".92">
+          <rect x="60" y="26" width="180" height="120" fill="#e7e2d5" />
+          <rect x="60" y="26" width="180" height="16" fill="#b9b3a3" />
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <rect x="70" y={52 + i * 14} width={96 - (i % 3) * 22} height="5" fill="#9c9686" />
+          ))}
+          <rect x="96" y="112" width="96" height="18" fill="#cf4327" />
+          <rect x="108" y="116" width="72" height="10" fill="#f7f2e8" />
+        </g>
+      </g>
+    )
+  }
+
+  <!-- rims -->
+  <g stroke="currentColor" stroke-width={sw} stroke-linejoin="round" stroke-dasharray={dash}>
+    <path d={d} transform="translate(144,86) scale(-1,1)"></path>
+    <path d={d} transform="translate(292,86)"></path>
+  </g>
+
+  <!-- bridge -->
+  <path d="M 198,68 Q 218,50 238,68" stroke="currentColor" stroke-width={sw * 0.7} stroke-linecap="round" stroke-dasharray={dash}></path>
+
+  <!-- glass sheen and a duochrome glint -->
+  <g clip-path={`url(#L${uid})`} pointer-events="none">
+    <rect x="60" y="26" width="180" height="120" fill={`url(#g${uid})`} opacity=".5"></rect>
+  </g>
+  <g clip-path={`url(#R${uid})`} pointer-events="none">
+    <rect x="208" y="26" width="180" height="120" fill={`url(#g${uid})`} opacity=".5"></rect>
+    {!dashed && <circle cx="238" cy="40" r="7" fill={tint} opacity=".55" />}
+    {!dashed && <circle cx="256" cy="132" r="6" fill="#1d6b50" opacity=".45" />}
+  </g>
+
+  <!-- nose pads -->
+  <path d="M 206,104 q -6,10 -2,16 M 230,104 q 6,10 2,16" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".7"></path>
+</svg>
+
+<style>
+  .lens-before {
+    display: none;
+  }
+</style>

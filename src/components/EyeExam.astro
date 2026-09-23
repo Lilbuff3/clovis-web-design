@@ -2,7 +2,7 @@
 import Mark from "./Mark.astro";
 import SectionHead from "./SectionHead.astro";
 import { SCOPE_TIERS, smsUri } from "@/data/calculator";
-import { eyeExam as e, fees } from "@/data/fovea";
+import { brand, eyeExam as e, fees } from "@/data/fovea";
 
 const LETTERS = ["A", "B", "C"];
 // Resolved here so the script only carries strings: prices and names still come from calculator.ts / fovea.ts.
@@ -15,56 +15,85 @@ const results = e.results.map((r) => {
     recommend: tier ? `${fees.tiers[tier.id].name}, ${tier.title}${tier.price ? ` ($${tier.price.toLocaleString("en-US")})` : ""}` : "",
   };
 });
-const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
+const ROWS = ["20/200", "20/100", "20/70", "20/50", "20/40"];
+const year = new Date().getFullYear();
 ---
 
-<section id="exam" class="scroll-mt-28 py-24 sm:py-32" aria-labelledby="exam-title">
-  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+<section id="exam" class="paper relative scroll-mt-28 border-b border-ink/12" aria-labelledby="exam-title">
+  <div class="mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
     <SectionHead id="exam-title" {...e.head} />
 
-    <div class="mt-14 grid gap-10 lg:grid-cols-12" data-exam data-results={JSON.stringify(results)} data-sms={smsUri("")}>
-      <div class="lg:col-span-4" aria-hidden="true">
-        <p class="label text-muted">{e.progress}</p>
-        <ol class="mt-5 space-y-3">
-          {
-            e.questions.map((_, i) => (
-              <li data-row={i} class="exam-row flex items-center justify-between gap-4 border-b border-ink/10 pb-2 text-muted">
-                <span class="optotype" style={`font-size:${chartSizes[i]}`}>
-                  {e.chartRow}
-                </span>
-                <span class="row-check label rounded-full bg-duo-green px-2 py-1 text-paper">✓</span>
-              </li>
-            ))
-          }
-        </ol>
+    <div
+      class="grid grid-cols-1 gap-12 pt-12 lg:grid-cols-12 lg:gap-14"
+      data-exam
+      data-results={JSON.stringify(results)}
+      data-sms={smsUri("")}
+      data-hints={JSON.stringify(e.questions.map((q) => q.hint))}
+      data-done={e.doneHint}
+      data-fallback={e.patientFallback}
+      data-nothing={e.nothingYet}
+    >
+      <!-- progress chart -->
+      <div class="order-2 lg:order-1 lg:col-span-5" aria-hidden="true">
+        <div class="rounded-[28px] border border-ink/12 bg-bone-2 p-6 sm:p-8">
+          <div class="flex items-center justify-between">
+            <span class="label text-muted">{e.progress}</span>
+            <span data-percent class="tightnum text-[0.6875rem] text-vermilion">0%</span>
+          </div>
+          <ol class="mt-6 space-y-2">
+            {
+              ROWS.map((r, i) => (
+                <li data-row={i} class="exam-row flex items-center justify-between border-b border-ink/10 pb-2">
+                  <span class="optotype transition-colors duration-500" style={`font-size:${1.9 - i * 0.3}rem`}>
+                    {e.chartRow}
+                  </span>
+                  <span class="flex items-center gap-3">
+                    <span class="tightnum text-[0.6875rem] text-muted">{r}</span>
+                    <span class="row-check grid h-5 w-5 place-items-center rounded-full border text-[11px] transition-all duration-500">✓</span>
+                  </span>
+                </li>
+              ))
+            }
+          </ol>
+          <p data-hint class="mt-6 text-[13px] leading-relaxed text-ink-2">{e.questions[0].hint}</p>
+        </div>
       </div>
 
-      <div class="lg:col-span-8">
-        <form data-exam-form class="rounded-[28px] border border-ink/15 bg-card p-5 sm:p-9">
-          <label class="block">
+      <!-- question / result -->
+      <div class="order-1 lg:order-2 lg:col-span-7">
+        <form data-exam-form class="rounded-[28px] border border-ink/15 bg-bone p-6 sm:p-10">
+          <label class="mb-8 block" data-practice>
             <span class="label text-muted">{e.practiceLabel}</span>
             <input
               name="practice"
               type="text"
               autocomplete="organization"
               placeholder={e.practicePlaceholder}
-              class="mt-2 min-h-[48px] w-full rounded-xl border border-ink/20 bg-paper px-4 text-base focus:border-cobalt focus:ring-2 focus:ring-cobalt/30 focus:outline-none"
+              class="mt-2 min-h-[48px] w-full border-b border-ink/25 bg-transparent pb-2 font-display text-[17px] outline-none transition-colors placeholder:text-muted/70 focus:border-vermilion"
             />
           </label>
 
           {
             e.questions.map((q, i) => (
-              <fieldset data-q={i} class="exam-q mt-7">
-                <legend class="label text-cobalt">
-                  Q {i + 1} / {e.questions.length}
+              <fieldset data-q={i} class="exam-q [&+&]:mt-10">
+                <legend class="flex w-full items-center justify-between">
+                  <span class="tightnum text-[0.6875rem] text-muted">
+                    Q{i + 1} / {e.questions.length}
+                  </span>
+                  <span class="label text-muted">{e.answerHonestly}</span>
                 </legend>
-                <p class="mt-2 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">{q.q}</p>
-                <div class="mt-5 space-y-2.5">
+                <p class="mt-6 font-display text-[clamp(1.5rem,3.2vw,2.5rem)] leading-[1.06] text-ink">{q.q}</p>
+                <div class="mt-8 grid gap-2.5">
                   {q.options.map((o, k) => (
-                    <label class="option flex min-h-[56px] cursor-pointer items-center gap-4 rounded-2xl border border-ink/15 px-4 py-3 transition-colors hover:border-ink">
+                    <label class="option group relative flex min-h-[56px] cursor-pointer items-center gap-4 overflow-hidden rounded-2xl border border-ink/15 p-4 text-left transition-all duration-300 hover:border-ink/45 hover:bg-bone-2 sm:p-5">
                       <input type="radio" name={`q${i}`} value={k} class="sr-only" />
-                      <span class="letter optotype flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink/30 text-sm">{LETTERS[k]}</span>
-                      <span class="leading-snug text-ink">{o}</span>
+                      <span class="letter tightnum grid h-7 w-7 shrink-0 place-items-center rounded-full border border-ink/20 text-[0.6875rem] text-muted transition-colors group-hover:border-vermilion group-hover:text-vermilion">
+                        {LETTERS[k]}
+                      </span>
+                      <span class="text-[15.5px] leading-snug text-ink">{o}</span>
+                      <span class="label ml-auto hidden shrink-0 text-transparent transition-colors group-hover:text-vermilion sm:inline" aria-hidden="true">
+                        {e.pick}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -72,42 +101,119 @@ const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
             ))
           }
 
-          <button type="button" data-back hidden class="label mt-6 inline-flex min-h-[48px] items-center text-muted hover:text-ink">
+          <button type="button" data-back hidden class="label mt-6 inline-flex min-h-[48px] items-center text-muted underline decoration-ink/20 underline-offset-4 hover:text-ink">
             {e.back}
           </button>
           <noscript>
-            <p class="mt-7 leading-relaxed text-ink-soft">{e.noScript}</p>
-            <a
-              href={smsUri("Hi Adam, my website eye exam answers: ")}
-              class="mt-4 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 font-semibold text-paper">Text me</a
-            >
+            <p class="mt-7 leading-relaxed text-ink-2">{e.noScript}</p>
+            <a href={smsUri("Hi Adam, my website eye exam answers: ")} class="mt-4 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-bone">
+              <span class="label">Text me</span>
+            </a>
           </noscript>
         </form>
 
-        <div data-exam-result hidden class="slip rounded-[28px] border border-ink bg-card p-6 sm:p-10">
-          <div class="flex items-start justify-between gap-4 border-b border-dashed border-ink/30 pb-5">
-            <div>
-              <p class="label text-muted">{e.resultTitle}</p>
-              <h3 tabindex="-1" data-field="for" class="mt-2 text-4xl outline-none leading-none text-ink sm:text-5xl"></h3>
+        <!-- the prescription slip -->
+        <div data-exam-result hidden>
+          <div class="slip relative overflow-hidden rounded-t-[22px] border border-ink/20 bg-card p-6 shadow-[0_40px_80px_-50px_rgba(22,35,44,.8)] sm:p-8">
+            <div class="absolute inset-x-0 top-0 flex h-3 justify-between" aria-hidden="true">
+              {Array.from({ length: 40 }).map(() => <span class="h-3 w-[3px] bg-bone-2" />)}
             </div>
-            <Mark class="h-12 w-12 shrink-0 text-cobalt" />
+
+            <div class="flex items-start justify-between border-b-2 border-vermilion pb-4">
+              <div>
+                <p class="font-display text-[clamp(1.3rem,2.4vw,1.8rem)] leading-none">{brand.name}</p>
+                <p class="label mt-1 text-muted">{brand.tagline}</p>
+              </div>
+              <div class="text-right">
+                <p class="label text-muted">{e.resultTitle}</p>
+                <p data-field="date" class="tightnum text-[0.6875rem]"></p>
+              </div>
+            </div>
+
+            <div class="mt-5 grid gap-5 sm:grid-cols-2">
+              <div>
+                <p class="label text-muted">{e.patient}</p>
+                <h3 tabindex="-1" data-field="for" class="mt-1 text-[19px] leading-tight outline-none"></h3>
+                <p class="tightnum mt-1 text-[0.6875rem] text-muted">{e.patientLine}</p>
+              </div>
+              <div>
+                <p class="label text-muted">{e.dispenser}</p>
+                <p class="mt-1 font-display text-[19px] leading-tight">{e.dispenserName}</p>
+                <p class="tightnum mt-1 text-[0.6875rem] text-muted">{e.dispenserLine}</p>
+              </div>
+            </div>
+
+            <!-- Rx table: optician's shorthand, pure decoration derived from the score. -->
+            <table class="mt-6 w-full border-collapse text-left" aria-hidden="true">
+              <thead>
+                <tr class="border-y border-dashed border-ink/25">
+                  {["", "Sphere", "Cylinder", "Axis", "ADD", "PD"].map((h) => (
+                    <th class="label py-2 font-normal text-muted">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody class="tightnum text-[13px]">
+                {["OD", "OS"].map((eye, k) => (
+                  <tr class:list={[k === 0 && "border-b border-dashed border-ink/20"]}>
+                    <td class="label py-2.5 text-muted">{eye}</td>
+                    <td data-rx="sph"></td>
+                    <td data-rx="cyl"></td>
+                    <td data-rx="axis"></td>
+                    <td data-rx="add"></td>
+                    <td>{k === 0 ? 32 : 30}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <dl class="mt-5 flex flex-wrap items-center justify-between gap-4 border-y border-dashed border-ink/25 py-4">
+              <div>
+                <dt class="label text-muted">{e.resultAcuity}</dt>
+                <dd data-field="acuity" class="tightnum text-[13px]"></dd>
+              </div>
+              <span class="text-lg" aria-hidden="true">→</span>
+              <div>
+                <dt class="label text-muted">{e.corrected}</dt>
+                <dd class="tightnum text-[13px] text-vermilion">20/20</dd>
+              </div>
+              <div class="hidden h-8 w-px bg-ink/15 sm:block" aria-hidden="true"></div>
+              <div>
+                <dt class="label text-muted">{e.resultRecommend}</dt>
+                <dd data-field="recommend" class="font-display text-[15px]"></dd>
+              </div>
+            </dl>
+
+            <p data-field="verdict" class="mt-5 text-[15px] leading-relaxed text-ink-2"></p>
+
+            <div class="mt-6 flex items-end justify-between gap-6">
+              <div class="hatch h-10 w-40 opacity-50" aria-hidden="true"></div>
+              <div class="text-right">
+                <p class="accent font-display text-[22px] leading-none text-optic">{e.dispenserName}</p>
+                <p class="label mt-1 text-muted">{e.signed}</p>
+              </div>
+            </div>
+
+            <div class="stamp pointer-events-none absolute -right-2 bottom-16 grid h-28 w-28 place-items-center rounded-full border-[3px] border-vermilion/70 text-vermilion" aria-hidden="true">
+              <div class="text-center">
+                <Mark class="mx-auto h-4 w-4" />
+                <span class="label mt-1 block leading-tight">{e.stamp}<br />{year}</span>
+              </div>
+            </div>
+
+            <div class="absolute inset-x-0 -bottom-px h-3" aria-hidden="true">
+              <svg viewBox="0 0 400 12" preserveAspectRatio="none" class="h-full w-full">
+                <path
+                  d="M0,0 H400 V4 L390,12 L380,4 L370,12 L360,4 L350,12 L340,4 L330,12 L320,4 L310,12 L300,4 L290,12 L280,4 L270,12 L260,4 L250,12 L240,4 L230,12 L220,4 L210,12 L200,4 L190,12 L180,4 L170,12 L160,4 L150,12 L140,4 L130,12 L120,4 L110,12 L100,4 L90,12 L80,4 L70,12 L60,4 L50,12 L40,4 L30,12 L20,4 L10,12 L0,4 Z"
+                  fill="#f7f2e8"></path>
+              </svg>
+            </div>
           </div>
-          <dl class="mt-6 grid gap-6 sm:grid-cols-2">
-            <div>
-              <dt class="label text-muted">{e.resultAcuity}</dt>
-              <dd data-field="acuity" class="optotype mt-2 text-5xl text-ink"></dd>
-            </div>
-            <div data-recommend-wrap>
-              <dt class="label text-muted">{e.resultRecommend}</dt>
-              <dd data-field="recommend" class="mt-2 font-display text-3xl leading-tight text-cobalt"></dd>
-            </div>
-          </dl>
-          <p data-field="verdict" class="mt-6 text-lg leading-relaxed text-ink-soft"></p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a data-field="sms" href="#" class="inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 font-semibold text-paper hover:bg-cobalt">
-              {e.textResult}
+
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <a data-field="sms" href="#" class="wipe inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-bone">
+              <span class="label relative z-10">{e.textResult}</span>
             </a>
-            <button type="button" data-again class="inline-flex min-h-[48px] items-center rounded-full border border-ink/25 px-6 font-semibold text-ink hover:border-ink">
+            <button type="button" data-again class="label inline-flex min-h-[48px] items-center rounded-full border border-ink/20 px-6 transition-colors hover:border-ink/50">
               {e.again}
             </button>
           </div>
@@ -118,17 +224,27 @@ const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
 </section>
 
 <style>
-  .row-check {
-    visibility: hidden;
+  .exam-row .optotype {
+    color: rgb(22 35 44 / 0.16);
   }
-  .exam-row.done {
-    color: var(--color-ink);
+  .row-check {
+    border-color: rgb(22 35 44 / 0.15);
+    color: transparent;
+  }
+  .exam-row.done .optotype {
+    color: var(--color-optic);
   }
   .exam-row.done .row-check {
-    visibility: visible;
+    border-color: var(--color-optic);
+    background: var(--color-optic);
+    color: var(--color-bone);
   }
-  .exam-row.current {
-    color: var(--color-cobalt);
+  .exam-row.current .optotype {
+    color: var(--color-vermilion);
+  }
+  .exam-row.current .row-check {
+    border-color: var(--color-vermilion);
+    color: var(--color-vermilion);
   }
   /* With the script running, one question at a time. Without it, all five show as a plain form. */
   [data-exam-form].js .exam-q {
@@ -138,17 +254,28 @@ const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
     display: block;
   }
   .option:has(input:checked) {
-    border-color: var(--color-cobalt);
-    background: var(--color-cobalt-wash);
+    border-color: var(--color-vermilion);
+    background: var(--color-bone-2);
   }
   .option:has(input:checked) .letter {
-    background: var(--color-cobalt);
-    border-color: var(--color-cobalt);
-    color: var(--color-paper);
+    background: var(--color-vermilion);
+    border-color: var(--color-vermilion);
+    color: var(--color-bone);
   }
   .option:has(input:focus-visible) {
-    outline: 2px solid var(--color-cobalt);
+    outline: 2px solid var(--color-vermilion);
     outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .slip {
+      animation: printOut 0.8s var(--ease-out-expo) both;
+    }
+    .stamp {
+      animation: stampIn 0.7s 0.45s var(--ease-out-expo) both;
+    }
+  }
+  .stamp {
+    rotate: -9deg;
   }
 </style>
 
@@ -158,22 +285,32 @@ const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
   const root = document.querySelector<HTMLElement>("[data-exam]");
   if (root) {
     const results: Result[] = JSON.parse(root.dataset.results!);
+    const hints: string[] = JSON.parse(root.dataset.hints!);
     const form = root.querySelector<HTMLFormElement>("[data-exam-form]")!;
     const slip = root.querySelector<HTMLElement>("[data-exam-result]")!;
     const back = root.querySelector<HTMLButtonElement>("[data-back]")!;
+    const percent = root.querySelector<HTMLElement>("[data-percent]")!;
+    const practiceField = root.querySelector<HTMLElement>("[data-practice]")!;
+    const hint = root.querySelector<HTMLElement>("[data-hint]")!;
     const qs = [...root.querySelectorAll<HTMLElement>(".exam-q")];
     const rows = [...root.querySelectorAll<HTMLElement>(".exam-row")];
     const field = (name: string) => slip.querySelector<HTMLElement>(`[data-field=${name}]`)!;
+    const rx = (name: string) => slip.querySelectorAll<HTMLElement>(`[data-rx=${name}]`);
+    const signed = (n: number) => `${n < 0 ? "−" : "+"}${Math.abs(n).toFixed(2)}`;
     let answers: number[] = [];
 
     const show = () => {
       const step = answers.length;
+      const done = step === qs.length;
       qs.forEach((q, i) => q.classList.toggle("current", i === step));
       rows.forEach((r, i) => {
         r.classList.toggle("done", i < step);
-        r.classList.toggle("current", i === step);
+        r.classList.toggle("current", i === step && !done);
       });
-      back.hidden = step === 0;
+      percent.textContent = `${Math.round((step / qs.length) * 100)}%`;
+      hint.textContent = done ? root.dataset.done! : hints[step];
+      back.hidden = step === 0 || done;
+      practiceField.hidden = step > 0;
     };
 
     const finish = () => {
@@ -181,15 +318,21 @@ const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
       const problems = answers.reduce((sum, k) => sum + (2 - k), 0);
       const r = results.find((x) => problems <= x.max) ?? results[results.length - 1];
       const practice = (form.elements.namedItem("practice") as HTMLInputElement).value.trim();
-      field("for").textContent = practice || "Your website";
+      field("for").textContent = practice || root.dataset.fallback!;
+      field("date").textContent = new Date().toLocaleDateString("en-US");
       field("acuity").textContent = r.acuity;
-      field("recommend").textContent = r.recommend;
-      slip.querySelector<HTMLElement>("[data-recommend-wrap]")!.hidden = !r.recommend;
+      field("recommend").textContent = r.recommend || root.dataset.nothing!;
       field("verdict").textContent = r.verdict;
+      // Optician's shorthand, scaled by the number of problems. Decoration only.
+      rx("sph").forEach((td) => (td.textContent = signed(0.25 + problems * 0.75)));
+      rx("cyl").forEach((td) => (td.textContent = signed(-(0.25 + problems * 0.25))));
+      rx("axis").forEach((td) => (td.textContent = String(180 - problems * 9)));
+      rx("add").forEach((td) => (td.textContent = signed(0.75 + problems * 0.25)));
       const body = `Hi Adam, I took your website eye exam${practice ? ` for ${practice}` : ""}. Reading: ${r.acuity}.${r.recommend ? ` Recommended: ${r.recommend}.` : ""} Can we talk?`;
       (field("sms") as HTMLAnchorElement).href = root.dataset.sms + encodeURIComponent(body);
       form.hidden = true;
       slip.hidden = false;
+      show();
       field("for").focus();
     };
 

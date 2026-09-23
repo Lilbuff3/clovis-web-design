@@ -1,20 +1,23 @@
 ---
 import Base from "@/layouts/Base.astro";
 import Nav from "@/components/Nav.astro";
+import Mark from "@/components/Mark.astro";
+import AcuityRail from "@/components/AcuityRail.astro";
 import Hero from "@/components/Hero.astro";
-import Work from "@/components/Work.astro";
-import Pricing from "@/components/Pricing.astro";
 import Ledger from "@/components/Ledger.astro";
-import Receipt from "@/components/Receipt.astro";
+import Work from "@/components/Work.astro";
 import Process from "@/components/Process.astro";
 import EyeExam from "@/components/EyeExam.astro";
-import Services from "@/components/Services.astro";
 import Practice from "@/components/Practice.astro";
+import Pricing from "@/components/Pricing.astro";
+import Letters from "@/components/Letters.astro";
+import Reception from "@/components/Reception.astro";
 import Faq from "@/components/Faq.astro";
 import Footer from "@/components/Footer.astro";
 import StickyCall from "@/components/StickyCall.astro";
 import { homeSchema } from "@/lib/schema";
 import { PRICING_CONSTANTS } from "@/data/calculator";
+import { chrome, stats } from "@/data/fovea";
 
 const landingPrice = `$${PRICING_CONSTANTS.tiers.landing.price}`;
 ---
@@ -26,23 +29,70 @@ const landingPrice = `$${PRICING_CONSTANTS.tiers.landing.price}`;
 >
   <a
     href="#main"
-    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-medium focus:text-ink focus:shadow-xl focus:ring-2 focus:ring-cobalt"
+    class="label sr-only focus:not-sr-only focus:fixed focus:top-12 focus:left-4 focus:z-[90] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-bone"
   >
     Skip to main content
   </a>
+
+  <!-- Opening card: the chart slides away on load. CSS only, so it can never trap anyone; skipped with reduced motion. -->
+  <div class="curtain pointer-events-none fixed inset-0 z-[80] grid place-items-center bg-bone" aria-hidden="true">
+    <div class="text-center">
+      <Mark class="mx-auto h-16 w-16 text-ink/80" />
+      <span class="label mt-6 block text-muted">{chrome.curtain}</span>
+    </div>
+  </div>
+
   <Nav />
+  <AcuityRail />
   <main id="main">
     <Hero />
-    <Work />
-    <Pricing />
     <Ledger />
-    <Receipt />
+    <Work />
     <Process />
     <EyeExam />
-    <Services />
+
+    <!-- The butter strip: results so far, every number from the case studies. -->
+    <section aria-label={stats.label} class="relative overflow-hidden border-b border-ink/12 bg-butter">
+      <dl class="mx-auto grid max-w-[1500px] grid-cols-2 gap-x-6 gap-y-8 px-4 py-12 sm:px-6 md:grid-cols-4 md:py-16 lg:px-10">
+        {
+          stats.items.map((s, i) => (
+            <div class="flex flex-col items-start" data-reveal>
+              <dt class="label order-2 mt-3 max-w-[30ch] leading-relaxed text-ink-2">{s.k}</dt>
+              <dd class="order-1 font-display text-[clamp(2.6rem,7vw,5.4rem)] leading-[0.85] text-ink">{s.n}</dd>
+              <dd class="tightnum order-3 mt-4 text-[0.6875rem] text-ink-2" aria-hidden="true">
+                0{i + 1}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
     <Practice />
+    <Pricing />
+    <Letters />
+    <Reception />
     <Faq />
   </main>
   <Footer />
   <StickyCall />
 </Base>
+
+<style>
+  .curtain {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .curtain {
+      visibility: visible;
+      animation: curtain 1s cubic-bezier(0.4, 0, 0.2, 1) 0.12s forwards;
+    }
+  }
+  @keyframes curtain {
+    to {
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+      visibility: hidden;
+    }
+  }
+</style>

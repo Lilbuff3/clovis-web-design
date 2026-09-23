@@ -43,7 +43,7 @@ const fields = [
             step={f.step}
             min="0"
             max={"max" in f ? f.max : undefined}
-            class="mt-1.5 min-h-[48px] w-full rounded-xl border border-ink/20 bg-paper px-3.5 py-2.5 text-base text-ink focus:border-cobalt focus:outline-none focus:ring-2 focus:ring-cobalt/30"
+            class="mt-1.5 min-h-[48px] w-full rounded-xl border border-ink/20 bg-bone px-3.5 py-2.5 text-base text-ink focus:border-vermilion focus:outline-none focus:ring-2 focus:ring-vermilion/30"
           />
         </label>
       ))
@@ -51,7 +51,7 @@ const fields = [
   </div>
   <p class="mt-3 text-sm text-muted">
     Don&rsquo;t know your load time?
-    <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-cobalt">
+    <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-vermilion">
       Check it free on Google PageSpeed ↗
     </a>
     and use the mobile &ldquo;Largest Contentful Paint&rdquo; number.
@@ -77,12 +77,12 @@ const fields = [
   <a
     data-out="sms"
     href={smsUri(message(DEFAULTS.seconds, r.lostPerMonth))}
-    class="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt"
+    class="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink px-6 py-3 text-sm font-semibold text-bone transition-colors hover:bg-vermilion"
   >
     Text me these numbers
   </a>
 
-  <details class="mt-6 text-sm text-ink-soft">
+  <details class="mt-6 text-sm text-ink-2">
     <summary class="flex min-h-[48px] cursor-pointer items-center font-semibold text-ink">How this is worked out</summary>
     <p class="mt-2 leading-relaxed">
       Compared with a page that loads in about a second. Google&rsquo;s mobile research found that going from 1s to 3s raises
@@ -93,7 +93,7 @@ const fields = [
         href="https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/page-load-time-statistics/"
         target="_blank"
         rel="noopener"
-        class="underline underline-offset-4 hover:text-cobalt">Source ↗</a
+        class="underline underline-offset-4 hover:text-vermilion">Source ↗</a
       >
     </p>
   </details>

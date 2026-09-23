@@ -4,24 +4,24 @@ import { faqs } from "@/data/faq";
 import { faqHead } from "@/data/fovea";
 ---
 
-<section id="faq" class="scroll-mt-28 border-t border-ink/10 bg-panel py-24 sm:py-32" aria-labelledby="faq-title">
-  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+<section id="faq" class="relative scroll-mt-28 bg-bone-2" aria-labelledby="faq-title">
+  <div class="mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
     <SectionHead id="faq-title" {...faqHead} />
 
-    <div class="mt-14 border-b border-ink/15 lg:ml-[calc(100%/12*4)]">
+    <div class="mt-12 border-b border-ink/15 lg:ml-[calc(100%/12*4)]">
       {
         faqs.map((faq, i) => (
           <details id={faq.id} class="group scroll-mt-28 border-t border-ink/15" open={i === 0}>
             <summary class="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-6 py-4 [&::-webkit-details-marker]:hidden">
-              <h3 class="font-display text-2xl leading-tight text-ink sm:text-[1.7rem]">{faq.question}</h3>
+              <h3 class="text-2xl leading-tight text-ink sm:text-[1.7rem]">{faq.question}</h3>
               <span
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/25 text-lg text-ink transition-transform duration-300 group-open:rotate-45 group-open:border-cobalt group-open:bg-cobalt group-open:text-paper"
+                class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-ink/25 text-lg text-ink transition-transform duration-300 group-open:rotate-45 group-open:border-vermilion group-open:bg-vermilion group-open:text-bone"
                 aria-hidden="true"
               >
                 +
               </span>
             </summary>
-            <p class="max-w-3xl pb-7 leading-relaxed text-ink-soft">{faq.answer}</p>
+            <p class="max-w-3xl pb-7 text-[15.5px] leading-relaxed text-ink-2">{faq.answer}</p>
           </details>
         ))
       }

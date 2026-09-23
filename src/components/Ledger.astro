@@ -2,51 +2,55 @@
 import Mark from "./Mark.astro";
 import SectionHead from "./SectionHead.astro";
 import { duochrome as d } from "@/data/fovea";
+
+const panes = [
+  { side: "red", ...d.red },
+  { side: "green", ...d.green },
+];
 ---
 
-<section id="ledger" class="scroll-mt-28 py-24 sm:py-32" aria-labelledby="ledger-title">
-  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+<section id="ledger" class="relative scroll-mt-28 border-b border-ink/12 bg-bone-2" aria-labelledby="ledger-title">
+  <div class="mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
     <SectionHead id="ledger-title" {...d.head} />
 
-    <!-- Red layer is clipped to --r; the range input on top moves it. Without script it sits at 50/50. -->
-    <div class="duo relative mt-14 h-[470px] overflow-hidden rounded-[28px] border border-ink sm:h-[400px]" style="--r:50%" data-duo>
-      <div class="absolute inset-0 bg-duo-green text-paper">
-        <div class="ml-auto flex h-full w-1/2 flex-col p-4 sm:p-9">
-          <p class="label text-paper">{d.green.note}</p>
-          <h3 class="mt-2 text-[1.9rem] leading-none sm:text-5xl">{d.green.title}</h3>
-          <ul class="mt-5 space-y-2.5 text-[0.95rem] sm:text-base">
-            {
-              d.green.items.map((item) => (
-                <li class="flex gap-2.5">
-                  <Mark class="mt-1 h-3 w-3 shrink-0" />
-                  <span class="leading-snug">{item}</span>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="label mt-auto text-paper">{d.green.foot}</p>
-        </div>
-      </div>
-      <div class="duo-red absolute inset-0 bg-duo-red text-paper">
-        <div class="flex h-full w-1/2 flex-col p-4 sm:p-9">
-          <p class="label text-paper">{d.red.note}</p>
-          <h3 class="mt-2 text-[1.9rem] leading-none sm:text-5xl">{d.red.title}</h3>
-          <ul class="mt-5 space-y-2.5 text-[0.95rem] sm:text-base">
-            {
-              d.red.items.map((item) => (
-                <li class="flex gap-2.5">
-                  <Mark class="mt-1 h-3 w-3 shrink-0" />
-                  <span class="leading-snug">{item}</span>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="label mt-auto text-paper">{d.red.foot}</p>
-        </div>
-      </div>
-      <div class="duo-handle pointer-events-none absolute inset-y-0 w-0.5 bg-paper" aria-hidden="true">
-        <span class="duo-knob absolute top-1/2 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-ink bg-paper text-ink">
-          <Mark class="h-5 w-5" />
+    <!-- The red layer is clipped at --r; the range input on top moves it. Without script it rests at 50/50. -->
+    <div class="duo relative mt-12 h-[470px] overflow-hidden rounded-[28px] border border-ink/15 select-none" style="--r:50%" data-duo data-cursor>
+      {
+        panes.map((p) => (
+          <div class:list={["pane absolute inset-0 text-bone", p.side === "red" ? "pane-red" : "pane-green"]}>
+            <div class:list={["flex h-full w-1/2 flex-col justify-between p-4 sm:p-7 md:p-10", p.side === "green" && "ml-auto"]}>
+              <div>
+                <p class="label text-bone">{p.note}</p>
+                <h3 class="mt-4 text-[clamp(1.7rem,4.6vw,3.6rem)] text-bone">{p.title}</h3>
+              </div>
+              <div>
+                <ul class="grid gap-2">
+                  {p.items.map((item) => (
+                    <li class="flex items-start gap-3 text-[13.5px] leading-snug text-bone sm:text-[14.5px]">
+                      <Mark class="mt-[3px] h-2.5 w-2.5 shrink-0 opacity-70" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <p class="label mt-5 border-t border-bone/25 pt-3 text-bone">
+                  {p.side === "red" ? "◀ " : ""}
+                  {p.foot}
+                  {p.side === "green" ? " ▶" : ""}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+
+      <div class="duo-handle pointer-events-none absolute inset-y-0 z-20 w-10 -translate-x-1/2" aria-hidden="true">
+        <div class="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 bg-bone/95 shadow-[0_0_24px_rgba(22,35,44,.35)]"></div>
+        <span class="duo-knob absolute top-1/2 left-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-ink/20 bg-bone text-ink shadow-[0_10px_30px_-10px_rgba(22,35,44,.6)]">
+          <span class="flex items-center gap-[3px]">
+            <span class="block h-[9px] w-[1.5px] bg-ink/60"></span>
+            <Mark class="h-3 w-3" />
+            <span class="block h-[9px] w-[1.5px] bg-ink/60"></span>
+          </span>
         </span>
       </div>
       <input
@@ -57,33 +61,47 @@ import { duochrome as d } from "@/data/fovea";
         aria-label={d.sliderLabel}
         hidden
         data-duo-range
-        class="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+        class="absolute inset-0 z-30 h-full w-full cursor-ew-resize opacity-0"
       />
     </div>
-    <p class="label mt-3 text-muted" data-duo-hint hidden>{d.hint}</p>
+    <p class="label mt-4 text-center text-muted" data-duo-hint hidden>{d.hint}</p>
+
+    <!-- evidence -->
+    <p class="label mt-14 flex items-center gap-2 text-muted"><Mark class="h-3 w-3" /> {d.evidenceTitle}</p>
+    <dl class="graph mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-ink/12 bg-ink/10 md:grid-cols-4">
+      {
+        d.evidence.map((x) => (
+          <div class="flex flex-col bg-bone p-6 md:p-7">
+            <dt class="label order-2 mt-3 text-ink">{x.label}</dt>
+            <dd class="order-1 font-display text-[clamp(2rem,4.4vw,3.2rem)] leading-none text-ink">{x.value}</dd>
+            <dd class="order-3 mt-1 max-w-[22ch] text-[13px] leading-snug text-ink-2">{x.note}</dd>
+          </div>
+        ))
+      }
+    </dl>
 
     <table class="duo-table mt-16 w-full text-left">
       <caption class="label mb-5 text-left text-muted">{d.tableCaption}</caption>
       <thead>
         <tr class="label text-muted">
           <th scope="col" class="pb-3 font-normal">{d.columns.topic}</th>
-          <th scope="col" class="pb-3 font-normal text-duo-red">{d.columns.agency}</th>
-          <th scope="col" class="pb-3 font-normal text-cobalt">{d.columns.me}</th>
+          <th scope="col" class="pb-3 font-normal text-vermilion">{d.columns.agency}</th>
+          <th scope="col" class="pb-3 font-normal text-optic">{d.columns.me}</th>
         </tr>
       </thead>
       <tbody>
         {
           d.rows.map((r) => (
             <tr class="border-t border-ink/15">
-              <th scope="row" class="py-6 pr-8 align-top font-display text-[1.7rem] leading-tight font-normal text-ink">
+              <th scope="row" class="py-6 pr-8 align-top font-display text-[1.6rem] leading-tight font-medium text-ink">
                 {r.topic}
               </th>
               <td data-label={d.columns.agency} class="py-6 pr-8 align-top">
-                <strong class="block font-semibold text-duo-red">{r.agencyShort}</strong>
-                <span class="mt-1 block leading-relaxed text-ink-soft">{r.agency}</span>
+                <strong class="block font-semibold text-vermilion">{r.agencyShort}</strong>
+                <span class="mt-1 block leading-relaxed text-ink-2">{r.agency}</span>
               </td>
               <td data-label={d.columns.me} class="py-6 align-top">
-                <strong class="block font-semibold text-cobalt">{r.meShort}</strong>
+                <strong class="block font-semibold text-optic">{r.meShort}</strong>
                 <span class="mt-1 block leading-relaxed text-ink">{r.me}</span>
               </td>
             </tr>
@@ -95,14 +113,19 @@ import { duochrome as d } from "@/data/fovea";
 </section>
 
 <style>
-  .duo-red {
+  .pane-green {
+    background: linear-gradient(160deg, #1d6b50, #16624a);
+  }
+  .pane-red {
+    z-index: 10;
+    background: linear-gradient(160deg, #c63f23, #a8341c);
     clip-path: inset(0 calc(100% - var(--r)) 0 0);
   }
   .duo-handle {
     left: var(--r);
   }
   .duo:has(input:focus-visible) .duo-knob {
-    outline: 3px solid var(--color-paper);
+    outline: 3px solid var(--color-bone);
     outline-offset: 3px;
   }
   .duo-table th,
@@ -138,7 +161,7 @@ import { duochrome as d } from "@/data/fovea";
       display: block;
       font-family: var(--font-mono);
       font-size: 0.6875rem;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--color-muted);
       margin-bottom: 0.25rem;

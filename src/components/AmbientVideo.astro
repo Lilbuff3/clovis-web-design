@@ -1,0 +1,46 @@
+---
+// A muted looping clip, like the original's ambient videos, compressed and self-hosted in public/video
+// (name.mp4 plus a name.webp poster). It only plays while on screen, and only once the page has finished loading.
+// Without script, with reduced motion, or with Save-Data on, the poster simply stays.
+interface Props {
+  name: string;
+  class?: string;
+  /** Describe the clip when it carries meaning; leave out for pure atmosphere. */
+  label?: string;
+}
+const { name, class: className, label } = Astro.props;
+---
+
+<video
+  data-ambient
+  class={className}
+  muted
+  loop
+  playsinline
+  preload="none"
+  poster={`/video/${name}.webp`}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+>
+  <source src={`/video/${name}.mp4`} type="video/mp4" />
+</video>
+
+<script>
+  const clips = document.querySelectorAll<HTMLVideoElement>("video[data-ambient]");
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+  if (clips.length && !saveData && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          const clip = e.target as HTMLVideoElement;
+          if (e.isIntersecting) clip.play().catch(() => {});
+          else clip.pause();
+        }
+      },
+      { threshold: 0.04 }
+    );
+    const start = () => clips.forEach((clip) => io.observe(clip));
+    if (document.readyState === "complete") start();
+    else addEventListener("load", start, { once: true });
+  }
+</script>

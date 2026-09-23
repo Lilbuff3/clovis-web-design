@@ -1,49 +1,50 @@
 @import "tailwindcss";
 
-/* FOVEA design system. Colors: off-white paper, cool ink, one cobalt accent.
-   duo-red / duo-green belong to the duochrome slider only. */
+/* FOVEA design system, as in the original prototype: warm vellum paper, cool ink, one vermilion accent.
+   butter marks the featured price and the stats strip; optic green is the duochrome's other half.
+   Vermilion is the prototype's #cf4327 darkened just enough for small text on bone and bone-2 (4.5:1). */
 @theme {
-  --color-paper: #fbfaf6;
-  --color-panel: #f1efe8;
-  --color-card: #ffffff;
+  --color-bone: #f7f2e8;
+  --color-bone-2: #efe7d8;
+  --color-bone-3: #e5dbc9;
+  --color-card: #fdfaf3;
   --color-ink: #16232c;
-  --color-ink-soft: #3d4d56;
-  --color-muted: #5c6b73;
-  --color-cobalt: #1f45d6;
-  --color-cobalt-deep: #1535a8;
-  --color-cobalt-wash: #e8edfd;
+  --color-ink-2: #3d4d56;
+  --color-muted: #56656d;
+  --color-vermilion: #b93b21;
+  --color-optic: #1d6b50;
   --color-butter: #f0be4c;
-  --color-duo-red: #b8391f;
-  --color-duo-green: #1d6b50;
 
-  --font-display: "Instrument Serif", Georgia, serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-display: "Fraunces Variable", "Times New Roman", serif;
   --font-sans: "Archivo Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   :root {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
     font-synthesis: none;
   }
 
   body {
-    background-color: var(--color-paper);
+    background-color: var(--color-bone);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
   }
 
   ::selection {
-    background: var(--color-cobalt);
-    color: var(--color-paper);
+    background: var(--color-butter);
+    color: var(--color-ink);
   }
 
   h1,
@@ -51,14 +52,24 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.012em;
-    line-height: 1;
+    font-weight: 500;
+    line-height: 0.94;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
 
+  /* The italic word in each headline: soft, wonky Fraunces. */
+  h1 em,
+  h2 em,
+  .accent {
+    font-style: italic;
+    font-variation-settings:
+      "SOFT" 80,
+      "WONK" 1;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-cobalt);
+    outline: 2px solid var(--color-vermilion);
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -70,31 +81,100 @@
     font: inherit;
     color: inherit;
   }
+
+  /* Thin clinical scrollbar. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bone-2);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-muted);
+    border: 3px solid var(--color-bone-2);
+    border-radius: 99px;
+  }
 }
 
-/* ——— Type helpers ——— */
-/* The eye-chart letter: wide, heavy Archivo. */
-.optotype {
-  font-family: var(--font-sans);
-  font-stretch: 118%;
-  font-weight: 800;
-  text-transform: uppercase;
-  line-height: 0.86;
-  letter-spacing: -0.01em;
-}
-/* Small mono labels. Never below 11px. */
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.t-h2 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.5rem, 6.4vw, 5.25rem);
-  line-height: 0.95;
-  letter-spacing: -0.015em;
+/* Helpers live in the components layer, so a Tailwind utility on the same element (leading-*, text-*) still wins. */
+@layer components {
+  /* ——— Surfaces ——— */
+  .paper {
+    background-color: var(--color-bone);
+    background-image:
+      radial-gradient(120% 90% at 12% 0%, rgb(255 255 255 / 0.9) 0%, transparent 60%),
+      radial-gradient(90% 70% at 100% 100%, rgb(207 67 39 / 0.05) 0%, transparent 65%);
+  }
+  .graph {
+    background-image:
+      linear-gradient(to right, rgb(22 35 44 / 0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(22 35 44 / 0.055) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .hatch {
+    background-image: repeating-linear-gradient(-45deg, rgb(22 35 44 / 0.16) 0 1px, transparent 1px 7px);
+  }
+  /* Paper tooth over the whole page. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.34'/%3E%3C/svg%3E");
+  }
+
+  /* ——— Type helpers ——— */
+  /* The eye-chart letter: wide, heavy Archivo. */
+  .optotype {
+    font-family: var(--font-sans);
+    font-stretch: 118%;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.86;
+    letter-spacing: -0.005em;
+  }
+  /* Small mono labels. Never below 11px. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .tightnum {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .t-h2 {
+    font-size: clamp(2.4rem, 6vw, 5rem);
+  }
+
+  /* A dark button whose butter fill wipes down on hover. Put the text in a span with `relative z-10`. */
+  .wipe {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .wipe::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--color-butter);
+    translate: 0 -101%;
+    transition: translate 0.5s var(--ease-out-expo);
+  }
+  .wipe > * {
+    transition: color 0.5s;
+  }
+  .wipe:hover::after {
+    translate: 0 0;
+  }
+  .wipe:hover > * {
+    color: var(--color-ink);
+  }
 }
 
 /* ——— Motion. Everything is visible without these; they only add on top. ——— */
@@ -112,16 +192,62 @@
   }
 }
 
-/* Reading-depth ruler across the top of the page, driven by scroll position. */
-@supports (animation-timeline: scroll()) {
-  @keyframes ruler-fill {
-    from {
-      transform: scaleX(0);
-    }
+@keyframes marquee {
+  to {
+    translate: -50% 0;
   }
-  .ruler-fill {
-    animation: ruler-fill linear both;
-    animation-timeline: scroll(root);
+}
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+@keyframes float {
+  50% {
+    translate: 0 -12px;
+  }
+}
+@keyframes printOut {
+  from {
+    transform: translateY(-100%) rotate(-1deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) rotate(-1deg);
+    opacity: 1;
+  }
+}
+@keyframes stampIn {
+  0% {
+    transform: scale(2.4) rotate(-14deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.94) rotate(-9deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(-9deg);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .anim-marquee {
+    animation: marquee 34s linear infinite;
+  }
+  .anim-spin-slow {
+    animation: spin 26s linear infinite;
+  }
+  .anim-blink {
+    animation: blink 1.15s steps(2, start) infinite;
+  }
+  .anim-float {
+    animation: float 7s ease-in-out infinite;
   }
 }
 
@@ -137,8 +263,7 @@
   :root {
     scroll-behavior: auto;
   }
-  [data-reveal],
-  .ruler-fill {
+  [data-reveal] {
     animation: none !important;
   }
 }

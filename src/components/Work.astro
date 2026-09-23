@@ -1,145 +1,215 @@
 ---
+import Mark from "./Mark.astro";
+import Glasses from "./Glasses.astro";
 import SectionHead from "./SectionHead.astro";
-import { caseStudies, srcsetFor } from "@/data/caseStudies";
+import { caseStudies } from "@/data/caseStudies";
 import { work } from "@/data/fovea";
 import type { Metric } from "@/types";
 
 const fmt = (m: Metric) => `${m.prefix ?? ""}${m.value.toFixed(m.decimals ?? 0)}${m.suffix ?? ""}`;
-const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
+// The frame each client wears on the shelf. Purely visual.
+const SILHOUETTE: Record<string, "panto" | "rect"> = { "kidney-specialist-inc": "panto", "big-bros-dumpster": "rect" };
+const RECORD_METRIC = "PageSpeed, mobile";
+
+// Radios pick the frame; these rules show its record card and case sheet and lift it on the shelf.
+// Generated per case study, so adding one needs no CSS.
+const css = caseStudies
+  .map(
+    (_, i) =>
+      `.frames:has(#frame-${i}:checked) [data-frame="${i}"]{display:block}` +
+      `.frames:has(#frame-${i}:checked) label[for="frame-${i}"]{translate:0 -6px;border-color:rgb(22 35 44/.35);background:var(--color-bone-2);color:var(--color-vermilion)}` +
+      `.frames:has(#frame-${i}:focus-visible) label[for="frame-${i}"]{outline:2px solid var(--color-vermilion);outline-offset:3px}`
+  )
+  .join("");
 ---
 
-<section id="work" class="scroll-mt-28 py-24 sm:py-32" aria-labelledby="work-title">
-  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+<section id="work" class="paper relative scroll-mt-28 border-b border-ink/12" aria-labelledby="work-title">
+  <style is:inline set:html={css}></style>
+  <div class="frames mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
     <SectionHead id="work-title" {...work.head} />
 
-    <div class="mt-14 space-y-8">
-      {
-        caseStudies.map((s, i) => (
-          <article class="record grid grid-cols-1 gap-8 rounded-[28px] border border-ink/15 bg-card p-4 sm:p-8 lg:grid-cols-12 lg:gap-12" data-reveal>
-            <div class:list={["lg:sticky lg:top-28 lg:col-span-7 lg:self-start", i % 2 === 1 && "lg:order-2"]}>
-              <div class="overflow-hidden rounded-2xl border border-ink/15 bg-panel">
-                <div class="flex items-center justify-between gap-3 border-b border-ink/10 py-1 pr-1.5 pl-4">
-                  <span class="label truncate text-muted">{host(s.url)}</span>
-                  <label class="ba-toggle label inline-flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 rounded-full px-3 text-ink hover:text-cobalt">
-                    <input type="checkbox" class="sr-only" />
-                    <span class="lens-dot" aria-hidden="true" />
-                    <span class="when-after">{work.showBefore}</span>
-                    <span class="when-before">{work.showAfter}</span>
-                  </label>
-                </div>
-                <div class="relative aspect-[16/9]">
-                  <img
-                    src={s.image}
-                    srcset={srcsetFor(s.image)}
-                    sizes="(min-width: 1024px) 55vw, 100vw"
-                    alt={s.imageAlt}
-                    width={s.imageWidth}
-                    height={s.imageHeight}
-                    loading="lazy"
-                    decoding="async"
-                    class="shot-after absolute inset-0 h-full w-full object-cover object-top"
-                  />
-                  <div class="shot-before absolute inset-0 p-[4%]" aria-hidden="true">
-                    <div class="h-[8%] w-full rounded bg-[#c9c5bb]" />
-                    <div class="mt-[3%] flex h-[42%] items-center justify-center rounded bg-[#d6d2c8]">
-                      <span class="h-10 w-10 rounded-full border-4 border-[#b9b3a3] border-t-transparent" />
+    <fieldset>
+      <legend class="sr-only">{work.pick}</legend>
+      {caseStudies.map((s, i) => <input type="radio" name="frame" id={`frame-${i}`} class="sr-only" checked={i === 0} aria-label={s.client} />)}
+    </fieldset>
+
+    <div class="grid grid-cols-1 gap-10 pt-10 lg:grid-cols-12 lg:gap-12">
+      <!-- the fitted pair -->
+      <div class="lg:col-span-7">
+        {
+          caseStudies.map((s, i) => {
+            const speed = s.metrics.find((m) => m.label === RECORD_METRIC)!;
+            return (
+              <div data-frame={i} class="record frame-panel relative">
+                <div
+                  class="pointer-events-none absolute inset-0 rounded-[28px] opacity-70 blur-2xl"
+                  style={`background:radial-gradient(60% 60% at 50% 40%, ${s.accent}33, transparent 70%)`}
+                  aria-hidden="true"
+                />
+                <div class="relative rounded-[28px] border border-ink/12 bg-gradient-to-b from-bone to-bone-2 p-5 sm:p-8">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <p class="label text-muted">
+                        {work.record} · № {s.index}
+                      </p>
+                      <p class="mt-1 font-display text-[clamp(1.5rem,2.6vw,2.1rem)] leading-tight text-ink">{s.client}</p>
                     </div>
-                    <div class="mt-[4%] h-[3%] w-3/4 rounded bg-[#d9d5cc]" />
-                    <div class="mt-[2%] h-[3%] w-2/3 rounded bg-[#dedad2]" />
-                    <div class="mt-[2%] h-[3%] w-1/2 rounded bg-[#dedad2]" />
-                    <div class="absolute inset-x-[4%] bottom-[4%] h-[14%] rounded bg-[#bcb7ab]" />
+                    <div class="shrink-0 text-right">
+                      <p class="label text-muted">{speed.label}</p>
+                      <p class="tightnum text-[clamp(1rem,1.6vw,1.25rem)] text-vermilion">{fmt(speed)}</p>
+                    </div>
+                  </div>
+
+                  <Glasses uid={s.id} silhouette={SILHOUETTE[s.id] ?? "round"} image={s.image} tint={s.accent} class="mt-4 w-full text-ink" />
+
+                  <div class="mt-4 flex items-center justify-between gap-4 border-t border-ink/10 pt-4">
+                    <label class="ba inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-ink/15 p-1">
+                      <input type="checkbox" class="sr-only" aria-label={work.showBefore} />
+                      <span class="ba-before label rounded-full px-3 py-3 leading-none transition-colors">{work.before}</span>
+                      <span class="ba-after label rounded-full px-3 py-3 leading-none transition-colors">{work.after}</span>
+                    </label>
+                    <p class="label max-w-[60%] text-right leading-relaxed text-muted">
+                      <span class="when-after">{s.stack.join(" · ")}</span>
+                      <span class="when-before">{work.beforeNote}</span>
+                    </p>
                   </div>
                 </div>
               </div>
-              <p class="before-note label mt-3 text-muted">{work.beforeNote}</p>
-            </div>
+            );
+          })
+        }
 
-            <div class="flex flex-col lg:col-span-5">
-              <p class="label text-muted">
-                {work.record} № {s.index} · {s.location} · {s.year}
-              </p>
-              <h3 class="mt-3 text-[2.4rem] leading-none text-ink sm:text-5xl">{s.client}</h3>
-              <p class="mt-3 text-lg leading-snug text-ink-soft">{s.headline}</p>
+        <!-- the frame shelf -->
+        <div class="mt-8 grid grid-cols-3 gap-2 sm:gap-3">
+          {
+            caseStudies.map((s, i) => (
+              <label
+                for={`frame-${i}`}
+                class="group relative cursor-pointer rounded-2xl border border-ink/10 p-1.5 text-ink transition-all duration-500 hover:-translate-y-1 hover:border-ink/25 sm:p-2"
+              >
+                <Glasses uid={`shelf-${s.id}`} silhouette={SILHOUETTE[s.id] ?? "round"} class="w-full opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
+                <span class="label mt-1 block truncate text-muted">
+                  {s.index} {work.short[s.id] ?? s.client}
+                </span>
+              </label>
+            ))
+          }
+          <a
+            href="#book"
+            aria-label={work.yoursLabel}
+            class="group relative rounded-2xl border border-dashed border-ink/25 p-1.5 text-muted transition-all duration-500 hover:-translate-y-1 hover:border-ink/50 hover:text-ink sm:p-2"
+          >
+            <Glasses uid="shelf-yours" silhouette="round" dashed class="w-full" />
+            <span class="label mt-1 block truncate">
+              {String(caseStudies.length + 1).padStart(2, "0")} {work.yours}
+            </span>
+          </a>
+        </div>
+      </div>
 
-              <dl class="mt-6 grid grid-cols-2 gap-4 border-y border-ink/10 py-5">
-                {[s.metrics[0], s.metrics[2]].map((m) => (
-                  <div class="flex flex-col-reverse gap-2">
-                    <dt class="label text-muted">{m.label}</dt>
-                    <dd class="optotype text-[2.1rem] text-ink sm:text-4xl">{fmt(m)}</dd>
-                  </div>
-                ))}
-              </dl>
+      <!-- the case sheet -->
+      <div class="lg:col-span-5">
+        {
+          caseStudies.map((s, i) => {
+            const outcome = s.metrics.filter((m) => m.label !== RECORD_METRIC).slice(0, 3);
+            return (
+              <article data-frame={i} class="frame-panel">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="label rounded-full bg-optic px-3 py-1.5 text-bone">{s.industry}</span>
+                  <span class="label text-muted">
+                    {s.location} · {s.year}
+                  </span>
+                </div>
 
-              <p class="label mt-6 text-cobalt">{work.complaint}</p>
-              <p class="mt-2 leading-relaxed text-ink-soft">{s.challenge.headline}</p>
+                <h3 class="mt-6 text-[clamp(1.8rem,3.6vw,2.9rem)] leading-[1.02] text-ink">{s.headline}</h3>
 
-              <p class="label mt-6 text-cobalt">{work.prescription}</p>
-              <ol class="mt-2 space-y-2">
-                {s.solution.moves.slice(0, 3).map((mv, n) => (
-                  <li class="flex gap-3 text-ink-soft">
-                    <span class="label pt-1 text-muted">0{n + 1}</span>
-                    {mv.title}
-                  </li>
-                ))}
-              </ol>
+                <p class="label mt-7 flex items-center gap-2 text-vermilion">
+                  <span class="h-px w-5 bg-vermilion" aria-hidden="true" />
+                  {work.complaint}
+                </p>
+                <p class="mt-3 text-[15.5px] leading-relaxed text-ink-2">{s.challenge.headline}</p>
 
-              <blockquote class="mt-7 border-l-2 border-cobalt pl-4">
-                <p class="font-display text-xl leading-snug text-ink italic">“{s.quote.text}”</p>
-                <footer class="label mt-3 text-muted">{s.quote.name}</footer>
-              </blockquote>
+                <p class="label mt-7 flex items-center gap-2 text-optic">
+                  <span class="h-px w-5 bg-optic" aria-hidden="true" />
+                  {work.prescription}
+                </p>
+                <ol class="mt-3 grid gap-3">
+                  {s.solution.moves.slice(0, 3).map((mv, n) => (
+                    <li class="flex items-start gap-3">
+                      <span class="tightnum mt-[3px] text-[0.6875rem] text-muted">{String(n + 1).padStart(2, "0")}</span>
+                      <span class="text-[15px] leading-snug text-ink">{mv.title}</span>
+                    </li>
+                  ))}
+                </ol>
 
-              <div class="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-7">
-                <a
-                  href={`/work/${s.id}/`}
-                  class="inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 text-[0.9rem] font-semibold text-paper transition-colors hover:bg-cobalt"
-                >
-                  {work.read} →
-                </a>
-                <a href={s.url} target="_blank" rel="noopener" class="inline-flex min-h-[48px] items-center text-[0.9rem] font-semibold text-ink underline underline-offset-4 hover:text-cobalt">
-                  {work.visit}
-                </a>
-              </div>
-            </div>
-          </article>
-        ))
-      }
+                <dl class="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-ink/12 bg-ink/10 sm:grid-cols-3">
+                  {outcome.map((m) => (
+                    <div class="flex flex-col bg-bone p-4">
+                      <dt class="label order-2 mt-2 leading-snug text-muted">{m.label}</dt>
+                      <dd class="order-1 font-display text-[clamp(1.4rem,2.2vw,1.8rem)] leading-none text-ink">{fmt(m)}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
+                  <a href={`/work/${s.id}/`} class="group inline-flex min-h-[48px] items-center gap-3 text-ink">
+                    <span class="grid h-10 w-10 place-items-center rounded-full bg-butter transition-transform duration-500 group-hover:rotate-90">
+                      <Mark class="h-3.5 w-3.5" />
+                    </span>
+                    <span class="label group-hover:text-vermilion">{work.read}</span>
+                  </a>
+                  <a href={s.url} target="_blank" rel="noopener" class="label inline-flex min-h-[48px] items-center text-muted underline decoration-ink/25 underline-offset-4 hover:text-vermilion">
+                    {work.visit}
+                  </a>
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* Before/after without script: a checkbox inside the label, read with :has(). */
-  .shot-before,
-  .before-note,
+  .frame-panel {
+    display: none;
+  }
+
+  /* Before/after without script: a checkbox inside the label, read with :has(). "Before" shows the grey,
+     blurred lenses with a generic slow template in the left one. */
+  .ba-after {
+    background: var(--color-vermilion);
+    color: var(--color-bone);
+  }
+  .ba-before {
+    color: var(--color-ink-2);
+  }
   .when-before {
     display: none;
   }
-  .record:has(.ba-toggle input:checked) .shot-after,
-  .record:has(.ba-toggle input:checked) .when-after {
-    display: none;
+  .record:has(.ba input:checked) .ba-before {
+    background: var(--color-ink);
+    color: var(--color-bone);
   }
-  .record:has(.ba-toggle input:checked) .shot-before,
-  .record:has(.ba-toggle input:checked) .before-note {
-    display: block;
+  .record:has(.ba input:checked) .ba-after {
+    background: transparent;
+    color: var(--color-ink-2);
   }
-  .record:has(.ba-toggle input:checked) .when-before {
+  .record:has(.ba input:checked) .when-before {
     display: inline;
   }
-  .shot-before {
-    background: #e7e2d5;
-    filter: blur(1.6px) grayscale(1) contrast(0.8);
+  .record:has(.ba input:checked) .when-after {
+    display: none;
   }
-  .ba-toggle:has(input:focus-visible) {
-    outline: 2px solid var(--color-cobalt);
-    outline-offset: 2px;
+  .record:has(.ba input:checked) :global(.lens-before) {
+    display: inline;
   }
-  .lens-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--color-cobalt);
+  .record:has(.ba input:checked) :global(.lens-img) {
+    filter: var(--before-fx);
   }
-  .record:has(.ba-toggle input:checked) .lens-dot {
-    background: var(--color-muted);
+  .ba:has(input:focus-visible) {
+    outline: 2px solid var(--color-vermilion);
+    outline-offset: 3px;
   }
 </style>

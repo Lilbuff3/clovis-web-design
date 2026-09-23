@@ -1,0 +1,62 @@
+---
+import SectionHead from "./SectionHead.astro";
+import { caseStudies } from "@/data/caseStudies";
+import { letters as l } from "@/data/fovea";
+
+// Each letter sits at a slight angle, like the original's; they straighten on hover.
+const TILT = ["-1.4deg", "0.9deg", "-0.7deg"];
+---
+
+<section id="letters" class="graph relative scroll-mt-28 border-b border-ink/12 bg-bone-2" aria-labelledby="letters-title">
+  <div class="mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
+    <SectionHead id="letters-title" {...l.head} />
+
+    <div class="mx-auto mt-14 grid max-w-[1100px] grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
+      {
+        caseStudies.map((s, i) => (
+          <div data-reveal>
+            <figure
+              class="letter relative flex h-full flex-col justify-between rounded-[6px] border border-ink/12 bg-card p-7 shadow-[0_30px_60px_-45px_rgba(22,35,44,.9)] sm:p-9"
+              style={`--r:${TILT[i % TILT.length]}`}
+            >
+              <div class="flex items-start justify-between">
+                <span class="label text-muted">{s.year}</span>
+                <div class="relative" aria-hidden="true">
+                  <span class="block h-12 w-10 border border-ink/25 bg-butter/70"></span>
+                  <span class="absolute -bottom-5 -left-10 grid h-16 w-16 place-items-center rounded-full border border-vermilion/50 bg-card/40 text-vermilion">
+                    <span class="label text-center leading-tight" style="letter-spacing:0.06em">
+                      {l.postmark}
+                      <br />✓
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <blockquote class="mt-8 font-display text-[17px] leading-[1.65] text-ink">“{s.quote.text}”</blockquote>
+
+              <figcaption class="mt-8 border-t border-dashed border-ink/25 pt-4">
+                <span class="block text-[15px] text-ink">{s.quote.name}</span>
+                <span class="label mt-1 block text-muted">{s.quote.role}</span>
+              </figcaption>
+            </figure>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .letter {
+    rotate: var(--r, 0deg);
+    transition:
+      rotate 0.6s var(--ease-out-expo),
+      translate 0.6s var(--ease-out-expo),
+      box-shadow 0.6s var(--ease-out-expo);
+  }
+  .letter:hover {
+    rotate: 0deg;
+    translate: 0 -7px;
+    box-shadow: 0 40px 70px -45px rgb(22 35 44 / 0.9);
+  }
+</style>

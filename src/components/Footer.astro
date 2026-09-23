@@ -1,46 +1,38 @@
 ---
-import Icon from "./Icon.astro";
 import Mark from "./Mark.astro";
-import { caseStudies } from "@/data/caseStudies";
-import { BRIEF_MAILTO, formatSmsUri } from "@/data/calculator";
-import { brand, footer, nav } from "@/data/fovea";
+import { formatSmsUri } from "@/data/calculator";
+import { brand, footer } from "@/data/fovea";
 
 const year = new Date().getFullYear();
 ---
 
-<footer class="relative overflow-hidden bg-ink pt-20 pb-28 text-paper md:pb-12">
-  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
-    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-12">
-      <div class="lg:col-span-5">
+<footer class="relative overflow-hidden border-t border-ink/12 bg-ink pb-24 text-bone md:pb-0">
+  <div class="mx-auto max-w-[1500px] px-4 pt-16 sm:px-6 lg:px-10">
+    <div class="grid grid-cols-1 gap-10 border-b border-bone/15 pb-12 md:grid-cols-12">
+      <div class="md:col-span-5">
         <div class="flex items-center gap-3">
-          <Mark class="h-8 w-8 text-paper" />
-          <span class="font-display text-[1.6rem] leading-none">{brand.name}</span>
+          <span class="grid h-10 w-10 place-items-center rounded-full bg-butter text-ink">
+            <Mark class="h-4 w-4" />
+          </span>
+          <span class="font-display text-[26px] leading-none">{brand.name}</span>
         </div>
-        <p class="mt-5 max-w-[40ch] leading-relaxed text-paper/80">{footer.blurb}</p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a
-            href={formatSmsUri()}
-            class="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-paper px-5 text-[0.9rem] font-semibold text-ink transition-colors hover:bg-cobalt hover:text-paper"
-          >
-            <Icon name="message" class="h-4 w-4" />
-            Text Adam
-          </a>
-          <a
-            href={BRIEF_MAILTO}
-            class="inline-flex min-h-[48px] items-center rounded-full border border-paper/30 px-5 text-[0.9rem] font-semibold transition-colors hover:border-paper"
-          >
-            {footer.cta}
-          </a>
-        </div>
+        <p class="mt-6 max-w-[40ch] text-[15px] leading-relaxed text-bone/80">{footer.blurb}</p>
+        <a
+          href={formatSmsUri()}
+          class="group mt-7 inline-flex min-h-[48px] items-center gap-3 rounded-full border border-bone/30 px-6 transition-colors hover:border-butter hover:text-butter"
+        >
+          <span class="label">{footer.cta}</span>
+          <span class="transition-transform duration-500 group-hover:translate-x-1" aria-hidden="true">→</span>
+        </a>
       </div>
 
-      <nav class="lg:col-span-3" aria-label="Footer">
-        <h2 class="label text-paper/60">On this page</h2>
+      <nav class="md:col-span-3" aria-label="Footer">
+        <h2 class="label font-mono text-bone/60">{footer.linksTitle}</h2>
         <ul class="mt-4">
           {
-            nav.map((l) => (
+            footer.links.map((l) => (
               <li>
-                <a href={`/#${l.id}`} class="inline-flex min-h-[48px] min-w-[48px] items-center text-paper/85 transition-colors hover:text-paper">
+                <a href={`/#${l.id}`} class="inline-flex min-h-[48px] items-center text-[15px] text-bone/85 transition-colors hover:text-butter">
                   {l.label}
                 </a>
               </li>
@@ -49,53 +41,35 @@ const year = new Date().getFullYear();
         </ul>
       </nav>
 
-      <div class="lg:col-span-4">
-        <h2 class="label text-paper/60">Reception</h2>
-        <ul class="mt-4">
+      <div class="md:col-span-4">
+        <h2 class="label font-mono text-bone/60">{footer.receptionTitle}</h2>
+        <ul class="mt-4 text-[15px] text-bone/85">
           <li>
-            <a href="tel:+15595753014" class="inline-flex min-h-[48px] items-center gap-2 font-semibold hover:text-paper/80">
-              <Icon name="phone" class="h-4 w-4" />
-              (559) 575-3014
-            </a>
+            <a href="tel:+15595753014" class="inline-flex min-h-[48px] items-center transition-colors hover:text-butter">(559) 575-3014</a>
           </li>
           <li>
-            <a href="mailto:adam@cloviswebdesign.com" class="inline-flex min-h-[48px] items-center underline decoration-paper/40 underline-offset-4 hover:decoration-paper">
-              adam@cloviswebdesign.com
-            </a>
+            <a href="mailto:adam@cloviswebdesign.com" class="inline-flex min-h-[48px] items-center transition-colors hover:text-butter">adam@cloviswebdesign.com</a>
           </li>
-        </ul>
-        <p class="mt-2 text-sm text-paper/70">{footer.based}</p>
-        <h2 class="label mt-8 text-paper/60">Prescriptions on file</h2>
-        <ul class="mt-2">
-          {
-            caseStudies.map((s) => (
-              <li>
-                <a href={`/work/${s.id}/`} class="group flex min-h-[48px] flex-col justify-center">
-                  <span class="font-semibold group-hover:underline">{s.client} ↗</span>
-                  <span class="text-sm text-paper/65">{s.location}</span>
-                </a>
-              </li>
-            ))
-          }
+          <li class="mt-2 text-bone/70">{footer.based}</li>
+          <li class="mt-2 text-bone/70">{footer.towns}</li>
         </ul>
       </div>
     </div>
 
-    <div class="mt-16 overflow-hidden border-t border-paper/15 pt-6" aria-hidden="true">
-      <span class="wordmark block font-display text-[clamp(3.4rem,15.5vw,15rem)] leading-[0.85] whitespace-nowrap text-paper/10" data-text="Clovis Web Design"></span>
+    <!-- The wordmark, enormous. -->
+    <div class="relative pt-8 pb-10" aria-hidden="true">
+      <div class="w-full text-center font-display leading-[0.8] tracking-[-0.04em] text-bone" style="font-size:clamp(4rem,23vw,21rem)">
+        {footer.wordmark}
+      </div>
+      <span class="label absolute inset-x-0 bottom-2 text-center text-bone/60">{footer.wordmarkNote}</span>
     </div>
 
-    <div class="mt-6 flex flex-col gap-4 border-t border-paper/15 pt-6 text-sm text-paper/65 sm:flex-row sm:items-center sm:justify-between">
-      <p>© {year} {brand.name}. Built by hand by Adam Youssef in Clovis, California. {footer.towns}</p>
-      <a href="#top" class="inline-flex min-h-[48px] w-fit items-center gap-2 rounded-full border border-paper/25 px-4 hover:border-paper">
-        Back to top ↑ <span class="label">{footer.sign}</span>
-      </a>
+    <div class="flex flex-wrap items-center justify-between gap-4 border-t border-bone/15 py-6">
+      <span class="label text-bone/60">© {year} {brand.name}</span>
+      <span class="label text-bone/60">{footer.legal}</span>
+      <span class="tightnum text-[0.6875rem] text-bone/60">{footer.craft}</span>
     </div>
+
+    <p class="tightnum pb-8 text-center text-[0.6875rem] text-bone/60">{footer.sign}</p>
   </div>
 </footer>
-
-<style>
-  .wordmark::before {
-    content: attr(data-text);
-  }
-</style>

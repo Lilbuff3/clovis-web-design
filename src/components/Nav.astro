@@ -1,66 +1,48 @@
 ---
-import Icon from "./Icon.astro";
 import Mark from "./Mark.astro";
-import { formatSmsUri, BRIEF_MAILTO } from "@/data/calculator";
-import { brand, nav } from "@/data/fovea";
+import { formatSmsUri } from "@/data/calculator";
+import { brand, chrome, nav } from "@/data/fovea";
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
-  <!-- Reading-depth ruler: ticks, with a cobalt bar that fills as you scroll (CSS scroll timeline). -->
-  <div class="ruler relative h-5 border-b border-ink/15 bg-paper/90 backdrop-blur" aria-hidden="true">
-    <div class="ruler-fill absolute inset-y-0 left-0 w-full origin-left bg-cobalt/15"></div>
-    <div class="label absolute inset-y-0 left-4 hidden items-center text-[0.625rem] text-muted sm:flex"><span class="bg-paper px-1.5">Reading depth</span></div>
-    <div class="label absolute inset-y-0 right-4 hidden items-center text-[0.625rem] text-muted sm:flex"><span class="bg-paper px-1.5">Acuity 20/20</span></div>
-  </div>
-
-  <div class="mx-auto w-full max-w-[1440px] px-4 pt-2 sm:px-6 lg:px-10">
-    <div class="flex items-center justify-between rounded-full border border-ink/12 bg-paper/90 py-1.5 pr-1.5 pl-4 shadow-[0_18px_40px_-30px_rgba(22,35,44,0.9)] backdrop-blur-xl sm:pl-5">
-      <a href="/" class="group flex min-h-[48px] items-center gap-3" aria-label={`${brand.name}, home`}>
-        <Mark class="h-7 w-7 text-ink transition-transform duration-500 group-hover:rotate-90" />
+<!-- The original's pill nav: sits clear over the page, turns solid once you scroll (CSS scroll timeline; solid without it). -->
+<header class="nav fixed inset-x-0 top-8 z-50">
+  <div class="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-10">
+    <div class="nav-pill flex items-center justify-between rounded-full border px-3 py-2">
+      <a href="/" class="group flex min-h-[48px] items-center gap-3 pl-1" aria-label={`${brand.name}, home`}>
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-ink text-bone transition-transform duration-500 group-hover:-rotate-90">
+          <Mark class="h-4 w-4" />
+        </span>
         <span class="flex flex-col leading-none">
-          <span class="font-display text-[1.3rem] leading-none text-ink">{brand.name}</span>
-          <span class="label mt-1 text-[0.625rem] text-muted">{brand.tagline}</span>
+          <span class="font-display text-[18px] leading-none font-medium tracking-[-0.03em] sm:text-[22px]">{brand.name}</span>
+          <span class="label mt-1 text-muted">{brand.tagline}</span>
         </span>
       </a>
 
-      <nav class="hidden items-center lg:flex" aria-label="Main">
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Main">
         {
           nav.map((item) => (
-            <a
-              href={`/#${item.id}`}
-              class="label inline-flex min-h-[48px] items-center rounded-full px-3.5 text-ink-soft transition-colors hover:text-cobalt"
-            >
-              {item.label}
+            <a href={`/#${item.id}`} class="group relative inline-flex min-h-[48px] items-center rounded-full px-4">
+              <span class="label text-ink-2 transition-colors group-hover:text-ink">{item.label}</span>
+              <span class="absolute inset-x-3 bottom-2 h-px origin-left scale-x-0 bg-vermilion transition-transform duration-500 group-hover:scale-x-100" aria-hidden="true" />
             </a>
           ))
         }
       </nav>
 
       <div class="flex items-center gap-2">
-        <a
-          href="tel:+15595753014"
-          class="hidden min-h-[48px] items-center gap-2 rounded-full px-3 text-[0.85rem] font-semibold text-ink transition-colors hover:text-cobalt xl:inline-flex"
-        >
-          <Icon name="phone" class="h-4 w-4 text-cobalt" />
-          (559) 575-3014
-        </a>
-        <a
-          href={formatSmsUri()}
-          class="hidden min-h-[48px] items-center gap-2 rounded-full bg-ink px-5 text-[0.85rem] font-semibold text-paper transition-colors hover:bg-cobalt md:inline-flex"
-          aria-label="Text Adam at (559) 575-3014"
-        >
-          <Icon name="message" class="h-4 w-4 shrink-0" />
-          Text Adam
+        <a href={formatSmsUri()} class="wipe hidden min-h-[48px] items-center rounded-full bg-ink px-5 text-bone sm:inline-flex" aria-label="Text Adam at (559) 575-3014">
+          <span class="label relative z-10">{chrome.textMe}</span>
         </a>
         <button
           type="button"
           popovertarget="mobile-menu"
           aria-label="Menu"
-          class="flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 lg:hidden"
+          class="burger grid h-12 w-12 place-items-center rounded-full border border-ink/15 lg:hidden"
         >
-          <span class="flex w-5 flex-col gap-2" aria-hidden="true">
-            <span class="block h-0.5 w-full bg-ink"></span>
-            <span class="block h-0.5 w-full bg-ink"></span>
+          <span class="flex flex-col gap-[4px]" aria-hidden="true">
+            <span class="block h-[1.5px] w-4 bg-ink transition-transform duration-300"></span>
+            <span class="block h-[1.5px] w-4 bg-ink transition-opacity duration-300"></span>
+            <span class="block h-[1.5px] w-4 bg-ink transition-transform duration-300"></span>
           </span>
         </button>
       </div>
@@ -71,58 +53,22 @@ import { brand, nav } from "@/data/fovea";
 <div
   id="mobile-menu"
   popover
-  class="inset-x-0 top-0 bottom-auto m-0 w-full max-w-none rounded-b-[28px] border-0 border-b border-ink/15 bg-paper px-5 pt-6 pb-7 text-ink shadow-2xl backdrop:bg-ink/40"
+  class="inset-x-4 top-[124px] bottom-auto m-0 w-auto rounded-3xl border border-ink/12 bg-bone/95 p-3 text-ink shadow-[0_30px_60px_-30px_rgba(22,35,44,0.6)] backdrop-blur-xl backdrop:bg-ink/20 sm:inset-x-6"
 >
-  <div class="flex items-center justify-between">
-    <span class="flex items-center gap-3">
-      <Mark class="h-7 w-7 text-ink" />
-      <span class="font-display text-[1.3rem]">{brand.name}</span>
-    </span>
-    <button
-      type="button"
-      popovertarget="mobile-menu"
-      popovertargetaction="hide"
-      aria-label="Close menu"
-      class="flex h-12 w-12 items-center justify-center rounded-full border border-ink/15"
-    >
-      <Icon name="x" class="h-4 w-4" />
-    </button>
-  </div>
-
-  <nav class="mt-4 flex flex-col divide-y divide-ink/10" aria-label="Mobile">
+  <nav aria-label="Mobile">
     {
-      nav.map((item, i) => (
-        <a href={`/#${item.id}`} class="group flex min-h-[52px] items-center justify-between">
-          <span class="font-display text-[1.7rem] text-ink group-hover:text-cobalt">{item.label}</span>
-          <span class="label text-muted">0{i + 1}</span>
+      nav.map((item) => (
+        <a href={`/#${item.id}`} class="flex min-h-[56px] items-baseline justify-between border-b border-ink/8 py-3">
+          <span class="font-display text-2xl">{item.label}</span>
+          <span class="label text-muted">{item.id.slice(0, 4)}</span>
         </a>
       ))
     }
-  </nav>
-
-  <div class="mt-6 flex flex-col gap-3">
-    <a
-      href={formatSmsUri()}
-      class="flex min-h-[52px] items-center justify-center gap-2 rounded-full bg-ink text-[0.95rem] font-semibold text-paper transition-colors hover:bg-cobalt"
-    >
-      <Icon name="message" class="h-4 w-4" />
-      Text Adam
+    <a href={formatSmsUri()} class="flex min-h-[56px] items-baseline justify-between py-3">
+      <span class="font-display text-2xl text-vermilion">{chrome.textMe}</span>
+      <span class="label text-muted">(559) 575-3014</span>
     </a>
-    <div class="flex gap-2">
-      <a
-        href="tel:+15595753014"
-        class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-ink/20 text-[0.85rem] font-semibold"
-      >
-        Call (559) 575-3014
-      </a>
-      <a
-        href={BRIEF_MAILTO}
-        class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-ink/20 text-[0.85rem] font-semibold"
-      >
-        Email details ↗
-      </a>
-    </div>
-  </div>
+  </nav>
 </div>
 
 <script>
@@ -134,19 +80,52 @@ import { brand, nav } from "@/data/fovea";
 </script>
 
 <style>
-  .ruler {
-    background-image: repeating-linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--color-ink) 45%, transparent) 0 1px,
-        transparent 1px 45px
-      ),
-      repeating-linear-gradient(90deg, color-mix(in srgb, var(--color-ink) 22%, transparent) 0 1px, transparent 1px 9px);
-    background-size:
-      100% 9px,
-      100% 5px;
-    background-position:
-      0 100%,
-      0 100%;
-    background-repeat: repeat-x;
+  .nav {
+    padding-block: 0.5rem;
+  }
+  .nav-pill {
+    border-color: rgb(22 35 44 / 0.12);
+    background: rgb(247 242 232 / 0.8);
+    box-shadow: 0 10px 40px -24px rgb(22 35 44 / 0.5);
+    backdrop-filter: blur(24px);
+  }
+  @supports (animation-timeline: scroll()) {
+    @keyframes nav-top {
+      from {
+        padding-block: 1rem;
+      }
+    }
+    @keyframes pill-top {
+      from {
+        border-color: transparent;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: blur(0);
+        padding-block: 0.625rem;
+      }
+    }
+    .nav,
+    .nav-pill {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 0 90px;
+    }
+    .nav {
+      animation-name: nav-top;
+    }
+    .nav-pill {
+      animation-name: pill-top;
+    }
+  }
+  /* The burger becomes an X while the menu is open. */
+  :global(body:has(#mobile-menu:popover-open)) .burger > span > span:nth-child(1) {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  :global(body:has(#mobile-menu:popover-open)) .burger > span > span:nth-child(2) {
+    opacity: 0;
+  }
+  :global(body:has(#mobile-menu:popover-open)) .burger > span > span:nth-child(3) {
+    transform: translateY(-5.5px) rotate(-45deg);
   }
 </style>
