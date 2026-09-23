@@ -6,7 +6,6 @@ import "@fontsource/dm-mono/latin-400.css";
 import "@fontsource/dm-mono/latin-500.css";
 import "@/styles/global.css";
 import archivoUrl from "@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url";
-import serifUrl from "@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url";
 import { PRICING_CONSTANTS } from "@/data/calculator";
 
 interface Props {
@@ -36,8 +35,8 @@ const ogImage = new URL("/og.png", Astro.site).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow, max-image-preview:large" />
+    <!-- Only Archivo is preloaded: the eye-chart hero (the LCP) is set in it. -->
     <link rel="preload" href={archivoUrl} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={serifUrl} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:site_name" content="Clovis Web Design" />
     <meta property="og:title" content={title} />
