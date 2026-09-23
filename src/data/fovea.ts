@@ -37,8 +37,8 @@ export const hero = {
   priceLine: (price: number) => `Landing pages $${price} · live in a week · you own it`,
   ctaText: "Text me a question",
   ctaPrices: "See the prices",
-  lensOn: "Lens in",
-  lensOff: "Lens out",
+  lensOn: "Glasses on",
+  lensOff: "Glasses off",
   lensHint: "Move to focus",
   /** Shown only when the visitor's real load time is known. {time} and {acuity} are filled in live. */
   reading: "This page on your device: {time} · {acuity}",
@@ -212,10 +212,6 @@ export const lensTray = {
       ],
     },
   ],
-  testTitle: "Don’t take my word for it",
-  testLede: "These links run Google’s own speed test on the live sites right now. You see what it finds today, not a screenshot I picked.",
-  testLink: (host: string) => `Test ${host} ↗`,
-  testNote: "Opens Google PageSpeed Insights, mobile",
   targetsTitle: "What I build to",
   targets: [
     { value: "< 1.0s", label: "Largest Contentful Paint", note: "Google calls under 2.5s good" },
@@ -329,7 +325,6 @@ export const faqHead = {
 export const caseStudyPage = {
   crumb: "Prescriptions",
   visit: "Open the live site",
-  test: "Test its speed on PageSpeed",
   doctors: "Physicians",
   owners: "Owners",
   complaint: "Presenting complaint",

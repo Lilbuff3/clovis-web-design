@@ -16,7 +16,6 @@ export function getStaticPaths() {
 
 const { study } = Astro.props as { study: ExtendedCaseStudy };
 const host = new URL(study.url).hostname.replace(/^www\./, "");
-const psi = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(study.url)}&form_factor=mobile`;
 const richResults = `https://search.google.com/test/rich-results?url=${encodeURIComponent(study.url)}`;
 const fmt = (m: Metric) => `${m.prefix ?? ""}${m.value.toFixed(m.decimals ?? 0)}${m.suffix ?? ""}`;
 const chapter = "label text-cobalt";
@@ -47,14 +46,6 @@ const h2 = "mt-2 text-4xl leading-none text-ink sm:text-5xl";
           class="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-ink px-6 text-[0.9rem] font-semibold text-paper transition-colors hover:bg-cobalt"
         >
           {t.visit} <Icon name="arrow-up-right" class="h-4 w-4" />
-        </a>
-        <a
-          href={psi}
-          target="_blank"
-          rel="noopener"
-          class="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-ink/25 px-6 text-[0.9rem] font-semibold text-ink transition-colors hover:border-cobalt hover:text-cobalt"
-        >
-          {t.test} <Icon name="arrow-up-right" class="h-4 w-4" />
         </a>
       </div>
 

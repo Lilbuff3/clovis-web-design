@@ -64,7 +64,18 @@ const sizes = [
               </div>
             ))
           }
-          <span class="lens-ring" aria-hidden="true"></span>
+          <svg class="glasses" viewBox="0 0 400 150" aria-hidden="true">
+            <g class="glasses-tint">
+              <circle cx="100" cy="80" r="66"></circle>
+              <circle cx="300" cy="80" r="66"></circle>
+            </g>
+            <g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round">
+              <circle cx="100" cy="80" r="70"></circle>
+              <circle cx="300" cy="80" r="70"></circle>
+              <path d="M169 68Q200 46 231 68M31 66 6 58M369 66 394 58"></path>
+            </g>
+            <path class="glasses-glare" d="M52 68A50 50 0 0 1 86 32M252 68A50 50 0 0 1 286 32" fill="none" stroke-width="6" stroke-linecap="round"></path>
+          </svg>
         </div>
 
         <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">{hero.pitch}</p>
@@ -135,42 +146,54 @@ const sizes = [
 </section>
 
 <style>
+  /* The glasses sit at (--lx, --ly): the point between the lenses, level with their centers. --gw is their width.
+     Declared here, used by children, so cqi means the chart's own width. */
   .chart {
     position: relative;
     container-type: inline-size;
+    --gw: clamp(200px, 62cqi, 500px);
+    --lx: 62%;
+    --ly: 30%;
   }
-  .chart-sharp,
-  .lens-ring {
+  .chart-sharp {
+    display: none;
+  }
+  .glasses {
+    position: absolute;
+    left: var(--lx);
+    top: var(--ly);
+    width: var(--gw);
+    translate: -50% -53.3%;
+    color: var(--color-ink);
+    filter: drop-shadow(0 12px 14px rgb(22 35 44 / 0.2));
+    pointer-events: none;
+  }
+  .glasses-tint {
+    fill: color-mix(in srgb, var(--color-cobalt) 7%, transparent);
+  }
+  .glasses-glare {
+    stroke: var(--color-paper);
+    opacity: 0.85;
+  }
+  .chart.glasses-off .glasses {
     display: none;
   }
 
-  /* Lens mode: only switched on by the script, on devices with a mouse. */
-  .chart.lens-on {
-    --lr: 130px;
-    cursor: crosshair;
-  }
+  /* Glasses mode: only switched on by the script, on devices with a mouse. Blurry chart, sharp through the lenses. */
   .chart.lens-on .chart-base {
-    filter: blur(1.8px) saturate(0.85);
-    opacity: 0.7;
+    filter: blur(4px) saturate(0.8);
+    opacity: 0.8;
   }
   .chart.lens-on .chart-sharp {
+    /* Lens centers sit a quarter of the frame width either side; 0.162 is the inner rim radius (65/400). */
+    --r: calc(var(--gw) * 0.162);
+    --dx: calc(var(--gw) * 0.25);
     display: block;
     position: absolute;
     inset: 0;
-    clip-path: circle(var(--lr) at var(--lx, 50%) var(--ly, 58%));
-  }
-  .chart.lens-on .lens-ring {
-    display: block;
-    position: absolute;
-    left: var(--lx, 50%);
-    top: var(--ly, 58%);
-    width: calc(var(--lr) * 2);
-    height: calc(var(--lr) * 2);
-    translate: -50% -50%;
-    border-radius: 50%;
-    border: 1.5px solid var(--color-cobalt);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-cobalt) 8%, transparent);
-    pointer-events: none;
+    mask-image:
+      radial-gradient(circle var(--r) at calc(var(--lx) - var(--dx)) var(--ly), #000 98%, transparent),
+      radial-gradient(circle var(--r) at calc(var(--lx) + var(--dx)) var(--ly), #000 98%, transparent);
   }
 
   .lens-switch {
@@ -199,9 +222,16 @@ const sizes = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    /* One focus pull on load, on every device. `backwards` so lens mode's blur takes over when it ends. */
+    /* On load, every device: the chart starts blurry, the glasses drop on, and it comes into focus as they land.
+       `backwards` holds the blur until then; in glasses mode it settles at that mode's blur instead of sharp. */
     .chart-base {
-      animation: focus-pull 0.8s var(--ease-expo) backwards;
+      animation: focus-pull 0.9s var(--ease-out-soft) 0.85s backwards;
+    }
+    .glasses {
+      animation: glasses-on 0.8s cubic-bezier(0.3, 1.3, 0.6, 1) 0.2s backwards;
+    }
+    .chart.lens-on .chart-sharp {
+      animation: fade-in 0.4s ease-out 0.85s backwards;
     }
     .seal-text {
       animation: spin 28s linear infinite;
@@ -215,8 +245,19 @@ const sizes = [
   }
   @keyframes focus-pull {
     from {
-      filter: blur(6px);
-      opacity: 0.5;
+      filter: blur(7px);
+    }
+  }
+  @keyframes glasses-on {
+    from {
+      translate: -50% -200%;
+      rotate: -10deg;
+      opacity: 0;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
     }
   }
   @keyframes spin {
@@ -237,7 +278,8 @@ const sizes = [
 </style>
 
 <script>
-  // Lens follows the pointer, only where there is one. Phones and reduced-motion users keep the sharp chart.
+  // The glasses follow the pointer, only where there is one. Phones and reduced-motion users get the sharp chart
+  // with the glasses resting on it.
   const chart = document.querySelector<HTMLElement>("[data-chart]");
   const toggle = document.querySelector<HTMLButtonElement>("[data-lens-toggle]");
   if (chart && toggle && matchMedia("(hover: hover) and (pointer: fine) and (min-width: 640px) and (prefers-reduced-motion: no-preference)").matches) {
@@ -250,6 +292,7 @@ const sizes = [
     });
     toggle.addEventListener("click", () => {
       const on = chart.classList.toggle("lens-on");
+      chart.classList.toggle("glasses-off", !on);
       toggle.setAttribute("aria-pressed", String(on));
       toggle.querySelector("[data-lens-label]")!.textContent = on ? toggle.dataset.on! : toggle.dataset.off!;
     });

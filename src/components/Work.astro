@@ -15,7 +15,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, "");
     <div class="mt-14 space-y-8">
       {
         caseStudies.map((s, i) => (
-          <article class="record grid gap-8 rounded-[28px] border border-ink/15 bg-card p-4 sm:p-8 lg:grid-cols-12 lg:gap-12" data-reveal>
+          <article class="record grid grid-cols-1 gap-8 rounded-[28px] border border-ink/15 bg-card p-4 sm:p-8 lg:grid-cols-12 lg:gap-12" data-reveal>
             <div class:list={["lg:sticky lg:top-28 lg:col-span-7 lg:self-start", i % 2 === 1 && "lg:order-2"]}>
               <div class="overflow-hidden rounded-2xl border border-ink/15 bg-panel">
                 <div class="flex items-center justify-between gap-3 border-b border-ink/10 py-1 pr-1.5 pl-4">
