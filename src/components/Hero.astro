@@ -4,7 +4,7 @@ import { LAUNCH_PROMO, SCOPE_TIERS, BRIEF_MAILTO, formatSmsUri } from "@/data/ca
 
 const landing = SCOPE_TIERS.find((t) => t.id === "landing")!;
 const linkClass =
-  "rounded text-ink-soft underline underline-offset-4 transition-colors hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay";
+  "inline-flex min-h-[48px] items-center rounded text-ink-soft underline underline-offset-4 transition-colors hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay";
 ---
 
 <section
@@ -17,6 +17,21 @@ const linkClass =
   </div>
 
   <div class="mx-auto max-w-5xl">
+    <div class="mb-6 flex justify-center">
+      <div class="group relative inline-flex items-center justify-center">
+        <div class="absolute -inset-1.5 rounded-full bg-clay/20 blur-md transition-all duration-500 group-hover:bg-clay/35" aria-hidden="true"></div>
+        <img
+          src="/images/clovis-craft-seal.webp"
+          alt="Clovis Web Design Central Valley Craft letterpress seal medallion"
+          width="112"
+          height="112"
+          loading="lazy"
+          decoding="async"
+          class="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full border-2 border-stone-light/40 shadow-lg object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+    </div>
+
     <div
       class="mb-7 inline-flex items-center gap-3 rounded-full border border-clay/40 bg-clay/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-ink shadow-xs backdrop-blur"
     >
@@ -88,7 +103,7 @@ const linkClass =
     </div>
 
     <div
-      class="mx-auto mt-14 grid max-w-3xl grid-cols-3 divide-x divide-ink/10 rounded-2xl border border-ink/10 bg-linen/70 p-4 shadow-sm backdrop-blur sm:p-6"
+      class="mx-auto mt-14 grid max-w-3xl grid-cols-1 divide-y divide-ink/10 sm:grid-cols-3 sm:divide-y-0 sm:divide-x sm:divide-ink/10 rounded-2xl border border-ink/10 bg-linen/70 p-4 shadow-sm backdrop-blur sm:p-6"
     >
       {
         [
@@ -96,7 +111,7 @@ const linkClass =
           ["1 Week", "To live"],
           ["100%", "Asset Ownership"],
         ].map(([value, label]) => (
-          <div class="flex flex-col items-center justify-center px-2 sm:px-6">
+          <div class="flex flex-col items-center justify-center px-2 py-3 sm:px-6 sm:py-0">
             <span class="font-serif text-2xl font-bold tracking-tight text-ink sm:text-4xl">{value}</span>
             <span class="mt-1 text-xs font-medium uppercase tracking-wider text-stone">{label}</span>
           </div>

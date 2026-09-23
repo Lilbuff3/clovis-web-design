@@ -4,14 +4,21 @@ import "@fontsource-variable/fraunces/full-italic.css";
 import "@fontsource-variable/inter";
 import "@/styles/global.css";
 import frauncesUrl from "@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2?url";
+import { PRICING_CONSTANTS } from "@/data/calculator";
 
 interface Props {
   title: string;
   description: string;
   schema?: object;
+  ogImageAlt?: string;
 }
 
-const { title, description, schema } = Astro.props;
+const {
+  title,
+  description,
+  schema,
+  ogImageAlt = `Clovis Web Design — landing page $${PRICING_CONSTANTS.tiers.landing.price}, live in a week, you own it on day one.`
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL("/og.png", Astro.site).href;
 ---
@@ -36,7 +43,7 @@ const ogImage = new URL("/og.png", Astro.site).href;
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Clovis Web Design — landing page $500, live in a week, you own it on day one." />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />

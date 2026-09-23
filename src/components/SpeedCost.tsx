@@ -93,7 +93,9 @@ export default function SpeedCost() {
       )}
 
       <details class="mt-6 text-xs text-ink-soft">
-        <summary class="cursor-pointer font-semibold text-ink">How this is worked out</summary>
+        <summary class="flex min-h-[48px] cursor-pointer items-center font-semibold text-ink py-2 focus:outline-none">
+          How this is worked out
+        </summary>
         <p class="mt-2 leading-relaxed">
           Compared with a page that loads in about a second. Google&rsquo;s mobile research found that going from 1s to 3s
           raises the chance someone leaves by 32%, to 5s by 90%, and to 10s by 123%. I assume {pct(ASSUMPTIONS.baseBounce)} of

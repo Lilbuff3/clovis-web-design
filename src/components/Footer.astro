@@ -32,14 +32,14 @@ const year = new Date().getFullYear();
           Fortune 500 craft. Main Street soul. I build websites by hand for Fresno and Central Valley businesses &mdash; fast on a
           phone, set up so Google can find you, and yours on day one.
         </p>
-        <div class="mt-6 flex flex-col gap-2">
-          <a href="tel:+15595753014" class="flex items-center gap-2 text-[0.95rem] font-semibold text-ink hover:text-clay transition-colors">
+        <div class="mt-6 flex flex-col gap-1">
+          <a href="tel:+15595753014" class="inline-flex min-h-[48px] items-center gap-2 text-[0.95rem] font-semibold text-ink hover:text-clay transition-colors">
             <Icon name="phone" class="h-4 w-4 text-clay" />
             <span>(559) 575-3014</span>
           </a>
           <a
             href="mailto:adam@cloviswebdesign.com"
-            class="text-[0.9rem] font-medium text-ink underline decoration-clay/50 underline-offset-4 hover:text-clay"
+            class="inline-flex min-h-[48px] items-center text-[0.9rem] font-medium text-ink underline decoration-clay/50 underline-offset-4 hover:text-clay"
           >
             adam@cloviswebdesign.com
           </a>
@@ -47,7 +47,7 @@ const year = new Date().getFullYear();
         </div>
         <a
           href={BRIEF_MAILTO}
-          class="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[0.82rem] font-medium text-linen transition-colors hover:bg-clay"
+          class="mt-6 inline-flex min-h-[48px] items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[0.82rem] font-medium text-linen transition-colors hover:bg-clay"
         >
           Send me the details ↗
         </a>
@@ -55,11 +55,11 @@ const year = new Date().getFullYear();
 
       <nav class="lg:col-span-3" aria-label="Footer">
         <h2 class="text-[0.72rem] font-medium tracking-[0.2em] text-stone uppercase">On this page</h2>
-        <ul class="mt-5 space-y-2.5 text-[0.9rem]">
+        <ul class="mt-5 space-y-1 text-[0.9rem]">
           {
             LINKS.map((l) => (
               <li>
-                <a href={`/#${l.id}`} class="text-ink-soft transition-colors hover:text-clay">
+                <a href={`/#${l.id}`} class="inline-flex min-h-[48px] min-w-[48px] items-center text-ink-soft transition-colors hover:text-clay">
                   {l.label}
                 </a>
               </li>
@@ -70,11 +70,11 @@ const year = new Date().getFullYear();
 
       <div class="lg:col-span-4">
         <h2 class="text-[0.72rem] font-medium tracking-[0.2em] text-stone uppercase">Case studies</h2>
-        <ul class="mt-5 space-y-4 text-[0.88rem]">
+        <ul class="mt-5 space-y-2 text-[0.88rem]">
           {
             caseStudies.map((s) => (
               <li>
-                <a href={`/work/${s.id}/`} class="group block">
+                <a href={`/work/${s.id}/`} class="group flex min-h-[48px] flex-col justify-center">
                   <span class="block font-medium text-ink group-hover:text-clay">{s.client} ↗</span>
                   <span class="block text-[0.78rem] text-stone">
                     {s.location} · {s.industry}
@@ -106,7 +106,7 @@ const year = new Date().getFullYear();
       </p>
       <a
         href="#top"
-        class="flex w-fit items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-ink transition-colors hover:border-ink hover:bg-ink hover:text-linen"
+        class="flex min-h-[48px] w-fit items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-ink transition-colors hover:border-ink hover:bg-ink hover:text-linen"
       >
         Back to top ↑
       </a>

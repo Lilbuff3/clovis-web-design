@@ -5,26 +5,26 @@ import { formatSmsUri } from "@/data/calculator";
 
 <aside
   aria-label="Quick contact"
-  class="fixed inset-x-0 bottom-0 z-30 block md:hidden border-t border-ink/10 bg-paper/95 px-3 py-2.5 shadow-[0_-10px_25px_-5px_rgba(34,29,23,0.12)] backdrop-blur-lg pb-[max(0.625rem,env(safe-area-inset-bottom))]"
+  class="fixed inset-x-0 bottom-0 z-30 block md:hidden border-t border-ink/10 bg-paper/95 px-3 py-2.5 shadow-[0_-10px_25px_-5px_rgba(34,29,23,0.12)] backdrop-blur-lg pb-[max(0.75rem,env(safe-area-inset-bottom))]"
 >
   <div class="mx-auto flex max-w-lg items-center gap-2">
     <a
       href="tel:+15595753014"
-      class="flex flex-1 min-w-0 items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-center font-serif text-[0.85rem] font-semibold text-linen shadow-md transition-all active:scale-[0.98] hover:bg-clay"
+      class="flex flex-1 min-w-[48px] min-h-[48px] items-center justify-center gap-2 rounded-full bg-ink px-4 py-2.5 text-center font-serif text-[0.85rem] font-semibold text-linen shadow-md transition-all active:scale-[0.98] hover:bg-clay"
     >
       <Icon name="phone" class="h-4 w-4 text-clay shrink-0" />
       <span class="truncate">Call (559) 575-3014</span>
     </a>
     <a
       href={formatSmsUri()}
-      class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-ink/20 bg-linen px-3.5 py-3 text-center font-sans text-xs font-semibold text-ink shadow-xs transition-all active:scale-[0.98] hover:bg-paper-deep"
+      class="inline-flex min-h-[48px] min-w-[48px] shrink-0 items-center justify-center gap-1.5 rounded-full border border-ink/20 bg-linen px-3.5 py-2.5 text-center font-sans text-xs font-semibold text-ink shadow-xs transition-all active:scale-[0.98] hover:bg-paper-deep"
     >
       <Icon name="message" class="h-3.5 w-3.5 text-stone shrink-0" />
       <span>Text</span>
     </a>
     <a
       href="/#pricing"
-      class="inline-flex shrink-0 items-center justify-center gap-1 rounded-full border border-ink/20 bg-linen px-3 py-3 text-center font-sans text-xs font-semibold text-ink shadow-xs transition-all active:scale-[0.98] hover:bg-paper-deep"
+      class="inline-flex min-h-[48px] min-w-[48px] shrink-0 items-center justify-center gap-1 rounded-full border border-ink/20 bg-linen px-3.5 py-2.5 text-center font-sans text-xs font-semibold text-ink shadow-xs transition-all active:scale-[0.98] hover:bg-paper-deep"
     >
       <span>Price</span>
       <Icon name="arrow-up-right" class="h-3.5 w-3.5 text-clay shrink-0" />

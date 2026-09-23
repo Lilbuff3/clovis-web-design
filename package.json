@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --experimental-strip-types tests/speedCost.test.ts && npm run build && node tests/dist-check.mjs"
+    "test": "node --experimental-strip-types tests/speedCost.test.ts && npm run build && node tests/dist-check.mjs && node tests/e2e-suite.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

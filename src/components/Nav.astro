@@ -17,7 +17,7 @@ const NAV_ITEMS = [
     <div
       class="relative flex items-center justify-between rounded-full border border-ink/10 bg-paper/85 px-4 py-2 shadow-[0_18px_40px_-28px_rgba(34,29,23,0.85)] backdrop-blur-xl sm:px-6"
     >
-      <a href="/" class="group flex items-center gap-3 text-left" aria-label="Clovis Web Design — home">
+      <a href="/" class="group flex min-h-[48px] items-center gap-3 text-left" aria-label="Clovis Web Design — home">
         <Mark class="h-8 w-8 text-ink transition-transform duration-500 ease-out group-hover:rotate-6 sm:h-9 sm:w-9" />
         <span class="flex flex-col leading-none">
           <span class="font-serif text-[1.05rem] font-semibold tracking-[-0.02em] text-ink">Clovis Web Design</span>
@@ -30,7 +30,7 @@ const NAV_ITEMS = [
           NAV_ITEMS.map((item) => (
             <a
               href={`/#${item.id}`}
-              class="rounded-full px-2.5 lg:px-3.5 py-1.5 text-xs lg:text-[0.84rem] font-medium text-ink-soft/75 transition-colors duration-300 hover:text-ink hover:bg-ink/[0.04]"
+              class="inline-flex min-h-[48px] items-center rounded-full px-2.5 lg:px-3.5 py-2 text-xs lg:text-[0.84rem] font-medium text-ink-soft/75 transition-colors duration-300 hover:text-ink hover:bg-ink/[0.04]"
             >
               {item.label}
             </a>
@@ -38,9 +38,9 @@ const NAV_ITEMS = [
         }
       </nav>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 sm:gap-3">
         <div
-          class="hidden items-center gap-2 rounded-full border border-olive/30 bg-olive/10 px-3 py-1 text-[0.72rem] font-medium text-olive xl:flex"
+          class="hidden items-center gap-2 rounded-full border border-olive-deep/30 bg-olive/10 px-3 py-1 text-[0.72rem] font-semibold text-olive-deep xl:flex"
         >
           <span class="relative flex h-2 w-2">
             <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive opacity-75"></span>
@@ -51,15 +51,24 @@ const NAV_ITEMS = [
 
         <a
           href="tel:+15595753014"
-          class="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-paper/60 px-3.5 py-1.5 text-[0.8rem] font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+          class="hidden xl:inline-flex min-h-[48px] items-center gap-1.5 rounded-full border border-ink/15 bg-paper/60 px-3.5 py-2 text-[0.8rem] font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
         >
           <Icon name="phone" class="h-3.5 w-3.5 text-clay" />
           <span>(559) 575-3014</span>
         </a>
 
         <a
+          href={formatSmsUri()}
+          class="hidden md:inline-flex min-h-[48px] items-center gap-1.5 rounded-full border border-ink/20 bg-linen px-3.5 py-2 text-[0.82rem] font-semibold text-ink shadow-2xs transition-all hover:border-clay hover:text-clay hover:bg-paper-deep"
+          aria-label="Text Adam at (559) 575-3014"
+        >
+          <Icon name="message" class="h-3.5 w-3.5 text-clay shrink-0" />
+          <span>Text Adam</span>
+        </a>
+
+        <a
           href="/#pricing"
-          class="hidden whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.82rem] font-medium text-linen shadow-[0_10px_25px_-10px_rgba(34,29,23,0.8)] transition-all duration-300 hover:bg-clay sm:inline-flex"
+          class="hidden min-h-[48px] items-center whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.82rem] font-medium text-linen shadow-[0_10px_25px_-10px_rgba(34,29,23,0.8)] transition-all duration-300 hover:bg-clay sm:inline-flex"
         >
           See pricing ↗
         </a>
@@ -68,9 +77,9 @@ const NAV_ITEMS = [
           type="button"
           popovertarget="mobile-menu"
           aria-label="Menu"
-          class="flex h-11 w-11 items-center justify-center rounded-full border border-ink/15 bg-paper/80 backdrop-blur md:hidden"
+          class="flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-paper/80 backdrop-blur md:hidden"
         >
-          <span class="flex w-4.5 flex-col gap-2" aria-hidden="true">
+          <span class="flex w-5 flex-col gap-2" aria-hidden="true">
             <span class="block h-0.5 w-full bg-ink"></span>
             <span class="block h-0.5 w-full bg-ink"></span>
           </span>
@@ -87,7 +96,7 @@ const NAV_ITEMS = [
 >
   <div class="flex items-center justify-between">
     <span
-      class="inline-flex items-center gap-2 rounded-full border border-olive/30 bg-olive/10 px-3 py-1 text-[0.74rem] font-medium text-olive"
+      class="inline-flex items-center gap-2 rounded-full border border-olive-deep/30 bg-olive/10 px-3 py-1 text-[0.74rem] font-semibold text-olive-deep"
     >
       <span class="h-2 w-2 rounded-full bg-olive animate-pulse"></span>
       <span>Launch offer &middot; {LAUNCH_PROMO.blurb}</span>
@@ -97,7 +106,7 @@ const NAV_ITEMS = [
       popovertarget="mobile-menu"
       popovertargetaction="hide"
       aria-label="Close menu"
-      class="flex h-11 w-11 items-center justify-center rounded-full border border-ink/15"
+      class="flex h-12 w-12 items-center justify-center rounded-full border border-ink/15"
     >
       <Icon name="x" class="h-4 w-4" />
     </button>
@@ -106,7 +115,7 @@ const NAV_ITEMS = [
   <nav class="mt-4 flex flex-col divide-y divide-ink/10" aria-label="Mobile">
     {
       NAV_ITEMS.map((item, index) => (
-        <a href={`/#${item.id}`} class="group flex items-center justify-between py-3.5">
+        <a href={`/#${item.id}`} class="group flex min-h-[48px] items-center justify-between py-3.5">
           <span class="font-serif text-[1.4rem] font-medium text-ink group-hover:text-clay">{item.label}</span>
           <span class="text-[0.75rem] font-mono text-stone">0{index + 1}</span>
         </a>
@@ -117,7 +126,7 @@ const NAV_ITEMS = [
   <div class="mt-6 flex flex-col gap-3 pt-2">
     <a
       href="tel:+15595753014"
-      class="flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3 text-center font-serif text-[0.92rem] font-semibold text-linen hover:bg-clay transition-colors"
+      class="flex w-full min-h-[48px] items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-center font-serif text-[0.92rem] font-semibold text-linen hover:bg-clay transition-colors"
     >
       <Icon name="phone" class="h-4 w-4 text-clay" />
       <span>Call Adam: (559) 575-3014</span>
@@ -125,13 +134,13 @@ const NAV_ITEMS = [
     <div class="flex gap-2">
       <a
         href={formatSmsUri()}
-        class="flex-1 rounded-full border border-ink/20 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-ink/[0.04] transition-colors"
+        class="flex-1 min-h-[48px] inline-flex items-center justify-center rounded-full border border-ink/20 px-3 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-ink/[0.04] transition-colors"
       >
         Text / SMS
       </a>
       <a
         href={BRIEF_MAILTO}
-        class="flex-1 rounded-full border border-ink/20 bg-linen py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-paper-deep transition-colors"
+        class="flex-1 min-h-[48px] inline-flex items-center justify-center rounded-full border border-ink/20 bg-linen px-3 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-paper-deep transition-colors"
       >
         Email details ↗
       </a>

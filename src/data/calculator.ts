@@ -108,12 +108,14 @@ export const PRICING_CONSTANTS = {
 export const smsUri = (body: string) => `sms:+15595753014?body=${encodeURIComponent(body)}`;
 
 /** Prefilled text message. Kept short: long SMS bodies get truncated by the messaging app. */
-export function formatSmsUri(tierTitle?: string) {
-  return smsUri(
-    tierTitle
-      ? `Hi Adam, I'm interested in the ${tierTitle} for my business.`
-      : "Hi Adam, I'm interested in a website for my business."
-  );
+export function formatSmsUri(tierTitleOrContext?: string) {
+  if (!tierTitleOrContext) {
+    return smsUri("Hi Adam, I'm interested in a website for my business.");
+  }
+  if (tierTitleOrContext.toLowerCase().startsWith("hi adam") || tierTitleOrContext.includes("?")) {
+    return smsUri(tierTitleOrContext);
+  }
+  return smsUri(`Hi Adam, I'm interested in the ${tierTitleOrContext} for my business.`);
 }
 
 export function formatMailtoUri(params: {

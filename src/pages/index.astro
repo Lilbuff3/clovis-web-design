@@ -12,11 +12,14 @@ import Faq from "@/components/Faq.astro";
 import Footer from "@/components/Footer.astro";
 import StickyCall from "@/components/StickyCall.astro";
 import { homeSchema } from "@/lib/schema";
+import { PRICING_CONSTANTS } from "@/data/calculator";
+
+const landingPrice = `$${PRICING_CONSTANTS.tiers.landing.price}`;
 ---
 
 <Base
-  title="Fresno Web Design — Clovis Web Design | $500 landing pages, live in a week"
-  description="Hand-built websites for Fresno, Clovis and Central Valley businesses. Landing page $500, live in a week, and you own it on day one. Call or text Adam Youssef at (559) 575-3014."
+  title={`Fresno Web Design — Clovis Web Design | ${landingPrice} landing pages, live in a week`}
+  description={`Hand-built websites for Fresno, Clovis and Central Valley businesses. Landing page ${landingPrice}, live in a week, and you own it on day one. Call or text Adam Youssef at (559) 575-3014.`}
   schema={homeSchema()}
 >
   <a

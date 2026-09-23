@@ -22,10 +22,15 @@ const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay
 <Base title={`${study.client} case study — Clovis Web Design`} description={study.summary} schema={caseStudySchema(study)}>
   <Nav />
   <main class="mx-auto max-w-3xl px-4 pt-32 pb-24 sm:px-6 sm:pt-36">
-    <nav aria-label="Breadcrumb" class="text-xs text-stone">
-      <a href="/#work" class="underline underline-offset-4 hover:text-clay">Work</a>
-      <span aria-hidden="true"> / </span>
-      <span>{study.client}</span>
+    <nav aria-label="Breadcrumb" class="flex items-center text-xs text-stone">
+      <a
+        href="/#work"
+        class="inline-flex min-h-[48px] min-w-[48px] items-center justify-center px-2 underline underline-offset-4 hover:text-clay focus:outline-none focus:ring-1 focus:ring-clay"
+      >
+        Work
+      </a>
+      <span aria-hidden="true" class="px-1"> / </span>
+      <span class="truncate">{study.client}</span>
     </nav>
 
     <header class="mt-6 border-b border-ink/10 pb-10">
@@ -46,7 +51,7 @@ const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay
           href={siteUrl}
           target="_blank"
           rel="noopener"
-          class="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-linen transition-colors hover:bg-clay"
+          class="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-linen transition-colors hover:bg-clay"
         >
           Visit the live site <Icon name="arrow-up-right" class="h-4 w-4" />
         </a>
@@ -54,11 +59,41 @@ const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay
           href={psi}
           target="_blank"
           rel="noopener"
-          class="inline-flex items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+          class="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
         >
           Test its speed on PageSpeed <Icon name="arrow-up-right" class="h-4 w-4" />
         </a>
       </div>
+      {
+        study.image && (
+          <div class="mt-8 overflow-hidden rounded-2xl border border-ink/15 bg-paper-deep/50 shadow-xl">
+            <div class="flex items-center justify-between border-b border-ink/10 bg-paper-deep/80 px-4 py-3">
+              <div class="flex items-center gap-1.5" aria-hidden="true">
+                <div class="h-3 w-3 rounded-full border border-black/10 bg-[#ff5f56]/90" />
+                <div class="h-3 w-3 rounded-full border border-black/10 bg-[#ffbd2e]/90" />
+                <div class="h-3 w-3 rounded-full border border-black/10 bg-[#27c93f]/90" />
+              </div>
+              <div class="mx-2 flex max-w-xs flex-1 items-center justify-center rounded-md border border-ink/10 bg-paper/90 px-3 py-1 font-mono text-xs text-ink-soft shadow-2xs">
+                <span class="truncate">{new URL(siteUrl).hostname}</span>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded bg-olive/15 px-2.5 py-1 font-mono text-[11px] font-bold text-olive-deep">
+                100 PSI
+              </span>
+            </div>
+            <div class="relative aspect-16/9 overflow-hidden bg-paper-deep">
+              <img
+                src={study.image}
+                alt={study.imageAlt || `${study.client} website interface showcase`}
+                width={study.imageWidth || 1280}
+                height={study.imageHeight || 720}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        )
+      }
       {
         study.doctors && (
           <p class="mt-6 rounded-xl border border-ink/10 bg-paper-deep/40 p-4 text-xs text-ink-soft">
@@ -167,7 +202,7 @@ const chapter = "font-mono text-xs font-bold uppercase tracking-widest text-clay
         href={richResults}
         target="_blank"
         rel="noopener"
-        class="mt-4 inline-flex items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+        class="mt-4 inline-flex min-h-[48px] items-center gap-2 rounded-full border border-ink/20 px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
       >
         Open Google&rsquo;s Rich Results Test <Icon name="arrow-up-right" class="h-4 w-4" />
       </a>
