@@ -57,7 +57,7 @@ const input =
 
       <!-- the form: turns into a pre-filled text message; nothing is stored or sent from the page -->
       <div class="lg:col-span-8" data-reveal>
-        <form data-reception data-sms={smsUri("")} action="mailto:adam@cloviswebdesign.com" method="post" enctype="text/plain" class="rounded-[26px] border border-ink/15 bg-bone p-7 sm:p-10">
+        <form data-reception data-sms={smsUri("")} hidden class="rounded-[26px] border border-ink/15 bg-bone p-7 sm:p-10">
           <div class="grid grid-cols-1 gap-7 sm:grid-cols-2">
             <label class="block">
               <span class="label text-muted">{r.form.name}</span>
@@ -90,6 +90,15 @@ const input =
           <p data-help hidden class="mt-4 max-w-[52ch] text-[13.5px] leading-relaxed text-ink-2">{r.form.help}</p>
           <p class="label mt-3 max-w-[40ch] leading-relaxed text-muted">{r.form.promise}</p>
         </form>
+        <noscript>
+          <div class="rounded-[26px] border border-ink/15 bg-bone p-7 sm:p-10">
+            <p class="max-w-[52ch] text-[16px] leading-relaxed text-ink-2">{r.form.noScript}</p>
+            <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
+              <a href={formatSmsUri()} class="inline-flex min-h-[52px] items-center rounded-full bg-ink px-8 text-bone"><span class="label">{r.form.send}</span></a>
+              <a href={BRIEF_MAILTO} class="label inline-flex min-h-[48px] items-center text-muted underline decoration-ink/25 underline-offset-4">{r.form.email}</a>
+            </div>
+          </div>
+        </noscript>
       </div>
     </div>
   </div>
@@ -97,9 +106,10 @@ const input =
 
 <script>
   // Builds the text from what they typed and opens their messages app. The email link carries the same words.
-  // Without script the form posts to a mailto: address, so the button still opens an email to Adam with their answers.
+  // The form only makes sense with this script, so it stays hidden without it (the <noscript> block covers that case).
   const form = document.querySelector<HTMLFormElement>("[data-reception]");
   if (form) {
+    form.hidden = false;
     const email = form.querySelector<HTMLAnchorElement>("[data-email]")!;
     const brief = email.href.split("&body=")[0];
     form.querySelector<HTMLElement>("[data-help]")!.hidden = false;

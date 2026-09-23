@@ -131,7 +131,16 @@ const sizes = [
           </div>
 
           <figure class="anim-float relative z-10 -mt-16 w-full rotate-[-2.6deg] border border-ink/12 bg-bone p-2 shadow-[0_30px_60px_-40px_rgba(22,35,44,.7)] sm:w-[86%] lg:-ml-[14%]">
-            <Image src={lenses} alt={hero.plate.alt} widths={[360, 720]} sizes="(min-width: 640px) 330px, calc(100vw - 2rem)" class="h-[210px] w-full object-cover" />
+            <Image
+              src={lenses}
+              alt={hero.plate.alt}
+              width={720}
+              height={420}
+              widths={[360, 720]}
+              quality={70}
+              sizes="(min-width: 640px) 330px, calc(100vw - 2rem)"
+              class="h-[210px] w-full object-cover"
+            />
             <figcaption class="flex items-center justify-between px-1 pt-2 pb-1">
               <span class="label text-muted">{hero.plate.caption}</span>
               <span class="tightnum text-[0.6875rem] text-muted">{hero.plate.meta}</span>

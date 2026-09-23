@@ -390,6 +390,7 @@ export const reception = {
     send: "Send to Adam",
     email: "or email it instead ↗",
     help: "Opens a text to (559) 575-3014 with this filled in. Nothing sends until you press send.",
+    noScript: "Text me what you need at (559) 575-3014, or send the details by email. Either way, the reply comes from me.",
     promise: "No newsletter. No sales sequence. One reply, from me.",
   },
 };

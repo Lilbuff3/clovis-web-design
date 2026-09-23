@@ -12,7 +12,7 @@ import { chrome } from "@/data/fovea";
 >
   {
     chrome.rail.map((it) => (
-      <a href={`#${it.id}`} data-rail-link={it.id} aria-label={it.name} class="group flex items-center gap-2 py-[5px] pr-2 pl-1">
+      <a href={`#${it.id}`} data-rail-link={it.id} aria-label={it.name} class="group flex min-h-6 items-center gap-2 pr-2 pl-1">
         <span class="rail-num tightnum hidden text-[0.6875rem] text-muted transition-colors duration-500 group-hover:text-ink group-hover/rail:inline group-focus-within/rail:inline min-[1640px]:inline">
           {it.label}
         </span>
