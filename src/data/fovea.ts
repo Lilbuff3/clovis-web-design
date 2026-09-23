@@ -68,7 +68,7 @@ export const hero = {
   examLink: "or take the two-minute eye exam →",
   /** Shown only when the visitor's real load time is known. {time} and {acuity} are filled in live. */
   reading: "This page on your device: {time} · {acuity}",
-  figure: { caption: "Fig. 1 — light through a window", meta: "1/60 · f2" },
+  figure: { caption: "Fig. 1 — found from forty feet away", meta: "1/60 · f2" },
   plate: {
     alt: "An optician's trial lens case, a trial frame and a pair of round glasses on warm paper, next to a Landolt C eye chart",
     caption: "Trial case № 1",
@@ -287,7 +287,7 @@ export const practice = {
   label: "The practice",
   /** The headline, one line per entry. */
   title: ["One person,", "one town at a time"],
-  figure: { caption: "Fig. 4 — made by hand", meta: "∞ loop", videoLabel: "Hands filing a ring on a workbench" },
+  figure: { caption: "Fig. 4 — made by hand", meta: "∞ loop", videoLabel: "Hands typing on a laptop at a wooden desk" },
   callout: { k: "Works from", v: "Clovis, CA" },
   body: [
     "I’m Adam Youssef. I build websites by hand from Clovis for businesses across Fresno and the Central Valley. You get my cell number, not a ticket queue, and the person who answers is the person who wrote the code.",
