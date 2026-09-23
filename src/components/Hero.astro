@@ -202,7 +202,7 @@ const sizes = [
   @media (prefers-reduced-motion: no-preference) {
     /* One focus pull on load, on every device. `backwards` so lens mode's blur takes over when it ends. */
     .chart-base {
-      animation: focus-pull 1.4s var(--ease-expo) 0.15s backwards;
+      animation: focus-pull 0.8s var(--ease-expo) backwards;
     }
     .seal-text {
       animation: spin 28s linear infinite;
@@ -216,8 +216,8 @@ const sizes = [
   }
   @keyframes focus-pull {
     from {
-      filter: blur(12px);
-      opacity: 0.25;
+      filter: blur(6px);
+      opacity: 0.5;
     }
   }
   @keyframes spin {

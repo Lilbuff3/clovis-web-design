@@ -82,9 +82,7 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="mt-16 overflow-hidden border-t border-paper/15 pt-6" aria-hidden="true">
-      <span class="block font-display text-[clamp(3.4rem,15.5vw,15rem)] leading-[0.85] whitespace-nowrap text-paper/10">
-        Clovis Web Design
-      </span>
+      <span class="wordmark block font-display text-[clamp(3.4rem,15.5vw,15rem)] leading-[0.85] whitespace-nowrap text-paper/10" data-text="Clovis Web Design"></span>
     </div>
 
     <div class="mt-6 flex flex-col gap-4 border-t border-paper/15 pt-6 text-sm text-paper/65 sm:flex-row sm:items-center sm:justify-between">
@@ -95,3 +93,9 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<style>
+  .wordmark::before {
+    content: attr(data-text);
+  }
+</style>

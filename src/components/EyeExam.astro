@@ -28,7 +28,7 @@ const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
         <ol class="mt-5 space-y-3">
           {
             e.questions.map((_, i) => (
-              <li data-row={i} class="exam-row flex items-center justify-between gap-4 border-b border-ink/10 pb-2 text-ink/35">
+              <li data-row={i} class="exam-row flex items-center justify-between gap-4 border-b border-ink/10 pb-2 text-muted">
                 <span class="optotype" style={`font-size:${chartSizes[i]}`}>
                   {e.chartRow}
                 </span>
