@@ -88,6 +88,10 @@ for (const [fg, bg, min] of [
   ["cobalt", "panel", 4.5],
   ["paper", "ink", 7],
   ["paper", "cobalt", 4.5],
+  ["paper", "duo-red", 4.5],
+  ["paper", "duo-green", 4.5],
+  ["ink", "butter", 7],
+  ["ink-soft", "butter", 4.5],
 ]) {
   const r = ratio(fg, bg);
   assert.ok(r >= min, `${fg} on ${bg} is ${r.toFixed(2)}:1, needs ${min}:1`);

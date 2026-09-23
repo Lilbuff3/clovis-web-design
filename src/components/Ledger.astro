@@ -1,120 +1,157 @@
 ---
-import type { LedgerRow } from "@/types";
-
-const ROWS: LedgerRow[] = [
-  {
-    category: "Who actually builds it",
-    typicalAgency:
-      "You meet the senior people once, in the pitch. After that your site is handed to whoever is free that week.",
-    typicalCost: "You talk to an account manager",
-    clovisCraft:
-      "I design it, I build it, I put it live. When you call (559) 575-3014, the person who wrote the code picks up.",
-    clovisCost: "You talk to me",
-  },
-  {
-    category: "Who owns it when you walk away",
-    typicalAgency:
-      "The site sits on their system. Stop paying and it goes dark, and you do not get the design or the content back.",
-    typicalCost: "They hold the keys",
-    clovisCraft:
-      "The code and the domain are in your name from day one. Move it anywhere, any time, and you do not need my permission.",
-    clovisCost: "You hold the keys",
-  },
-  {
-    category: "How it behaves on a phone",
-    typicalAgency:
-      "A heavy template with dozens of plugins bolted on. On a phone out in the field it takes long enough that people give up.",
-    typicalCost: "They leave before it loads",
-    clovisCraft:
-      "Built by hand with nothing in it that does not need to be there. It comes up fast on a phone, on real signal, not office wifi.",
-    clovisCost: "It is there before they wait",
-  },
-  {
-    category: "Who writes the words",
-    typicalAgency:
-      "You get a blank questionnaire and a deadline, or they run it through a machine and hand you something that sounds like everyone else.",
-    typicalCost: "You end up writing it",
-    clovisCraft:
-      "We talk for forty-five minutes, I record it, and I write the site out of what you actually said about your own trade.",
-    clovisCost: "I write it",
-  },
-  {
-    category: "When you need something changed",
-    typicalAgency: "Put in a ticket, wait for a change order, then get an invoice for a paragraph of text.",
-    typicalCost: "A form and a wait",
-    clovisCraft:
-      "Text me. Small things I just do. If it is genuinely a big job I will tell you that before I start, not after.",
-    clovisCost: "A text message",
-  },
-];
+import Mark from "./Mark.astro";
+import SectionHead from "./SectionHead.astro";
+import { duochrome as d } from "@/data/fovea";
 ---
 
-<section id="ledger" class="scroll-mt-24 border-t border-ink/10 bg-paper-deep/40 py-24 sm:py-32" aria-labelledby="ledger-title">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" data-reveal>
-    <div class="mx-auto max-w-3xl text-center">
-      <span class="t-eyebrow text-stone">Why me</span>
-      <h2 id="ledger-title" class="t-h2 mt-3 text-ink">
-        One person, <span class="italic text-clay">not a queue.</span>
-      </h2>
-      <p class="mt-4 text-base text-ink-soft sm:text-lg leading-relaxed">
-        The same five things come up every time somebody tells me about their last website. Here is how I do them
-        differently.
-      </p>
-    </div>
+<section id="ledger" class="scroll-mt-28 py-24 sm:py-32" aria-labelledby="ledger-title">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+    <SectionHead id="ledger-title" {...d.head} />
 
-    <div class="mt-16 overflow-x-auto rounded-3xl border border-ink/15 bg-paper p-4 shadow-2xl sm:p-10 lg:p-12">
-      <table class="w-full border-collapse text-left">
-        <caption class="sr-only">Typical agency compared with Clovis Web Design</caption>
-        <thead class="hidden md:table-header-group">
-          <tr class="border-b border-ink/15">
-            <td class="w-1/5"></td>
-            <th scope="col" class="w-2/5 pb-6 pr-6 align-bottom">
-              <span class="inline-block rounded-full bg-stone/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-stone">The usual</span>
-              <span class="mt-2 block font-serif text-2xl font-bold text-ink">Typical agency</span>
-            </th>
-            <th scope="col" class="w-2/5 pb-6 pl-6 align-bottom">
-              <span class="inline-block rounded-full bg-clay/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-clay">Direct</span>
-              <span class="mt-2 block font-serif text-2xl font-bold text-ink">Clovis Web Design</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-ink/10">
-          {
-            ROWS.map((row) => (
-              <tr class="block py-6 md:table-row md:py-0">
-                <th
-                  scope="row"
-                  class="block pb-3 align-top font-mono text-xs font-bold uppercase tracking-wider text-ink md:table-cell md:py-8 md:pr-6"
-                >
-                  {row.category}
-                </th>
-                <td class="block pb-4 align-top md:table-cell md:py-8 md:pr-6">
-                  <span class="text-[11px] font-semibold uppercase tracking-wider text-stone md:hidden">Typical agency</span>
-                  <p class="text-sm text-ink-soft leading-relaxed">{row.typicalAgency}</p>
-                  <p class="mt-3 font-mono text-xs font-semibold text-clay-deep">{row.typicalCost}</p>
-                </td>
-                <td class="block rounded-2xl bg-clay/5 p-4 align-top md:table-cell md:rounded-none md:border-l md:border-clay/20 md:bg-transparent md:py-8 md:pl-6">
-                  <span class="text-[11px] font-semibold uppercase tracking-wider text-clay md:hidden">Clovis Web Design</span>
-                  <p class="text-sm font-medium text-ink leading-relaxed">{row.clovisCraft}</p>
-                  <p class="mt-3 font-mono text-xs font-bold text-olive-deep">{row.clovisCost}</p>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-
-      <div class="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-linen/90 p-6 sm:flex-row">
-        <p class="text-sm font-serif font-bold text-ink">
-          You own it, it is fast, and the person who built it answers the phone.
-        </p>
-        <a
-          href="#pricing"
-          class="inline-flex min-h-[48px] shrink-0 items-center gap-2 rounded-full bg-ink px-6 py-3 text-xs font-semibold uppercase tracking-wider text-linen shadow-md transition-all hover:bg-clay"
-        >
-          See what it costs ↗
-        </a>
+    <!-- Red layer is clipped to --r; the range input on top moves it. Without script it sits at 50/50. -->
+    <div class="duo relative mt-14 h-[470px] overflow-hidden rounded-[28px] border border-ink sm:h-[400px]" style="--r:50%" data-duo>
+      <div class="absolute inset-0 bg-duo-green text-paper">
+        <div class="ml-auto flex h-full w-1/2 flex-col p-4 sm:p-9">
+          <p class="label text-paper/80">{d.green.note}</p>
+          <h3 class="mt-2 text-[1.9rem] leading-none sm:text-5xl">{d.green.title}</h3>
+          <ul class="mt-5 space-y-2.5 text-[0.95rem] sm:text-base">
+            {
+              d.green.items.map((item) => (
+                <li class="flex gap-2.5">
+                  <Mark class="mt-1 h-3 w-3 shrink-0" />
+                  <span class="leading-snug">{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="label mt-auto text-paper/80">{d.green.foot}</p>
+        </div>
       </div>
+      <div class="duo-red absolute inset-0 bg-duo-red text-paper">
+        <div class="flex h-full w-1/2 flex-col p-4 sm:p-9">
+          <p class="label text-paper/80">{d.red.note}</p>
+          <h3 class="mt-2 text-[1.9rem] leading-none sm:text-5xl">{d.red.title}</h3>
+          <ul class="mt-5 space-y-2.5 text-[0.95rem] sm:text-base">
+            {
+              d.red.items.map((item) => (
+                <li class="flex gap-2.5">
+                  <Mark class="mt-1 h-3 w-3 shrink-0" />
+                  <span class="leading-snug">{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="label mt-auto text-paper/80">{d.red.foot}</p>
+        </div>
+      </div>
+      <div class="duo-handle pointer-events-none absolute inset-y-0 w-0.5 bg-paper" aria-hidden="true">
+        <span class="duo-knob absolute top-1/2 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-ink bg-paper text-ink">
+          <Mark class="h-5 w-5" />
+        </span>
+      </div>
+      <input
+        type="range"
+        min="15"
+        max="85"
+        value="50"
+        aria-label={d.sliderLabel}
+        hidden
+        data-duo-range
+        class="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+      />
     </div>
+    <p class="label mt-3 text-muted" data-duo-hint hidden>{d.hint}</p>
+
+    <table class="duo-table mt-16 w-full text-left">
+      <caption class="label mb-5 text-left text-muted">{d.tableCaption}</caption>
+      <thead>
+        <tr class="label text-muted">
+          <th scope="col" class="pb-3 font-normal">{d.columns.topic}</th>
+          <th scope="col" class="pb-3 font-normal text-duo-red">{d.columns.agency}</th>
+          <th scope="col" class="pb-3 font-normal text-cobalt">{d.columns.me}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          d.rows.map((r) => (
+            <tr class="border-t border-ink/15">
+              <th scope="row" class="py-6 pr-8 align-top font-display text-[1.7rem] leading-tight font-normal text-ink">
+                {r.topic}
+              </th>
+              <td data-label={d.columns.agency} class="py-6 pr-8 align-top">
+                <strong class="block font-semibold text-duo-red">{r.agencyShort}</strong>
+                <span class="mt-1 block leading-relaxed text-ink-soft">{r.agency}</span>
+              </td>
+              <td data-label={d.columns.me} class="py-6 align-top">
+                <strong class="block font-semibold text-cobalt">{r.meShort}</strong>
+                <span class="mt-1 block leading-relaxed text-ink">{r.me}</span>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
   </div>
 </section>
+
+<style>
+  .duo-red {
+    clip-path: inset(0 calc(100% - var(--r)) 0 0);
+  }
+  .duo-handle {
+    left: var(--r);
+  }
+  .duo:has(input:focus-visible) .duo-knob {
+    outline: 3px solid var(--color-paper);
+    outline-offset: 3px;
+  }
+  .duo-table th,
+  .duo-table td {
+    width: 33%;
+  }
+
+  /* Phones: each row becomes a stacked card; still a real table underneath. */
+  @media (max-width: 767px) {
+    .duo-table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    .duo-table tbody,
+    .duo-table tr,
+    .duo-table th,
+    .duo-table td {
+      display: block;
+      width: auto;
+    }
+    .duo-table tr {
+      padding: 1.25rem 0;
+    }
+    .duo-table th[scope="row"],
+    .duo-table td {
+      padding: 0 0 0.75rem;
+    }
+    .duo-table td::before {
+      content: attr(data-label);
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.25rem;
+    }
+  }
+</style>
+
+<script>
+  const duo = document.querySelector<HTMLElement>("[data-duo]");
+  const range = duo?.querySelector<HTMLInputElement>("[data-duo-range]");
+  if (duo && range) {
+    range.hidden = false;
+    document.querySelector<HTMLElement>("[data-duo-hint]")!.hidden = false;
+    range.addEventListener("input", () => duo.style.setProperty("--r", `${range.value}%`));
+  }
+</script>

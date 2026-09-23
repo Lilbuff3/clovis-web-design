@@ -1,0 +1,28 @@
+---
+// Section header. `acuity` is the next Snellen line: the page reads like one eye chart, finer as you scroll.
+interface Props {
+  id: string;
+  acuity: string;
+  label: string;
+  title: string;
+  accent?: string;
+  lede?: string;
+  tone?: "light" | "dark";
+}
+const { id, acuity, label, title, accent, lede, tone = "light" } = Astro.props;
+const dark = tone === "dark";
+---
+
+<div class="grid items-end gap-6 lg:grid-cols-12">
+  <div class="lg:col-span-7">
+    <p class:list={["label flex items-center gap-3", dark ? "text-paper/70" : "text-muted"]}>
+      <span class={dark ? "text-paper" : "text-cobalt"}>{acuity}</span>
+      <span class:list={["h-px w-10", dark ? "bg-paper/30" : "bg-ink/25"]} aria-hidden="true"></span>
+      {label}
+    </p>
+    <h2 id={id} class:list={["t-h2 mt-4", dark ? "text-paper" : "text-ink"]}>
+      {title}{accent && " "}{accent && <em class={dark ? "text-paper/80" : "text-cobalt"}>{accent}</em>}
+    </h2>
+  </div>
+  {lede && <p class:list={["text-lg leading-relaxed lg:col-span-5", dark ? "text-paper/80" : "text-ink-soft"]}>{lede}</p>}
+</div>
