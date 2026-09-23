@@ -5,8 +5,21 @@ import type { ExtendedCaseStudy } from "@/data/caseStudies";
 const SITE = "https://cloviswebdesign.com";
 const AGENCY = `${SITE}/#agency`;
 const ADAM = `${SITE}/#adam`;
-const landing = PRICING_CONSTANTS.tiers.landing;
-const care = PRICING_CONSTANTS.retainers.care;
+const { landing, business, flagship } = PRICING_CONSTANTS.tiers;
+const { care, carePlus } = PRICING_CONSTANTS.retainers;
+
+const buildOffer = (t: { title: string; price: number | null }, service: string) => ({
+  "@type": "Offer",
+  name: t.title,
+  ...(t.price !== null && { price: t.price, priceCurrency: "USD" }),
+  itemOffered: { "@type": "Service", name: service },
+});
+const monthlyOffer = (t: { title: string; monthly: number }, service: string) => ({
+  "@type": "Offer",
+  name: t.title,
+  priceSpecification: { "@type": "UnitPriceSpecification", price: t.monthly, priceCurrency: "USD", unitCode: "MON" },
+  itemOffered: { "@type": "Service", name: service },
+});
 
 const agency = {
   "@type": "ProfessionalService",
@@ -39,25 +52,13 @@ const agency = {
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Website builds",
+    // Landing stays first: dist-check compares its price against calculator.ts.
     itemListElement: [
-      {
-        "@type": "Offer",
-        name: landing.title,
-        price: landing.price,
-        priceCurrency: "USD",
-        itemOffered: { "@type": "Service", name: "One-page website, live in a week" },
-      },
-      {
-        "@type": "Offer",
-        name: care.title,
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: care.monthly,
-          priceCurrency: "USD",
-          unitCode: "MON",
-        },
-        itemOffered: { "@type": "Service", name: "Hosting, updates and small changes" },
-      },
+      buildOffer(landing, "One-page website, live in a week"),
+      buildOffer(business, "Multi-page local website with town pages and Spanish"),
+      buildOffer(flagship, "Custom website for medical, legal and multi-location businesses"),
+      monthlyOffer(care, "Hosting, updates and small changes"),
+      monthlyOffer(carePlus, "Hosting, updates, a new page a month and quarterly check-ins"),
     ],
   },
 };

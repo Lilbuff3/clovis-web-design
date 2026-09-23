@@ -14,7 +14,14 @@ const PRICE = Number(calc.match(/id: "landing",[\s\S]*?price: (\d+)/)[1]);
 
 // ── Home page renders its content without JavaScript ──
 const home = read("index.html");
-for (const needle of ["tel:+15595753014", "sms:+15595753014", `$${PRICE}`, "Fortune 500 craft", "<title>Fresno Web Design"]) {
+for (const needle of [
+  "tel:+15595753014",
+  "sms:+15595753014?body=",
+  "mailto:adam@cloviswebdesign.com",
+  `$${PRICE}`,
+  "<title>Fresno Web Design",
+  'name="viewport"',
+]) {
   assert.ok(home.includes(needle), `index.html is missing ${needle}`);
 }
 for (const id of ["work", "pricing", "cost-of-slow", "ledger", "receipt", "process", "services", "faq"]) {
@@ -43,10 +50,22 @@ for (const page of workPages) {
   assert.match(article?.about?.url ?? "", /^https:\/\//, `${page} Article should point at the live client site`);
 }
 
-// ── JS budget: the calculator island is the only client code ──
-const jsGz = fs
+// ── Every image a page points at ships with the build ──
+for (const page of pages) {
+  for (const [, src] of read(page).matchAll(/<img[^>]+src="(\/[^"]+)"/g)) {
+    assert.ok(fs.existsSync(path.join(DIST, src)), `${page} points at missing image ${src}`);
+  }
+}
+for (const f of ["robots.txt", "sitemap.xml"]) assert.ok(fs.existsSync(path.join(DIST, f)), `missing ${f}`);
+
+// ── JS budget: small scripts only, no framework runtime ──
+// Astro inlines small scripts into the HTML, so count those too; the budget is for the heaviest page.
+const bundledGz = fs
   .globSync("_astro/*.js", { cwd: DIST })
   .reduce((sum, f) => sum + zlib.gzipSync(fs.readFileSync(path.join(DIST, f))).length, 0);
+const inlineGz = (page) =>
+  [...read(page).matchAll(/<script type="module">([\s\S]*?)<\/script>/g)].reduce((sum, m) => sum + zlib.gzipSync(m[1]).length, 0);
+const jsGz = bundledGz + Math.max(...pages.map(inlineGz));
 assert.ok(jsGz <= 15_000, `JS is ${jsGz} bytes gzipped, budget is 15,000`);
 
 // ── WCAG contrast of the text colors actually used, read from the theme ──
@@ -63,10 +82,12 @@ const ratio = (a, b) => {
 for (const [fg, bg, min] of [
   ["ink", "paper", 7],
   ["ink-soft", "paper", 4.5],
-  ["stone", "paper", 4.5],
-  ["clay", "paper", 4.5],
-  ["linen", "ink", 7],
-  ["stone-light", "ink", 4.5],
+  ["muted", "paper", 4.5],
+  ["muted", "panel", 4.5],
+  ["cobalt", "paper", 4.5],
+  ["cobalt", "panel", 4.5],
+  ["paper", "ink", 7],
+  ["paper", "cobalt", 4.5],
 ]) {
   const r = ratio(fg, bg);
   assert.ok(r >= min, `${fg} on ${bg} is ${r.toFixed(2)}:1, needs ${min}:1`);

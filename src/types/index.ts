@@ -64,7 +64,7 @@ export interface ServiceOffering {
 
 // --- Dynamic Scope & Quote Calculator (PROJECT.md line 62) ---
 export type ScopeTier = 'landing' | 'business' | 'flagship';
-export type RetainerTier = 'none' | 'care';
+export type RetainerTier = 'none' | 'care' | 'care-plus';
 
 
 export interface CalculatorTierConfig {

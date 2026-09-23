@@ -1,6 +1,6 @@
 ---
 import Icon from "./Icon.astro";
-import SpeedCost from "./SpeedCost.tsx";
+import SpeedCost from "./SpeedCost.astro";
 import { SCOPE_TIERS, RETAINER_TIERS, LAUNCH_PROMO, BRIEF_MAILTO, formatSmsUri } from "@/data/calculator";
 
 const carePlan = RETAINER_TIERS.find((r) => r.id === "care")!;
@@ -130,7 +130,7 @@ const carePlan = RETAINER_TIERS.find((r) => r.id === "care")!;
       </div>
     </div>
 
-    <SpeedCost client:visible />
+    <SpeedCost />
 
     <p class="mt-8 text-center text-sm text-ink-soft">
       Not sure which one you need? Call or text me and I&rsquo;ll tell you straight &mdash; even if the answer is that you

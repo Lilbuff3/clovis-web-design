@@ -33,17 +33,16 @@ export const SCOPE_TIERS: CalculatorTierConfig[] = [
   },
   {
     id: "business",
-    title: "Business Site",
+    title: "Local Authority",
     subtitle: "Several pages, written around what your customers actually ask.",
-    price: null,
-    priceLabel: "Let's talk",
+    price: 2500,
     timeline: "3–4 Weeks",
     bestFor:
       "Established local businesses with more than one service to explain, or who need Spanish alongside English.",
     features: [
-      "Every page written from a recorded conversation with you",
-      "Built for the searches people near you are actually typing",
-      "Photos, services, and reviews laid out to bring in calls",
+      "3–5 pages, every one written from a recorded conversation with you",
+      "A page for each town you serve, built for the searches people there type",
+      "A full Spanish version at /es/",
       "Still yours on day one, still no lock-in",
     ],
   },
@@ -51,8 +50,7 @@ export const SCOPE_TIERS: CalculatorTierConfig[] = [
     id: "flagship",
     title: "Flagship",
     subtitle: "The whole thing, for businesses where the website is the front door.",
-    price: null,
-    priceLabel: "Let's talk",
+    price: 5000,
     timeline: "4–6 Weeks",
     bestFor:
       "Medical practices, multi-location operators, and anyone with compliance rules to satisfy.",
@@ -91,19 +89,37 @@ export const RETAINER_TIERS: RetainerTierConfig[] = [
       "Cancel any time, no notice, no penalty",
     ],
   },
+  {
+    id: "care-plus",
+    title: "Care Plus",
+    monthlyPrice: 249,
+    description:
+      "Everything in the Care Plan, plus the site keeps growing. Same deal: cancel any month and it stays yours.",
+    features: [
+      "Everything in the Care Plan",
+      "One new page or town page a month",
+      "A check-in every quarter on your speed and where you rank",
+      "Cancel any time, no notice, no penalty",
+    ],
+  },
 ];
 
+const tier = (id: string) => SCOPE_TIERS.find((t) => t.id === id)!;
+const retainer = (id: string) => RETAINER_TIERS.find((t) => t.id === id)!;
+
+/** Shorthand views of the arrays above. Derived, so prices only live in one place. */
 export const PRICING_CONSTANTS = {
   tiers: {
-    landing: { price: 500, regularPrice: 750, title: "Landing Page" },
-    business: { price: null, title: "Business Site" },
-    flagship: { price: null, title: "Flagship" },
+    landing: { price: tier("landing").price!, regularPrice: tier("landing").regularPrice!, title: tier("landing").title },
+    business: { price: tier("business").price, title: tier("business").title },
+    flagship: { price: tier("flagship").price, title: tier("flagship").title },
   },
   retainers: {
-    none: { monthly: 0, title: "No plan" },
-    care: { monthly: 99, title: "Care Plan" },
+    none: { monthly: retainer("none").monthlyPrice, title: retainer("none").title },
+    care: { monthly: retainer("care").monthlyPrice, title: retainer("care").title },
+    carePlus: { monthly: retainer("care-plus").monthlyPrice, title: retainer("care-plus").title },
   },
-} as const;
+};
 
 export const smsUri = (body: string) => `sms:+15595753014?body=${encodeURIComponent(body)}`;
 

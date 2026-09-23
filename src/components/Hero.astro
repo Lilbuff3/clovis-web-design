@@ -1,122 +1,270 @@
 ---
-import Icon from "./Icon.astro";
-import { LAUNCH_PROMO, SCOPE_TIERS, BRIEF_MAILTO, formatSmsUri } from "@/data/calculator";
+import Mark from "./Mark.astro";
+import { hero, ticker } from "@/data/fovea";
+import { caseStudies } from "@/data/caseStudies";
+import { PRICING_CONSTANTS, formatSmsUri } from "@/data/calculator";
 
-const landing = SCOPE_TIERS.find((t) => t.id === "landing")!;
-const linkClass =
-  "inline-flex min-h-[48px] items-center rounded text-ink-soft underline underline-offset-4 transition-colors hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay";
+const price = PRICING_CONSTANTS.tiers.landing.price;
+const bigBros = caseStudies.find((s) => s.id === "big-bros-dumpster")!;
+// Row sizes in container units, so the chart fits its column at any width. Biggest row first, like a Snellen chart.
+// Row 1 is sized from the width left after its acuity label, so an ~8-letter word never overflows a 320px phone.
+const sizes = [
+  "clamp(1.9rem,calc((100cqi - 4.5rem) * 0.155),9.5rem)",
+  "clamp(1.8rem,11cqi,8rem)",
+  "clamp(1.6rem,8.8cqi,6.4rem)",
+  "clamp(1.3rem,6.6cqi,4.8rem)",
+  "clamp(1.1rem,5cqi,3.6rem)",
+  "clamp(0.8rem,2.5cqi,1.5rem)",
+  "clamp(0.72rem,1.8cqi,1.1rem)",
+  "clamp(0.6875rem,1.35cqi,0.85rem)",
+];
 ---
 
-<section
-  id="hero"
-  class="relative flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-4 pt-28 pb-16 text-center sm:px-6 sm:pt-32 lg:px-8"
-  aria-label="Introduction"
->
-  <div class="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center opacity-60" aria-hidden="true">
-    <div class="h-[650px] w-[650px] rounded-full bg-paper-deep/80 blur-3xl sm:h-[800px] sm:w-[800px]"></div>
+<section id="hero" class="relative pt-[104px] sm:pt-[124px]" aria-labelledby="hero-title">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+    <div class="label flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-ink/15 pb-4 text-muted">
+      <span class="inline-flex items-center gap-2 text-cobalt">
+        <span class="status-dot h-2 w-2 rounded-full bg-cobalt" aria-hidden="true"></span>
+        {hero.status}
+      </span>
+      <span class="flex items-center gap-4">
+        <button
+          type="button"
+          data-lens-toggle
+          data-on={`${hero.lensOn} · ${hero.lensHint}`}
+          data-off={hero.lensOff}
+          aria-pressed="true"
+          hidden
+          class="label -my-3 hidden min-h-[44px] items-center gap-3 sm:inline-flex rounded-full border border-ink/20 px-4 text-ink transition-colors hover:border-cobalt hover:text-cobalt"
+        >
+          <span class="lens-switch" aria-hidden="true"></span>
+          <span data-lens-label>{hero.lensOn} · {hero.lensHint}</span>
+        </button>
+        {hero.eyebrow}
+      </span>
+    </div>
+
+    <h1 id="hero-title" class="sr-only">{hero.h1}</h1>
+
+    <div class="mt-8 grid gap-12 lg:grid-cols-12 lg:gap-10">
+      <div class="lg:col-span-7">
+        <div class="chart" data-chart aria-hidden="true">
+          {
+            ["chart-base", "chart-sharp"].map((layer) => (
+              <div class={layer}>
+                {hero.chart.map((row, i) => (
+                  <div
+                    class:list={["flex items-end justify-between gap-4 border-b border-ink/10 leading-[0.9]", i >= 5 ? "py-[0.5em]" : "py-[0.14em]"]}
+                    style={`font-size:${sizes[i]}`}
+                  >
+                    <span class:list={["optotype min-w-0 [overflow-wrap:anywhere]", row.accent ? "text-cobalt" : "text-ink", i >= 5 && "leading-[1.15]"]}>{row.text}</span>
+                    <span class="label shrink-0 pb-[0.2em] text-[0.6875rem] text-muted">{row.acuity}</span>
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+          <span class="lens-ring" aria-hidden="true"></span>
+        </div>
+
+        <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">{hero.pitch}</p>
+        <p class="label mt-4 text-ink">{hero.priceLine(price)}</p>
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <a
+            href={formatSmsUri()}
+            class="inline-flex min-h-[52px] items-center justify-center rounded-full bg-ink px-7 text-[0.95rem] font-semibold text-paper transition-colors hover:bg-cobalt"
+          >
+            {hero.ctaText}
+          </a>
+          <a
+            href="#pricing"
+            class="inline-flex min-h-[52px] items-center justify-center rounded-full border border-ink/25 px-7 text-[0.95rem] font-semibold text-ink transition-colors hover:border-cobalt hover:text-cobalt"
+          >
+            {hero.ctaPrices} ↓
+          </a>
+        </div>
+        <p data-reading data-template={hero.reading} hidden class="label mt-5 text-muted"></p>
+      </div>
+
+      <figure class="relative mx-auto w-full max-w-md lg:col-span-5 lg:mt-4 lg:max-w-none">
+        <div class="aspect-[4/5] overflow-hidden rounded-t-full border border-ink/15 bg-panel">
+          <img
+            src={bigBros.image}
+            alt={hero.figure.alt}
+            width={bigBros.imageWidth}
+            height={bigBros.imageHeight}
+            decoding="async"
+            class="h-full w-full object-cover object-left-top"
+          />
+        </div>
+        <figcaption class="mt-5 flex items-center gap-4">
+          <span class="relative h-24 w-24 shrink-0 rounded-full border border-ink/15 bg-paper" aria-hidden="true">
+            <svg viewBox="0 0 120 120" class="seal-text h-full w-full">
+              <path id="seal-path" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0" fill="none"></path>
+              <text class="fill-ink" style="font-family:var(--font-mono);font-size:8.6px;letter-spacing:0.16em;text-transform:uppercase">
+                <!-- textLength = the circle's circumference, so any seal text wraps exactly once. -->
+                <textPath href="#seal-path" textLength="287" lengthAdjust="spacing">{hero.seal}</textPath>
+              </text>
+            </svg>
+            <Mark class="absolute inset-0 m-auto h-8 w-8 text-cobalt" />
+          </span>
+          <span class="label text-muted">{hero.figure.caption}</span>
+        </figcaption>
+      </figure>
+    </div>
   </div>
 
-  <div class="mx-auto max-w-5xl">
-    <div class="mb-6 flex justify-center">
-      <div class="group relative inline-flex items-center justify-center">
-        <div class="absolute -inset-1.5 rounded-full bg-clay/20 blur-md transition-all duration-500 group-hover:bg-clay/35" aria-hidden="true"></div>
-        <img
-          src="/images/clovis-craft-seal.webp"
-          alt="Clovis Web Design Central Valley Craft letterpress seal medallion"
-          width="112"
-          height="112"
-          loading="lazy"
-          decoding="async"
-          class="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full border-2 border-stone-light/40 shadow-lg object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
-    </div>
-
-    <div
-      class="mb-7 inline-flex items-center gap-3 rounded-full border border-clay/40 bg-clay/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-ink shadow-xs backdrop-blur"
-    >
-      <span class="relative flex h-2.5 w-2.5 items-center justify-center">
-        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive opacity-75"></span>
-        <span class="relative inline-flex h-2 w-2 rounded-full bg-olive"></span>
-      </span>
-      <span class="font-sans font-semibold">Launch offer &middot; {LAUNCH_PROMO.blurb}</span>
-    </div>
-
-    <h1 class="font-display text-4xl font-light leading-[1.08] tracking-tight text-ink sm:text-6xl md:text-7xl lg:text-8xl">
-      Fortune 500 craft. <br />
-      <span class="italic font-normal text-clay">Main Street soul.</span>
-    </h1>
-
-    <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink-soft sm:mt-7 sm:text-xl">
-      I build websites for businesses across Fresno and the Central Valley — by hand, one at a time. I&rsquo;m Adam
-      Youssef, based in Clovis. You get my mobile number, not a ticket queue.
-    </p>
-
-    <div
-      class="relative mx-auto mt-10 max-w-md overflow-hidden rounded-2xl border border-ink/15 bg-linen/90 p-6 text-left shadow-lg backdrop-blur sm:p-7"
-    >
-      <div class="flex items-center justify-between border-b border-dashed border-ink/20 pb-3">
-        <span class="font-mono text-[11px] uppercase tracking-widest text-stone">{landing.title}</span>
-        <span class="font-mono text-[11px] uppercase tracking-widest text-stone">{landing.timeline}</span>
-      </div>
-      <div class="flex items-baseline gap-3 pt-4">
-        <span class="font-serif text-5xl font-bold tracking-tight text-ink">${landing.price?.toLocaleString()}</span>
-        {
-          landing.regularPrice && (
-            <span class="font-serif text-xl text-stone line-through">${landing.regularPrice.toLocaleString()}</span>
-          )
-        }
-      </div>
-      <ul class="mt-4 space-y-2 border-t border-dashed border-ink/20 pt-4">
-        {
-          ["One page, live in a week", "Yours on day one", "No monthly required"].map((line) => (
-            <li class="flex gap-2.5 text-sm text-ink-soft">
-              <Icon name="check" class="mt-0.5 h-4 w-4 shrink-0 text-olive" />
-              <span>{line}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-
-    <div class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-      <a
-        href="tel:+15595753014"
-        class="inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full bg-ink px-8 py-4 text-base font-semibold text-linen shadow-xl transition-all duration-300 hover:bg-clay hover:shadow-clay/25 focus:outline-none focus:ring-2 focus:ring-clay focus:ring-offset-2"
-      >
-        <Icon name="phone" class="h-4.5 w-4.5" />
-        <span>Call (559) 575-3014</span>
-      </a>
-      <a
-        href={formatSmsUri(landing.title)}
-        class="inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full border border-ink/25 bg-paper/60 px-8 py-4 text-base font-semibold text-ink backdrop-blur transition-all duration-300 hover:border-clay hover:text-clay focus:outline-none focus:ring-2 focus:ring-clay focus:ring-offset-2"
-      >
-        <Icon name="message" class="h-4.5 w-4.5" />
-        <span>Text me instead</span>
-      </a>
-    </div>
-
-    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
-      <a href="#pricing" class={linkClass}>See what everything costs</a>
-      <a href="#work" class={linkClass}>See two sites I built</a>
-      <a href={BRIEF_MAILTO} class={linkClass}>Send details in writing</a>
-    </div>
-
-    <div
-      class="mx-auto mt-14 grid max-w-3xl grid-cols-1 divide-y divide-ink/10 sm:grid-cols-3 sm:divide-y-0 sm:divide-x sm:divide-ink/10 rounded-2xl border border-ink/10 bg-linen/70 p-4 shadow-sm backdrop-blur sm:p-6"
-    >
+  <div class="mt-16 overflow-hidden border-y border-ink bg-cobalt text-paper">
+    <div class="ticker flex w-max">
       {
-        [
-          ["100/100", "PageSpeed score"],
-          ["1 Week", "To live"],
-          ["100%", "Asset Ownership"],
-        ].map(([value, label]) => (
-          <div class="flex flex-col items-center justify-center px-2 py-3 sm:px-6 sm:py-0">
-            <span class="font-serif text-2xl font-bold tracking-tight text-ink sm:text-4xl">{value}</span>
-            <span class="mt-1 text-xs font-medium uppercase tracking-wider text-stone">{label}</span>
-          </div>
+        [0, 1].map((copy) => (
+          <ul class="label flex shrink-0 items-center gap-8 py-3.5 pr-8 text-[0.75rem]" aria-hidden={copy === 1 ? "true" : undefined}>
+            {ticker(price).map((item) => (
+              <li class="flex items-center gap-8 whitespace-nowrap">
+                {item}
+                <Mark class="h-3 w-3 text-paper/70" />
+              </li>
+            ))}
+          </ul>
         ))
       }
     </div>
   </div>
 </section>
+
+<style>
+  .chart {
+    position: relative;
+    container-type: inline-size;
+  }
+  .chart-sharp,
+  .lens-ring {
+    display: none;
+  }
+
+  /* Lens mode: only switched on by the script, on devices with a mouse. */
+  .chart.lens-on {
+    --lr: 130px;
+    cursor: crosshair;
+  }
+  .chart.lens-on .chart-base {
+    filter: blur(1.8px) saturate(0.85);
+    opacity: 0.7;
+  }
+  .chart.lens-on .chart-sharp {
+    display: block;
+    position: absolute;
+    inset: 0;
+    clip-path: circle(var(--lr) at var(--lx, 50%) var(--ly, 58%));
+  }
+  .chart.lens-on .lens-ring {
+    display: block;
+    position: absolute;
+    left: var(--lx, 50%);
+    top: var(--ly, 58%);
+    width: calc(var(--lr) * 2);
+    height: calc(var(--lr) * 2);
+    translate: -50% -50%;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-cobalt);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-cobalt) 8%, transparent);
+    pointer-events: none;
+  }
+
+  .lens-switch {
+    width: 26px;
+    height: 14px;
+    border-radius: 99px;
+    background: var(--color-cobalt);
+    position: relative;
+  }
+  .lens-switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-paper);
+    transition: right 0.2s;
+  }
+  [aria-pressed="false"] .lens-switch {
+    background: var(--color-muted);
+  }
+  [aria-pressed="false"] .lens-switch::after {
+    right: 14px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* One focus pull on load, on every device. `backwards` so lens mode's blur takes over when it ends. */
+    .chart-base {
+      animation: focus-pull 1.4s var(--ease-expo) 0.15s backwards;
+    }
+    .seal-text {
+      animation: spin 28s linear infinite;
+    }
+    .ticker {
+      animation: ticker 38s linear infinite;
+    }
+    .status-dot {
+      animation: blink 1.6s steps(2, jump-none) infinite;
+    }
+  }
+  @keyframes focus-pull {
+    from {
+      filter: blur(12px);
+      opacity: 0.25;
+    }
+  }
+  @keyframes spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+  @keyframes ticker {
+    to {
+      translate: -50% 0;
+    }
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0.25;
+    }
+  }
+</style>
+
+<script>
+  // Lens follows the pointer, only where there is one. Phones and reduced-motion users keep the sharp chart.
+  const chart = document.querySelector<HTMLElement>("[data-chart]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-lens-toggle]");
+  if (chart && toggle && matchMedia("(hover: hover) and (pointer: fine) and (min-width: 640px) and (prefers-reduced-motion: no-preference)").matches) {
+    chart.classList.add("lens-on");
+    toggle.hidden = false;
+    chart.addEventListener("pointermove", (e) => {
+      const r = chart.getBoundingClientRect();
+      chart.style.setProperty("--lx", `${e.clientX - r.left}px`);
+      chart.style.setProperty("--ly", `${e.clientY - r.top}px`);
+    });
+    toggle.addEventListener("click", () => {
+      const on = chart.classList.toggle("lens-on");
+      toggle.setAttribute("aria-pressed", String(on));
+      toggle.querySelector("[data-lens-label]")!.textContent = on ? toggle.dataset.on! : toggle.dataset.off!;
+    });
+  }
+
+  // The real load time of this page on this device, read as eyesight. Hidden if slow or unknown.
+  const reading = document.querySelector<HTMLElement>("[data-reading]");
+  const type = PerformanceObserver.supportedEntryTypes?.includes("largest-contentful-paint") ? "largest-contentful-paint" : "paint";
+  if (reading) {
+    new PerformanceObserver((list) => {
+      const entry = list.getEntries().at(-1);
+      if (!entry) return;
+      const s = entry.startTime / 1000;
+      if (s > 2.5) return;
+      const acuity = s < 1 ? "20/20" : s < 1.8 ? "20/25" : "20/40";
+      reading.textContent = reading.dataset.template!.replace("{time}", `${s.toFixed(2)}s`).replace("{acuity}", acuity);
+      reading.hidden = false;
+    }).observe({ type, buffered: true });
+  }
+</script>

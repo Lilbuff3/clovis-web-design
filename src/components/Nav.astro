@@ -1,36 +1,34 @@
 ---
 import Icon from "./Icon.astro";
 import Mark from "./Mark.astro";
-import { formatSmsUri, BRIEF_MAILTO, LAUNCH_PROMO } from "@/data/calculator";
-
-const NAV_ITEMS = [
-  { id: "work", label: "Work" },
-  { id: "pricing", label: "Pricing" },
-  { id: "ledger", label: "Why me" },
-  { id: "process", label: "How it works" },
-  { id: "faq", label: "FAQ" },
-];
+import { formatSmsUri, BRIEF_MAILTO } from "@/data/calculator";
+import { brand, nav } from "@/data/fovea";
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 py-2 sm:py-3">
-  <div class="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
-    <div
-      class="relative flex items-center justify-between rounded-full border border-ink/10 bg-paper/85 px-4 py-2 shadow-[0_18px_40px_-28px_rgba(34,29,23,0.85)] backdrop-blur-xl sm:px-6"
-    >
-      <a href="/" class="group flex min-h-[48px] items-center gap-3 text-left" aria-label="Clovis Web Design — home">
-        <Mark class="h-8 w-8 text-ink transition-transform duration-500 ease-out group-hover:rotate-6 sm:h-9 sm:w-9" />
+<header class="fixed inset-x-0 top-0 z-50">
+  <!-- Reading-depth ruler: ticks, with a cobalt bar that fills as you scroll (CSS scroll timeline). -->
+  <div class="ruler relative h-5 border-b border-ink/15 bg-paper/90 backdrop-blur" aria-hidden="true">
+    <div class="ruler-fill absolute inset-y-0 left-0 w-full origin-left bg-cobalt/15"></div>
+    <div class="label absolute inset-y-0 left-4 hidden items-center text-[0.625rem] text-muted sm:flex">Reading depth</div>
+    <div class="label absolute inset-y-0 right-4 hidden items-center text-[0.625rem] text-muted sm:flex">Acuity 20/20</div>
+  </div>
+
+  <div class="mx-auto w-full max-w-[1440px] px-4 pt-2 sm:px-6 lg:px-10">
+    <div class="flex items-center justify-between rounded-full border border-ink/12 bg-paper/90 py-1.5 pr-1.5 pl-4 shadow-[0_18px_40px_-30px_rgba(22,35,44,0.9)] backdrop-blur-xl sm:pl-5">
+      <a href="/" class="group flex min-h-[48px] items-center gap-3" aria-label={`${brand.name}, home`}>
+        <Mark class="h-7 w-7 text-ink transition-transform duration-500 group-hover:rotate-90" />
         <span class="flex flex-col leading-none">
-          <span class="font-serif text-[1.05rem] font-semibold tracking-[-0.02em] text-ink">Clovis Web Design</span>
-          <span class="mt-0.5 text-[0.58rem] font-medium tracking-[0.24em] text-stone uppercase">Central Valley Craft</span>
+          <span class="font-display text-[1.3rem] leading-none text-ink">{brand.name}</span>
+          <span class="label mt-1 text-[0.625rem] text-muted">{brand.tagline}</span>
         </span>
       </a>
 
-      <nav class="hidden md:flex items-center gap-0.5 lg:gap-1" aria-label="Main">
+      <nav class="hidden items-center lg:flex" aria-label="Main">
         {
-          NAV_ITEMS.map((item) => (
+          nav.map((item) => (
             <a
               href={`/#${item.id}`}
-              class="inline-flex min-h-[48px] items-center rounded-full px-2.5 lg:px-3.5 py-2 text-xs lg:text-[0.84rem] font-medium text-ink-soft/75 transition-colors duration-300 hover:text-ink hover:bg-ink/[0.04]"
+              class="label inline-flex min-h-[48px] items-center rounded-full px-3.5 text-ink-soft transition-colors hover:text-cobalt"
             >
               {item.label}
             </a>
@@ -38,46 +36,27 @@ const NAV_ITEMS = [
         }
       </nav>
 
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div
-          class="hidden items-center gap-2 rounded-full border border-olive-deep/30 bg-olive/10 px-3 py-1 text-[0.72rem] font-semibold text-olive-deep xl:flex"
-        >
-          <span class="relative flex h-2 w-2">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive opacity-75"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-olive"></span>
-          </span>
-          <span>{LAUNCH_PROMO.seats} launch slots left</span>
-        </div>
-
+      <div class="flex items-center gap-2">
         <a
           href="tel:+15595753014"
-          class="hidden xl:inline-flex min-h-[48px] items-center gap-1.5 rounded-full border border-ink/15 bg-paper/60 px-3.5 py-2 text-[0.8rem] font-semibold text-ink transition-colors hover:border-clay hover:text-clay"
+          class="hidden min-h-[48px] items-center gap-2 rounded-full px-3 text-[0.85rem] font-semibold text-ink transition-colors hover:text-cobalt xl:inline-flex"
         >
-          <Icon name="phone" class="h-3.5 w-3.5 text-clay" />
-          <span>(559) 575-3014</span>
+          <Icon name="phone" class="h-4 w-4 text-cobalt" />
+          (559) 575-3014
         </a>
-
         <a
           href={formatSmsUri()}
-          class="hidden md:inline-flex min-h-[48px] items-center gap-1.5 rounded-full border border-ink/20 bg-linen px-3.5 py-2 text-[0.82rem] font-semibold text-ink shadow-2xs transition-all hover:border-clay hover:text-clay hover:bg-paper-deep"
+          class="hidden min-h-[48px] items-center gap-2 rounded-full bg-ink px-5 text-[0.85rem] font-semibold text-paper transition-colors hover:bg-cobalt md:inline-flex"
           aria-label="Text Adam at (559) 575-3014"
         >
-          <Icon name="message" class="h-3.5 w-3.5 text-clay shrink-0" />
-          <span>Text Adam</span>
+          <Icon name="message" class="h-4 w-4 shrink-0" />
+          Text Adam
         </a>
-
-        <a
-          href="/#pricing"
-          class="hidden min-h-[48px] items-center whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.82rem] font-medium text-linen shadow-[0_10px_25px_-10px_rgba(34,29,23,0.8)] transition-all duration-300 hover:bg-clay sm:inline-flex"
-        >
-          See pricing ↗
-        </a>
-
         <button
           type="button"
           popovertarget="mobile-menu"
           aria-label="Menu"
-          class="flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-paper/80 backdrop-blur md:hidden"
+          class="flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 lg:hidden"
         >
           <span class="flex w-5 flex-col gap-2" aria-hidden="true">
             <span class="block h-0.5 w-full bg-ink"></span>
@@ -92,14 +71,12 @@ const NAV_ITEMS = [
 <div
   id="mobile-menu"
   popover
-  class="m-0 inset-x-0 top-0 bottom-auto w-full max-w-none rounded-b-[2rem] border-0 border-b border-ink/15 bg-paper px-6 pt-8 pb-8 text-ink shadow-2xl backdrop:bg-ink/35 backdrop:backdrop-blur-sm"
+  class="inset-x-0 top-0 bottom-auto m-0 w-full max-w-none rounded-b-[28px] border-0 border-b border-ink/15 bg-paper px-5 pt-6 pb-7 text-ink shadow-2xl backdrop:bg-ink/40"
 >
   <div class="flex items-center justify-between">
-    <span
-      class="inline-flex items-center gap-2 rounded-full border border-olive-deep/30 bg-olive/10 px-3 py-1 text-[0.74rem] font-semibold text-olive-deep"
-    >
-      <span class="h-2 w-2 rounded-full bg-olive animate-pulse"></span>
-      <span>Launch offer &middot; {LAUNCH_PROMO.blurb}</span>
+    <span class="flex items-center gap-3">
+      <Mark class="h-7 w-7 text-ink" />
+      <span class="font-display text-[1.3rem]">{brand.name}</span>
     </span>
     <button
       type="button"
@@ -114,33 +91,33 @@ const NAV_ITEMS = [
 
   <nav class="mt-4 flex flex-col divide-y divide-ink/10" aria-label="Mobile">
     {
-      NAV_ITEMS.map((item, index) => (
-        <a href={`/#${item.id}`} class="group flex min-h-[48px] items-center justify-between py-3.5">
-          <span class="font-serif text-[1.4rem] font-medium text-ink group-hover:text-clay">{item.label}</span>
-          <span class="text-[0.75rem] font-mono text-stone">0{index + 1}</span>
+      nav.map((item, i) => (
+        <a href={`/#${item.id}`} class="group flex min-h-[52px] items-center justify-between">
+          <span class="font-display text-[1.7rem] text-ink group-hover:text-cobalt">{item.label}</span>
+          <span class="label text-muted">0{i + 1}</span>
         </a>
       ))
     }
   </nav>
 
-  <div class="mt-6 flex flex-col gap-3 pt-2">
+  <div class="mt-6 flex flex-col gap-3">
     <a
-      href="tel:+15595753014"
-      class="flex w-full min-h-[48px] items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 text-center font-serif text-[0.92rem] font-semibold text-linen hover:bg-clay transition-colors"
+      href={formatSmsUri()}
+      class="flex min-h-[52px] items-center justify-center gap-2 rounded-full bg-ink text-[0.95rem] font-semibold text-paper transition-colors hover:bg-cobalt"
     >
-      <Icon name="phone" class="h-4 w-4 text-clay" />
-      <span>Call Adam: (559) 575-3014</span>
+      <Icon name="message" class="h-4 w-4" />
+      Text Adam
     </a>
     <div class="flex gap-2">
       <a
-        href={formatSmsUri()}
-        class="flex-1 min-h-[48px] inline-flex items-center justify-center rounded-full border border-ink/20 px-3 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-ink/[0.04] transition-colors"
+        href="tel:+15595753014"
+        class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-ink/20 text-[0.85rem] font-semibold"
       >
-        Text / SMS
+        Call (559) 575-3014
       </a>
       <a
         href={BRIEF_MAILTO}
-        class="flex-1 min-h-[48px] inline-flex items-center justify-center rounded-full border border-ink/20 bg-linen px-3 py-2.5 text-center text-[0.82rem] font-semibold text-ink hover:bg-paper-deep transition-colors"
+        class="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-ink/20 text-[0.85rem] font-semibold"
       >
         Email details ↗
       </a>
@@ -155,3 +132,21 @@ const NAV_ITEMS = [
     if ((e.target as Element).closest("a")) menu.hidePopover();
   });
 </script>
+
+<style>
+  .ruler {
+    background-image: repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-ink) 45%, transparent) 0 1px,
+        transparent 1px 45px
+      ),
+      repeating-linear-gradient(90deg, color-mix(in srgb, var(--color-ink) 22%, transparent) 0 1px, transparent 1px 9px);
+    background-size:
+      100% 9px,
+      100% 5px;
+    background-position:
+      0 100%,
+      0 100%;
+    background-repeat: repeat-x;
+  }
+</style>

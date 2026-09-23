@@ -1,0 +1,129 @@
+---
+// Cost-of-a-slow-site calculator. Rendered at build time with default numbers (works with JS off);
+// the script below recalculates on input using the same speedCost() the build used.
+import { ASSUMPTIONS, speedCost } from "@/lib/speedCost";
+import { PRICING_CONSTANTS, smsUri } from "@/data/calculator";
+
+const PRICE = PRICING_CONSTANTS.tiers.landing.price;
+const DEFAULTS = { seconds: 5, visitors: 300, jobValue: 500, closeRate: 50 };
+const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+const pct = (n: number) => `${Math.round(n * 100)}%`;
+const r = speedCost({ ...DEFAULTS, closeRate: DEFAULTS.closeRate / 100 }, PRICE);
+const message = (seconds: number, lost: number) =>
+  `Hi Adam, my site loads in about ${seconds}s. Your calculator says that could be costing me ~${usd(lost)}/mo.`;
+
+const fields = [
+  { name: "seconds", label: "Load time on a phone (seconds)", step: 0.1, max: 30 },
+  { name: "visitors", label: "Website visitors a month", step: 10 },
+  { name: "jobValue", label: "Average job ($)", step: 50 },
+  { name: "closeRate", label: "Calls you turn into jobs (%)", step: 5, max: 100 },
+] as const;
+---
+
+<div
+  id="cost-of-slow"
+  data-speedcost
+  data-price={PRICE}
+  data-sms={smsUri("")}
+  class="scroll-mt-24 rounded-[28px] border border-ink/15 bg-card p-6 sm:p-9"
+>
+  <span class="label text-muted">What a blurry site costs you</span>
+  <h3 class="mt-2 text-3xl text-ink sm:text-4xl">Put in your numbers.</h3>
+
+  <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      fields.map((f) => (
+        <label class="block text-sm font-medium text-ink">
+          {f.label}
+          <input
+            type="number"
+            inputmode="decimal"
+            name={f.name}
+            value={DEFAULTS[f.name]}
+            step={f.step}
+            min="0"
+            max={"max" in f ? f.max : undefined}
+            class="mt-1.5 min-h-[48px] w-full rounded-xl border border-ink/20 bg-paper px-3.5 py-2.5 text-base text-ink focus:border-cobalt focus:outline-none focus:ring-2 focus:ring-cobalt/30"
+          />
+        </label>
+      ))
+    }
+  </div>
+  <p class="mt-3 text-sm text-muted">
+    Don&rsquo;t know your load time?
+    <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-cobalt">
+      Check it free on Google PageSpeed ↗
+    </a>
+    and use the mobile &ldquo;Largest Contentful Paint&rdquo; number.
+  </p>
+
+  <div class="mt-7 grid gap-5 border-t border-dashed border-ink/20 pt-6 sm:grid-cols-3" aria-live="polite">
+    <div>
+      <output data-out="lost" class="block optotype text-4xl text-ink">{usd(r.lostPerMonth)}</output>
+      <span class="label mt-2 block text-muted">lost a month, roughly</span>
+    </div>
+    <div>
+      <output data-out="visitors" class="block optotype text-4xl text-ink">{Math.round(r.lostVisitors)}</output>
+      <span class="label mt-2 block text-muted">visitors who give up waiting</span>
+    </div>
+    <div>
+      <output data-out="payback" class="block optotype text-4xl text-ink">
+        {r.paybackDays === null ? "—" : `${r.paybackDays} days`}
+      </output>
+      <span class="label mt-2 block text-muted">for a {usd(PRICE)} page to pay for itself</span>
+    </div>
+  </div>
+
+  <a
+    data-out="sms"
+    href={smsUri(message(DEFAULTS.seconds, r.lostPerMonth))}
+    class="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition-colors hover:bg-cobalt"
+  >
+    Text me these numbers
+  </a>
+
+  <details class="mt-6 text-sm text-ink-soft">
+    <summary class="flex min-h-[48px] cursor-pointer items-center font-semibold text-ink">How this is worked out</summary>
+    <p class="mt-2 leading-relaxed">
+      Compared with a page that loads in about a second. Google&rsquo;s mobile research found that going from 1s to 3s raises
+      the chance someone leaves by 32%, to 5s by 90%, and to 10s by 123%. I assume {pct(ASSUMPTIONS.baseBounce)} of visitors
+      leave even from a fast page, and {pct(ASSUMPTIONS.leadRate)} of the ones who stay call or text you. It&rsquo;s an estimate,
+      not a promise, but every number is here so you can check it.
+      <a
+        href="https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/page-load-time-statistics/"
+        target="_blank"
+        rel="noopener"
+        class="underline underline-offset-4 hover:text-cobalt">Source ↗</a
+      >
+    </p>
+  </details>
+</div>
+
+<script>
+  import { speedCost } from "@/lib/speedCost";
+
+  const root = document.querySelector<HTMLElement>("[data-speedcost]");
+  if (root) {
+    const price = Number(root.dataset.price);
+    const smsPrefix = root.dataset.sms!;
+    const usd = (n: number) => `$${Math.round(n).toLocaleString("en-US")}`;
+    const val = (name: string) => {
+      const n = parseFloat(root.querySelector<HTMLInputElement>(`[name=${name}]`)!.value);
+      return Number.isFinite(n) && n >= 0 ? n : 0;
+    };
+    const out = (key: string) => root.querySelector<HTMLElement>(`[data-out=${key}]`)!;
+
+    root.addEventListener("input", () => {
+      const seconds = val("seconds");
+      const r = speedCost(
+        { seconds, visitors: val("visitors"), jobValue: val("jobValue"), closeRate: Math.min(val("closeRate"), 100) / 100 },
+        price
+      );
+      out("lost").textContent = usd(r.lostPerMonth);
+      out("visitors").textContent = String(Math.round(r.lostVisitors));
+      out("payback").textContent = r.paybackDays === null ? "—" : `${r.paybackDays} days`;
+      const body = `Hi Adam, my site loads in about ${seconds}s. Your calculator says that could be costing me ~${usd(r.lostPerMonth)}/mo.`;
+      (out("sms") as HTMLAnchorElement).href = smsPrefix + encodeURIComponent(body);
+    });
+  }
+</script>

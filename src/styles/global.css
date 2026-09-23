@@ -1,56 +1,60 @@
 @import "tailwindcss";
 
+/* FOVEA design system. Colors: off-white paper, cool ink, one cobalt accent.
+   duo-red / duo-green belong to the duochrome slider only. */
 @theme {
-  /* ——— Warm paper & stone canvas ——— */
-  --color-paper: #f6f0e6;
-  --color-paper-deep: #ede4d5;
-  --color-linen: #fbf7f0;
-  --color-parchment: #f1e9db;
+  --color-paper: #fbfaf6;
+  --color-panel: #f1efe8;
+  --color-card: #ffffff;
+  --color-ink: #16232c;
+  --color-ink-soft: #3d4d56;
+  --color-muted: #5c6b73;
+  --color-cobalt: #1f45d6;
+  --color-cobalt-deep: #1535a8;
+  --color-cobalt-wash: #e8edfd;
+  --color-butter: #f0be4c;
+  --color-duo-red: #cf4327;
+  --color-duo-green: #1d6b50;
 
-  /* ——— Ink ——— */
-  --color-ink: #221d17;
-  --color-ink-soft: #4a4239;
-  --color-stone: #6e6355;
-  --color-stone-light: #b6aa99;
+  /* ponytail: legacy aliases so not-yet-rebuilt sections still render; delete when the last old component is gone */
+  --color-linen: #fdfdfb;
+  --color-paper-deep: #f1efe8;
+  --color-stone: #5c6b73;
+  --color-stone-light: #9aa7ad;
+  --color-clay: #1f45d6;
+  --color-clay-deep: #1535a8;
+  --color-ember: #8fa6ff;
+  --color-olive: #1d6b50;
+  --color-olive-deep: #16513d;
 
-  /* ——— Organic accents ——— */
-  --color-clay: #b0503a;
-  --color-clay-deep: #8e3d2b;
-  --color-ember: #d2743f;
-  --color-olive: #5b6a4a;
-  --color-olive-deep: #43503a;
-  --color-ochre: #c08a2e;
-  --color-slate-blue: #4c5a66;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "Archivo Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* ——— Typography ——— */
-  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
-  --font-serif: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* ——— Animation Easings ——— */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
   :root {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    font-synthesis: none;
   }
 
   body {
     background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {
-    background: #b0503a;
-    color: #fbf7f0;
+    background: var(--color-cobalt);
+    color: var(--color-paper);
   }
 
   h1,
@@ -58,38 +62,63 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-variation-settings: "SOFT" 24, "WONK" 1;
-    letter-spacing: -0.022em;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+    line-height: 1;
     text-wrap: balance;
   }
 
-  ::-webkit-scrollbar {
-    width: 11px;
-    height: 11px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #ede4d5;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #c3b6a2;
-    border-radius: 99px;
-    border: 3px solid #ede4d5;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #a2937d;
-  }
-
   :focus-visible {
-    outline: 2px solid var(--color-clay);
+    outline: 2px solid var(--color-cobalt);
     outline-offset: 3px;
     border-radius: 2px;
   }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
 }
 
-/* ——————————————————————————————————————————
-   Scroll reveal: pure CSS, content stays visible where unsupported or JS is off
-   —————————————————————————————————————————— */
+/* ——— Type helpers ——— */
+/* The eye-chart letter: wide, heavy Archivo. */
+.optotype {
+  font-family: var(--font-sans);
+  font-stretch: 118%;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+}
+/* Small mono labels. Never below 11px. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.t-h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 6.4vw, 5.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+}
+.t-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.paper-card {
+  background: var(--color-card);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 18px 40px -28px rgba(22, 35, 44, 0.45);
+}
+
+/* ——— Motion. Everything is visible without these; they only add on top. ——— */
 @supports (animation-timeline: view()) {
   @keyframes reveal {
     from {
@@ -101,6 +130,19 @@
     animation: reveal linear both;
     animation-timeline: view();
     animation-range: entry 0% entry 40%;
+  }
+}
+
+/* Reading-depth ruler across the top of the page, driven by scroll position. */
+@supports (animation-timeline: scroll()) {
+  @keyframes ruler-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  .ruler-fill {
+    animation: ruler-fill linear both;
+    animation-timeline: scroll(root);
   }
 }
 
@@ -116,39 +158,8 @@
   :root {
     scroll-behavior: auto;
   }
-  [data-reveal] {
+  [data-reveal],
+  .ruler-fill {
     animation: none !important;
   }
-}
-
-/* ——————————————————————————————————————————
-   Cards & typography helpers
-   —————————————————————————————————————————— */
-.paper-card {
-  background: linear-gradient(163deg, #fdfaf5 0%, #f7f1e7 62%, #f2ebde 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.7) inset,
-    0 18px 40px -28px rgba(52, 40, 26, 0.42);
-}
-
-.t-h2 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(2.1rem, 5.1vw, 4.35rem);
-  line-height: 1.02;
-  letter-spacing: -0.028em;
-}
-.t-eyebrow {
-  font-size: 0.688rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-input,
-textarea,
-select,
-button {
-  font: inherit;
-  color: inherit;
 }

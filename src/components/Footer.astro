@@ -2,64 +2,45 @@
 import Icon from "./Icon.astro";
 import Mark from "./Mark.astro";
 import { caseStudies } from "@/data/caseStudies";
-import { BRIEF_MAILTO } from "@/data/calculator";
+import { BRIEF_MAILTO, formatSmsUri } from "@/data/calculator";
+import { brand, footer, nav } from "@/data/fovea";
 
-const LINKS = [
-  { label: "Work", id: "work" },
-  { label: "Pricing", id: "pricing" },
-  { label: "What a slow site costs", id: "cost-of-slow" },
-  { label: "Why me", id: "ledger" },
-  { label: "Test the sites yourself", id: "receipt" },
-  { label: "How it works", id: "process" },
-  { label: "What I do", id: "services" },
-  { label: "FAQ", id: "faq" },
-];
 const year = new Date().getFullYear();
 ---
 
-<footer class="relative overflow-hidden border-t border-ink/10 bg-paper pt-20 pb-28 text-ink md:pb-12">
-  <div class="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
+<footer class="relative overflow-hidden bg-ink pt-20 pb-28 text-paper md:pb-12">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
     <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-12">
       <div class="lg:col-span-5">
         <div class="flex items-center gap-3">
-          <Mark class="h-9 w-9 text-ink" />
-          <div class="flex flex-col leading-none">
-            <span class="font-serif text-[1.2rem] font-semibold tracking-[-0.02em]">Clovis Web Design</span>
-            <span class="mt-1 text-[0.6rem] font-medium tracking-[0.26em] text-stone uppercase">Studio of Adam Youssef</span>
-          </div>
+          <Mark class="h-8 w-8 text-paper" />
+          <span class="font-display text-[1.6rem] leading-none">{brand.name}</span>
         </div>
-        <p class="mt-5 max-w-[36ch] text-[0.92rem] leading-relaxed text-ink-soft">
-          Fortune 500 craft. Main Street soul. I build websites by hand for Fresno and Central Valley businesses &mdash; fast on a
-          phone, set up so Google can find you, and yours on day one.
-        </p>
-        <div class="mt-6 flex flex-col gap-1">
-          <a href="tel:+15595753014" class="inline-flex min-h-[48px] items-center gap-2 text-[0.95rem] font-semibold text-ink hover:text-clay transition-colors">
-            <Icon name="phone" class="h-4 w-4 text-clay" />
-            <span>(559) 575-3014</span>
+        <p class="mt-5 max-w-[40ch] leading-relaxed text-paper/80">{footer.blurb}</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a
+            href={formatSmsUri()}
+            class="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-paper px-5 text-[0.9rem] font-semibold text-ink transition-colors hover:bg-cobalt hover:text-paper"
+          >
+            <Icon name="message" class="h-4 w-4" />
+            Text Adam
           </a>
           <a
-            href="mailto:adam@cloviswebdesign.com"
-            class="inline-flex min-h-[48px] items-center text-[0.9rem] font-medium text-ink underline decoration-clay/50 underline-offset-4 hover:text-clay"
+            href={BRIEF_MAILTO}
+            class="inline-flex min-h-[48px] items-center rounded-full border border-paper/30 px-5 text-[0.9rem] font-semibold transition-colors hover:border-paper"
           >
-            adam@cloviswebdesign.com
+            {footer.cta}
           </a>
-          <span class="text-[0.82rem] text-stone">Based in Clovis · Serving all of Fresno County</span>
         </div>
-        <a
-          href={BRIEF_MAILTO}
-          class="mt-6 inline-flex min-h-[48px] items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-[0.82rem] font-medium text-linen transition-colors hover:bg-clay"
-        >
-          Send me the details ↗
-        </a>
       </div>
 
       <nav class="lg:col-span-3" aria-label="Footer">
-        <h2 class="text-[0.72rem] font-medium tracking-[0.2em] text-stone uppercase">On this page</h2>
-        <ul class="mt-5 space-y-1 text-[0.9rem]">
+        <h2 class="label text-paper/60">On this page</h2>
+        <ul class="mt-4">
           {
-            LINKS.map((l) => (
+            nav.map((l) => (
               <li>
-                <a href={`/#${l.id}`} class="inline-flex min-h-[48px] min-w-[48px] items-center text-ink-soft transition-colors hover:text-clay">
+                <a href={`/#${l.id}`} class="inline-flex min-h-[48px] items-center text-paper/85 transition-colors hover:text-paper">
                   {l.label}
                 </a>
               </li>
@@ -69,46 +50,47 @@ const year = new Date().getFullYear();
       </nav>
 
       <div class="lg:col-span-4">
-        <h2 class="text-[0.72rem] font-medium tracking-[0.2em] text-stone uppercase">Case studies</h2>
-        <ul class="mt-5 space-y-2 text-[0.88rem]">
+        <h2 class="label text-paper/60">Reception</h2>
+        <ul class="mt-4">
+          <li>
+            <a href="tel:+15595753014" class="inline-flex min-h-[48px] items-center gap-2 font-semibold hover:text-paper/80">
+              <Icon name="phone" class="h-4 w-4" />
+              (559) 575-3014
+            </a>
+          </li>
+          <li>
+            <a href="mailto:adam@cloviswebdesign.com" class="inline-flex min-h-[48px] items-center underline decoration-paper/40 underline-offset-4 hover:decoration-paper">
+              adam@cloviswebdesign.com
+            </a>
+          </li>
+        </ul>
+        <p class="mt-2 text-sm text-paper/70">{footer.based}</p>
+        <h2 class="label mt-8 text-paper/60">Prescriptions on file</h2>
+        <ul class="mt-2">
           {
             caseStudies.map((s) => (
               <li>
                 <a href={`/work/${s.id}/`} class="group flex min-h-[48px] flex-col justify-center">
-                  <span class="block font-medium text-ink group-hover:text-clay">{s.client} ↗</span>
-                  <span class="block text-[0.78rem] text-stone">
-                    {s.location} · {s.industry}
-                  </span>
+                  <span class="font-semibold group-hover:underline">{s.client} ↗</span>
+                  <span class="text-sm text-paper/65">{s.location}</span>
                 </a>
               </li>
             ))
           }
         </ul>
-        <div class="mt-6 border-t border-ink/10 pt-4">
-          <span class="text-[0.72rem] font-medium tracking-[0.16em] text-stone uppercase">Where I work</span>
-          <p class="mt-1 text-[0.8rem] text-ink-soft">Fresno, Clovis, Madera, Sanger, Selma, Fowler, and Kingsburg.</p>
-        </div>
       </div>
     </div>
 
-    <div class="mt-16 overflow-hidden border-t border-ink/10 pt-8" aria-hidden="true">
-      <span
-        class="block select-none font-serif text-[clamp(2.6rem,11.8vw,12rem)] font-semibold leading-none tracking-[-0.045em] text-ink/[0.08] sm:text-ink/[0.11] whitespace-nowrap"
-      >
+    <div class="mt-16 overflow-hidden border-t border-paper/15 pt-6" aria-hidden="true">
+      <span class="block font-display text-[clamp(3.4rem,15.5vw,15rem)] leading-[0.85] whitespace-nowrap text-paper/10">
         Clovis Web Design
       </span>
     </div>
 
-    <div class="mt-8 flex flex-col gap-6 border-t border-ink/10 pt-7 text-[0.78rem] text-stone sm:flex-row sm:items-center sm:justify-between">
-      <p class="max-w-[62ch] leading-relaxed">
-        © {year} Clovis Web Design. Handcrafted by Adam Youssef in Clovis, California. Set in Fraunces and Inter. You own
-        the code and the domain from day one.
-      </p>
-      <a
-        href="#top"
-        class="flex min-h-[48px] w-fit items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-ink transition-colors hover:border-ink hover:bg-ink hover:text-linen"
-      >
-        Back to top ↑
+    <div class="mt-6 flex flex-col gap-4 border-t border-paper/15 pt-6 text-sm text-paper/65 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} {brand.name}. Built by hand by Adam Youssef in Clovis, California. {footer.towns}</p>
+      <a href="#top" class="inline-flex min-h-[48px] w-fit items-center gap-2 rounded-full border border-paper/25 px-4 hover:border-paper">
+        Back to top ↑ <span class="label">{footer.sign}</span>
       </a>
     </div>
   </div>

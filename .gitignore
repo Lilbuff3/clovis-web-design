@@ -38,3 +38,6 @@ Thumbs.db
 
 # Astro generated types
 .astro/
+
+# Browser-automation screenshots and logs
+.playwright-mcp/
