@@ -326,6 +326,32 @@ export const faqHead = {
   accent: "before they call.",
 };
 
+export const caseStudyPage = {
+  crumb: "Prescriptions",
+  visit: "Open the live site",
+  test: "Test its speed on PageSpeed",
+  doctors: "Physicians",
+  owners: "Owners",
+  complaint: "Presenting complaint",
+  built: "What I built",
+  result: "The result",
+  google: "What Google reads",
+  googleBody: (host: string) =>
+    `Structured data is the part of a site that tells search engines who the business is, where it works and how to reach it. Google’s own tool shows you what it finds on ${host} today.`,
+  googleLink: "Open Google’s Rich Results Test",
+  hipaa: { fax: "Referral fax", phone: "Scheduling line", forms: "Web forms collecting patient data" },
+  ctaTitle: "Want one like this?",
+  ctaBody: "Text or call me. You’ll get the person who built this one.",
+};
+
+export const notFound = {
+  acuity: "20/404",
+  title: "This line is",
+  accent: "out of focus.",
+  body: "That page doesn’t exist. Try the home page, or text me and I’ll point you the right way.",
+  home: "Back to the home page",
+};
+
 export const footer = {
   blurb:
     "Hand-built websites for Fresno and Central Valley businesses. Fast on a phone, set up so Google can find you, and yours on day one.",

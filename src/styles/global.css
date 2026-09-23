@@ -16,17 +16,6 @@
   --color-duo-red: #b8391f;
   --color-duo-green: #1d6b50;
 
-  /* ponytail: legacy aliases so not-yet-rebuilt sections still render; delete when the last old component is gone */
-  --color-linen: #fdfdfb;
-  --color-paper-deep: #f1efe8;
-  --color-stone: #5c6b73;
-  --color-stone-light: #9aa7ad;
-  --color-clay: #1f45d6;
-  --color-clay-deep: #1535a8;
-  --color-ember: #8fa6ff;
-  --color-olive: #1d6b50;
-  --color-olive-deep: #16513d;
-
   --font-display: "Instrument Serif", Georgia, serif;
   --font-serif: "Instrument Serif", Georgia, serif;
   --font-sans: "Archivo Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -106,16 +95,6 @@
   font-size: clamp(2.5rem, 6.4vw, 5.25rem);
   line-height: 0.95;
   letter-spacing: -0.015em;
-}
-.t-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.paper-card {
-  background: var(--color-card);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 18px 40px -28px rgba(22, 35, 44, 0.45);
 }
 
 /* ——— Motion. Everything is visible without these; they only add on top. ——— */

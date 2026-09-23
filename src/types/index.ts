@@ -102,15 +102,6 @@ export interface ProcessStep {
   deliverables: string[];
 }
 
-// --- The Ledger Anti-Agency Comparison ---
-export interface LedgerRow {
-  category: string;
-  typicalAgency: string;
-  typicalCost: string;
-  clovisCraft: string;
-  clovisCost: string;
-  differenceNote?: string;
-}
 
 // --- Objection-Crushing FAQ ---
 export interface FAQItem {

@@ -24,7 +24,7 @@ for (const needle of [
 ]) {
   assert.ok(home.includes(needle), `index.html is missing ${needle}`);
 }
-for (const id of ["work", "pricing", "cost-of-slow", "ledger", "receipt", "process", "services", "faq"]) {
+for (const id of ["work", "pricing", "cost-of-slow", "ledger", "receipt", "process", "exam", "services", "about", "faq"]) {
   assert.ok(home.includes(`id="${id}"`), `index.html is missing section #${id}`);
 }
 assert.match(home, /<table[\s>]/, "comparison should be a real <table>");

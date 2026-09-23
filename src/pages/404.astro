@@ -1,12 +1,23 @@
 ---
 import Base from "@/layouts/Base.astro";
 import Nav from "@/components/Nav.astro";
+import { formatSmsUri } from "@/data/calculator";
+import { notFound as t } from "@/data/fovea";
 ---
 
 <Base title="Page not found — Clovis Web Design" description="That page doesn't exist.">
   <Nav />
-  <main class="flex min-h-[80vh] flex-col items-center justify-center px-4 text-center">
-    <h1 class="t-h2 text-ink">Nothing here.</h1>
-    <p class="mt-4 text-ink-soft">That page doesn't exist. Try the <a href="/" class="text-clay underline underline-offset-4">home page</a> or call <a href="tel:+15595753014" class="text-clay underline underline-offset-4">(559) 575-3014</a>.</p>
+  <main class="mx-auto flex min-h-[85vh] w-full max-w-[1440px] flex-col justify-center px-4 pt-28 sm:px-6 lg:px-10">
+    <p class="label text-cobalt">{t.acuity}</p>
+    <h1 class="t-h2 mt-4 max-w-4xl text-ink">
+      {t.title}{" "}<em class="text-cobalt">{t.accent}</em>
+    </h1>
+    <p class="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">{t.body}</p>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a href="/" class="inline-flex min-h-[52px] items-center justify-center rounded-full bg-ink px-7 font-semibold text-paper hover:bg-cobalt">{t.home}</a>
+      <a href={formatSmsUri()} class="inline-flex min-h-[52px] items-center justify-center rounded-full border border-ink/25 px-7 font-semibold text-ink hover:border-cobalt hover:text-cobalt">
+        Text Adam
+      </a>
+    </div>
   </main>
 </Base>
