@@ -117,7 +117,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
       "Separate listings for the Madera clinic and the Fresno office",
     ],
     quote: {
-      text: "Before Adam rebuilt our platform, referring physicians struggled with slow pages and confusing forms. Now our clinical fax packet and phone triage operate with total reliability. Our provider referrals are up over 140% without a single HIPAA concern.",
+      text: "My main concern was compliance with HIPAA, HITECH and CMIA regulations. Adam was very knowledgeable and experienced with handling these regulations. He made a professional-grade website that looked stunning while protecting the rights of my patients and protecting my practice. And our provider referrals are up over 140%!",
       name: "Dr. Sheikh Mohammad Masood, MD",
       role: "Founding President & Medical Director",
       entity: "Kidney Specialist Inc.",
@@ -197,7 +197,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
       "100 on PageSpeed, mobile and desktop",
     ],
     quote: {
-      text: "Before Adam rebuilt our site, national brokers were taking a huge chunk of every rental. Now, contractors and homeowners in Clovis text us directly. Our trucks are booked two weeks out.",
+      text: "Before Adam rebuilt our site, national brokers were taking a huge chunk of every rental. Now, contractors and homeowners in Fresno and Clovis text us directly. We've had to buy 4 more trucks just to keep up with the volume.",
       name: "William Maldonado Ramirez",
       role: "Co-Owner & Head of Operations, Big Bros Dumpster Rentals",
       entity: "Big Bros Dumpster Rentals",
