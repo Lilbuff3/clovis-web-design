@@ -171,6 +171,161 @@ export const duochrome = {
   ],
 };
 
+export const lensTray = {
+  head: {
+    acuity: "20/40",
+    label: "The lens tray",
+    title: "Real interfaces,",
+    accent: "held up to the light.",
+    lede: "Three small pieces of the sites, rebuilt here in plain HTML. Pick one up to read why every line is where it is.",
+  },
+  /** `kind` picks the mock markup in Receipt.astro; `source` says honestly where it comes from. */
+  lenses: [
+    {
+      kind: "bigbros",
+      name: "The price card",
+      source: "Recreated from bigbrosdumpster.com",
+      notes: [
+        ["The price sits beside the size", "Nobody should scroll to find out what a dumpster costs."],
+        ["Flat, and it says so", "“Flat” next to each price answers the broker teaser rates before anyone asks."],
+        ["The worry answered in the list", "Boards under the wheels. It’s the first thing homeowners ask, so it’s on the card."],
+      ],
+    },
+    {
+      kind: "kidney",
+      name: "The call bar",
+      source: "Recreated from kidneyspecialistinc.com",
+      notes: [
+        ["The question people actually have", "“Not sure if you need a kidney specialist?” Call and ask. No form, no patient data."],
+        ["Spanish in one tap", "Se habla español, and the whole site switches, not just a banner."],
+        ["The phone number is the button", "Big, high-contrast, and the same number everywhere."],
+      ],
+    },
+    {
+      kind: "sample",
+      name: "A landing page",
+      source: "Sample layout, not a client",
+      notes: [
+        ["One promise at the top", "What you do, where, and how fast. Read in four seconds."],
+        ["Text a photo", "The easiest first step for someone standing in their yard looking at the problem."],
+        ["Call and text, side by side", "Some people call, some text. Neither should have to hunt."],
+      ],
+    },
+  ],
+  testTitle: "Don’t take my word for it",
+  testLede: "These links run Google’s own speed test on the live sites right now. You see what it finds today, not a screenshot I picked.",
+  testLink: (host: string) => `Test ${host} ↗`,
+  testNote: "Opens Google PageSpeed Insights, mobile",
+  targetsTitle: "What I build to",
+  targets: [
+    { value: "< 1.0s", label: "Largest Contentful Paint", note: "Google calls under 2.5s good" },
+    { value: "0.0", label: "Cumulative Layout Shift", note: "Nothing jumps around while it loads" },
+    { value: "< 50ms", label: "Interaction to Next Paint", note: "Buttons answer the moment you tap" },
+  ],
+};
+
+export const exam = {
+  head: {
+    acuity: "20/30",
+    label: "The examination",
+    title: "Four lenses,",
+    accent: "turned in order.",
+    lede: "Every site goes through the same four steps in the same order, so nothing gets made up on the day it should have been decided.",
+  },
+  of: "of",
+  prev: "Previous step",
+  next: "Next step",
+  youGet: "What you get",
+};
+
+export const eyeExam = {
+  head: {
+    acuity: "20/25",
+    label: "The eye exam · two minutes · free",
+    title: "Test your",
+    accent: "website’s eyes.",
+    lede: "Five questions. No email address, no follow-up sequence. You get a straight answer, even if the answer is that you don’t need me.",
+  },
+  practiceLabel: "Your business name (optional)",
+  practicePlaceholder: "Tower District Roofing",
+  /** Options go worst to best: A counts 2 problems, B counts 1, C counts 0. */
+  questions: [
+    {
+      q: "When someone nearby searches for what you do, what happens?",
+      options: ["They find a directory, a competitor, or nothing", "They find me eventually, on page two", "They find me first, with the right number"],
+    },
+    {
+      q: "Pull your website up on your phone right now. How long until you can read it?",
+      options: ["I gave up waiting", "Three or four seconds", "It’s just there"],
+    },
+    {
+      q: "Where do your new customers come from?",
+      options: ["Word of mouth, and I couldn’t tell you more", "Some from Google, I think", "Google and my website, and I know which"],
+    },
+    {
+      q: "When did you last change something on your website yourself?",
+      options: ["I can’t. Someone else has the login", "Last year, and it took a week", "This month"],
+    },
+    {
+      q: "Is your Google Business Profile filled in, with photos and your hours?",
+      options: ["What’s a Google Business Profile?", "Some of it", "All of it, and I answer reviews"],
+    },
+  ],
+  back: "← One question back",
+  progress: "Chart № 5 · your progress",
+  chartRow: "E Z O P N",
+  resultTitle: "Your prescription",
+  resultFor: "For",
+  resultAcuity: "Reading",
+  resultRecommend: "Recommended",
+  /** Chosen by number of problems (0–10). `tier` is a calculator.ts tier id, or null for "you don't need me". */
+  results: [
+    { max: 2, acuity: "20/20", tier: null, verdict: "Your site is doing its job. Honestly, you don’t need me yet. Text me if that changes." },
+    { max: 6, acuity: "20/50", tier: "landing", verdict: "The basics are there, but people are squinting. One fast, clear page would fix most of it." },
+    { max: 10, acuity: "20/200", tier: "business", verdict: "Right now the internet can barely see you. You need a proper site with a page for each town you serve." },
+  ],
+  textResult: "Text me my results",
+  again: "Take it again",
+  noScript: "Answer the questions, then text me your letters (like A, C, B, B, A) and I’ll send your prescription back.",
+};
+
+export const servicesHead = {
+  acuity: "20/20",
+  label: "What’s in the case",
+  title: "Three things,",
+  accent: "done properly.",
+  lede: "A website on its own doesn’t get you found. These three work together, and I do all of them myself.",
+};
+
+export const practice = {
+  head: {
+    acuity: "20/15",
+    label: "The practice",
+    title: "One person,",
+    accent: "one town at a time.",
+  },
+  body: [
+    "I’m Adam Youssef. I build websites by hand from Clovis for businesses across Fresno and the Central Valley. You get my cell number, not a ticket queue, and the person who answers is the person who wrote the code.",
+    "A local business doesn’t need a brand platform. It needs to be found by someone standing forty feet away with a phone in one hand, and understood in the four seconds before they give up. Everything I build is for those four seconds.",
+    "So I listen before I design, I write before I build, and I hand you the keys at the end. An eye doctor doesn’t keep your glasses.",
+  ],
+  rulesTitle: "Rules of the practice",
+  rules: [
+    "No templates sold as custom. Ever.",
+    "Prices published, never behind a phone call.",
+    "You keep the code, the domain and the logins.",
+    "I don’t disappear. When you text, I answer.",
+    "If one page is enough, that’s what I’ll tell you.",
+  ],
+};
+
+export const faqHead = {
+  acuity: "20/10",
+  label: "Questions before the exam",
+  title: "What people ask",
+  accent: "before they call.",
+};
+
 export const footer = {
   blurb:
     "Hand-built websites for Fresno and Central Valley businesses. Fast on a phone, set up so Google can find you, and yours on day one.",

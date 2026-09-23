@@ -1,31 +1,27 @@
 ---
+import SectionHead from "./SectionHead.astro";
 import { faqs } from "@/data/faq";
+import { faqHead } from "@/data/fovea";
 ---
 
-<section id="faq" class="scroll-mt-24 border-t border-ink/10 bg-paper-deep/30 py-24 sm:py-32" aria-labelledby="faq-title">
-  <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8" data-reveal>
-    <div class="text-center">
-      <span class="t-eyebrow text-stone">Straight answers</span>
-      <h2 id="faq-title" class="t-h2 mt-3 text-ink">
-        What people ask <br />
-        <span class="italic text-clay">before they call.</span>
-      </h2>
-    </div>
+<section id="faq" class="scroll-mt-28 border-t border-ink/10 bg-panel py-24 sm:py-32" aria-labelledby="faq-title">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+    <SectionHead id="faq-title" {...faqHead} />
 
-    <div class="mt-16 divide-y divide-ink/10 rounded-3xl border border-ink/10 bg-paper p-4 shadow-sm sm:p-8">
+    <div class="mt-14 border-b border-ink/15 lg:ml-[calc(100%/12*4)]">
       {
         faqs.map((faq, i) => (
-          <details id={faq.id} class="group scroll-mt-24 py-4 sm:py-6 first:pt-2 last:pb-2" open={i === 0}>
-            <summary class="flex min-h-[48px] cursor-pointer list-none items-center justify-between text-left [&::-webkit-details-marker]:hidden">
-              <h3 class="pr-6 font-serif text-lg font-bold text-ink sm:text-xl">{faq.question}</h3>
+          <details id={faq.id} class="group scroll-mt-28 border-t border-ink/15" open={i === 0}>
+            <summary class="flex min-h-[64px] cursor-pointer list-none items-center justify-between gap-6 py-4 [&::-webkit-details-marker]:hidden">
+              <h3 class="font-display text-2xl leading-tight text-ink sm:text-[1.7rem]">{faq.question}</h3>
               <span
-                class="ml-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-paper-deep text-sm font-bold text-ink transition-transform duration-300 group-open:rotate-45 group-open:border-clay group-open:bg-clay group-open:text-linen"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/25 text-lg text-ink transition-transform duration-300 group-open:rotate-45 group-open:border-cobalt group-open:bg-cobalt group-open:text-paper"
                 aria-hidden="true"
               >
                 +
               </span>
             </summary>
-            <p class="mt-4 pl-1 text-sm text-ink-soft sm:text-base leading-relaxed">{faq.answer}</p>
+            <p class="max-w-3xl pb-7 leading-relaxed text-ink-soft">{faq.answer}</p>
           </details>
         ))
       }

@@ -1,0 +1,220 @@
+---
+import Mark from "./Mark.astro";
+import SectionHead from "./SectionHead.astro";
+import { SCOPE_TIERS, smsUri } from "@/data/calculator";
+import { eyeExam as e, fees } from "@/data/fovea";
+
+const LETTERS = ["A", "B", "C"];
+// Resolved here so the script only carries strings: prices and names still come from calculator.ts / fovea.ts.
+const results = e.results.map((r) => {
+  const tier = r.tier ? SCOPE_TIERS.find((t) => t.id === r.tier)! : null;
+  return {
+    max: r.max,
+    acuity: r.acuity,
+    verdict: r.verdict,
+    recommend: tier ? `${fees.tiers[tier.id].name}, ${tier.title}${tier.price ? ` ($${tier.price.toLocaleString("en-US")})` : ""}` : "",
+  };
+});
+const chartSizes = ["2.2rem", "1.8rem", "1.45rem", "1.15rem", "0.9rem"];
+---
+
+<section id="exam" class="scroll-mt-28 py-24 sm:py-32" aria-labelledby="exam-title">
+  <div class="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10">
+    <SectionHead id="exam-title" {...e.head} />
+
+    <div class="mt-14 grid gap-10 lg:grid-cols-12" data-exam data-results={JSON.stringify(results)} data-sms={smsUri("")}>
+      <div class="lg:col-span-4" aria-hidden="true">
+        <p class="label text-muted">{e.progress}</p>
+        <ol class="mt-5 space-y-3">
+          {
+            e.questions.map((_, i) => (
+              <li data-row={i} class="exam-row flex items-center justify-between gap-4 border-b border-ink/10 pb-2 text-ink/35">
+                <span class="optotype" style={`font-size:${chartSizes[i]}`}>
+                  {e.chartRow}
+                </span>
+                <span class="row-check label rounded-full bg-duo-green px-2 py-1 text-paper">✓</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="lg:col-span-8">
+        <form data-exam-form class="rounded-[28px] border border-ink/15 bg-card p-5 sm:p-9">
+          <label class="block">
+            <span class="label text-muted">{e.practiceLabel}</span>
+            <input
+              name="practice"
+              type="text"
+              autocomplete="organization"
+              placeholder={e.practicePlaceholder}
+              class="mt-2 min-h-[48px] w-full rounded-xl border border-ink/20 bg-paper px-4 text-base focus:border-cobalt focus:ring-2 focus:ring-cobalt/30 focus:outline-none"
+            />
+          </label>
+
+          {
+            e.questions.map((q, i) => (
+              <fieldset data-q={i} class="exam-q mt-7">
+                <legend class="label text-cobalt">
+                  Q {i + 1} / {e.questions.length}
+                </legend>
+                <p class="mt-2 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">{q.q}</p>
+                <div class="mt-5 space-y-2.5">
+                  {q.options.map((o, k) => (
+                    <label class="option flex min-h-[56px] cursor-pointer items-center gap-4 rounded-2xl border border-ink/15 px-4 py-3 transition-colors hover:border-ink">
+                      <input type="radio" name={`q${i}`} value={k} class="sr-only" />
+                      <span class="letter optotype flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink/30 text-sm">{LETTERS[k]}</span>
+                      <span class="leading-snug text-ink">{o}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ))
+          }
+
+          <button type="button" data-back hidden class="label mt-6 inline-flex min-h-[48px] items-center text-muted hover:text-ink">
+            {e.back}
+          </button>
+          <noscript>
+            <p class="mt-7 leading-relaxed text-ink-soft">{e.noScript}</p>
+            <a
+              href={smsUri("Hi Adam, my website eye exam answers: ")}
+              class="mt-4 inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 font-semibold text-paper">Text me</a
+            >
+          </noscript>
+        </form>
+
+        <div data-exam-result hidden class="slip rounded-[28px] border border-ink bg-card p-6 sm:p-10">
+          <div class="flex items-start justify-between gap-4 border-b border-dashed border-ink/30 pb-5">
+            <div>
+              <p class="label text-muted">{e.resultTitle}</p>
+              <h3 tabindex="-1" data-field="for" class="mt-2 text-4xl outline-none leading-none text-ink sm:text-5xl"></h3>
+            </div>
+            <Mark class="h-12 w-12 shrink-0 text-cobalt" />
+          </div>
+          <dl class="mt-6 grid gap-6 sm:grid-cols-2">
+            <div>
+              <dt class="label text-muted">{e.resultAcuity}</dt>
+              <dd data-field="acuity" class="optotype mt-2 text-5xl text-ink"></dd>
+            </div>
+            <div data-recommend-wrap>
+              <dt class="label text-muted">{e.resultRecommend}</dt>
+              <dd data-field="recommend" class="mt-2 font-display text-3xl leading-tight text-cobalt"></dd>
+            </div>
+          </dl>
+          <p data-field="verdict" class="mt-6 text-lg leading-relaxed text-ink-soft"></p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a data-field="sms" href="#" class="inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 font-semibold text-paper hover:bg-cobalt">
+              {e.textResult}
+            </a>
+            <button type="button" data-again class="inline-flex min-h-[48px] items-center rounded-full border border-ink/25 px-6 font-semibold text-ink hover:border-ink">
+              {e.again}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .row-check {
+    visibility: hidden;
+  }
+  .exam-row.done {
+    color: var(--color-ink);
+  }
+  .exam-row.done .row-check {
+    visibility: visible;
+  }
+  .exam-row.current {
+    color: var(--color-cobalt);
+  }
+  /* With the script running, one question at a time. Without it, all five show as a plain form. */
+  [data-exam-form].js .exam-q {
+    display: none;
+  }
+  [data-exam-form].js .exam-q.current {
+    display: block;
+  }
+  .option:has(input:checked) {
+    border-color: var(--color-cobalt);
+    background: var(--color-cobalt-wash);
+  }
+  .option:has(input:checked) .letter {
+    background: var(--color-cobalt);
+    border-color: var(--color-cobalt);
+    color: var(--color-paper);
+  }
+  .option:has(input:focus-visible) {
+    outline: 2px solid var(--color-cobalt);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  type Result = { max: number; acuity: string; verdict: string; recommend: string };
+
+  const root = document.querySelector<HTMLElement>("[data-exam]");
+  if (root) {
+    const results: Result[] = JSON.parse(root.dataset.results!);
+    const form = root.querySelector<HTMLFormElement>("[data-exam-form]")!;
+    const slip = root.querySelector<HTMLElement>("[data-exam-result]")!;
+    const back = root.querySelector<HTMLButtonElement>("[data-back]")!;
+    const qs = [...root.querySelectorAll<HTMLElement>(".exam-q")];
+    const rows = [...root.querySelectorAll<HTMLElement>(".exam-row")];
+    const field = (name: string) => slip.querySelector<HTMLElement>(`[data-field=${name}]`)!;
+    let answers: number[] = [];
+
+    const show = () => {
+      const step = answers.length;
+      qs.forEach((q, i) => q.classList.toggle("current", i === step));
+      rows.forEach((r, i) => {
+        r.classList.toggle("done", i < step);
+        r.classList.toggle("current", i === step);
+      });
+      back.hidden = step === 0;
+    };
+
+    const finish = () => {
+      // Option index 0 is the worst answer: it counts 2 problems, index 2 counts none.
+      const problems = answers.reduce((sum, k) => sum + (2 - k), 0);
+      const r = results.find((x) => problems <= x.max) ?? results[results.length - 1];
+      const practice = (form.elements.namedItem("practice") as HTMLInputElement).value.trim();
+      field("for").textContent = practice || "Your website";
+      field("acuity").textContent = r.acuity;
+      field("recommend").textContent = r.recommend;
+      slip.querySelector<HTMLElement>("[data-recommend-wrap]")!.hidden = !r.recommend;
+      field("verdict").textContent = r.verdict;
+      const body = `Hi Adam, I took your website eye exam${practice ? ` for ${practice}` : ""}. Reading: ${r.acuity}.${r.recommend ? ` Recommended: ${r.recommend}.` : ""} Can we talk?`;
+      (field("sms") as HTMLAnchorElement).href = root.dataset.sms + encodeURIComponent(body);
+      form.hidden = true;
+      slip.hidden = false;
+      field("for").focus();
+    };
+
+    form.classList.add("js");
+    show();
+    form.addEventListener("change", (ev) => {
+      const input = ev.target as HTMLInputElement;
+      if (input.type !== "radio") return;
+      const i = Number(input.name.slice(1));
+      if (i !== answers.length) return;
+      answers.push(Number(input.value));
+      setTimeout(() => (answers.length === qs.length ? finish() : show()), 220);
+    });
+    back.addEventListener("click", () => {
+      answers.pop();
+      qs[answers.length].querySelectorAll("input").forEach((x) => (x.checked = false));
+      show();
+    });
+    root.querySelector("[data-again]")!.addEventListener("click", () => {
+      answers = [];
+      form.reset();
+      form.hidden = false;
+      slip.hidden = true;
+      show();
+      form.scrollIntoView({ block: "start" });
+    });
+  }
+</script>

@@ -11,7 +11,7 @@ export const processSteps: ExtendedProcessStep[] = [
     title: "Discovery — we talk",
     duration: "Day 1",
     description:
-      "Forty-five minutes on the phone or at your shop. What you do, who calls you, what they ask before they book, and what you keep having to explain twice. I look at who else comes up when someone searches for your trade around here. Then I tell you in plain-English what I think the site needs — and if I think you need less than you came for, I will say that too. The days below are the one-page build; a multi-page site runs three to four weeks, and anything with booking or compliance in it runs longer.",
+      "Forty-five minutes on the phone or at your shop. What you do, who calls you, what they ask before they book, and what you keep having to explain twice. I look at who else comes up when someone searches for your trade around here. Then I tell you in plain-English what I think the site needs — and if I think you need less than you came for, I will say that too. The day counts on these steps are for the one-page build; a multi-page site runs three to four weeks, and anything with booking or compliance in it runs longer.",
     deliverables: [
       "A plain-English rundown of what the site should do and why",
       "An honest look at who you are up against locally",

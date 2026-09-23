@@ -20,7 +20,7 @@ export const services: ExtendedServiceOffering[] = [
     deliverableTag: "One page, or several",
     subsecondLoad: true,
     zeroCmsLockin: true,
-    stack: "React 19 + TypeScript + Tailwind CSS",
+    stack: "Astro + Tailwind CSS",
     highlights: [
       "Comes up fast on a phone, on real signal rather than office wifi",
       "Readable at arm's length — proper contrast, text that scales",
@@ -37,7 +37,7 @@ export const services: ExtendedServiceOffering[] = [
       {
         title: "Readable on any screen",
         detail:
-          "Warm paper palette, Fraunces type, and tap targets big enough to actually hit.",
+          "Clean type, proper contrast, and tap targets big enough to actually hit.",
       },
       {
         title: "Nothing to break into",
