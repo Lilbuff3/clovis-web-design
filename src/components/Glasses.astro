@@ -7,6 +7,8 @@ interface Props {
   uid: string;
   silhouette: Silhouette;
   image?: string;
+  /** Top-left of the 360-wide screenshot in viewBox units. It must cover both lenses: x 0–78, y −59–29. */
+  frame?: { x: number; y: number };
   tint?: string;
   dashed?: boolean;
   class?: string;
@@ -20,7 +22,7 @@ const SHAPES: Record<Silhouette, string> = {
 };
 const STROKE: Record<Silhouette, number> = { round: 7, panto: 6, rect: 8 };
 
-const { uid, silhouette, image, tint = "#b93b21", dashed = false, class: className } = Astro.props;
+const { uid, silhouette, image, frame = { x: 30, y: -25 }, tint = "#b93b21", dashed = false, class: className } = Astro.props;
 const d = SHAPES[silhouette];
 const sw = STROKE[silhouette];
 const dash = dashed ? "7 8" : undefined;
@@ -61,7 +63,7 @@ const dash = dashed ? "7 8" : undefined;
     image && (
       <g style={`--before-fx:url(#F${uid})`}>
         <g clip-path={`url(#B${uid})`}>
-          <image class="lens-img" href={image} x="30" y="-25" width="360" height="202.5" />
+          <image class="lens-img" href={image} x={frame.x} y={frame.y} width="360" height="202.5" />
         </g>
         <g class="lens-before" clip-path={`url(#L${uid})`} opacity=".92">
           <rect x="60" y="26" width="180" height="120" fill="#e7e2d5" />

@@ -1,7 +1,6 @@
 ---
 import "@fontsource-variable/archivo/wdth.css";
 import "@fontsource-variable/fraunces/standard.css";
-import "@fontsource-variable/fraunces/full-italic.css";
 import "@fontsource/dm-mono/latin-400.css";
 import "@/styles/global.css";
 import archivoUrl from "@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url";
@@ -77,9 +76,6 @@ const ogImage = new URL("/og.png", Astro.site).href;
       </div>
     </div>
 
-    <!-- A trial lens on a stick: follows the mouse, grows over anything clickable. Mouse devices only. -->
-    <div data-cursor-ring class="cursor" hidden aria-hidden="true"></div>
-
     <slot />
   </body>
 </html>
@@ -88,56 +84,6 @@ const ogImage = new URL("/og.png", Astro.site).href;
   .ruler-ticks {
     background-image: repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px var(--step));
     background-position-x: calc(var(--d, 0) * -1px);
-  }
-
-  .cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 70;
-    width: 44px;
-    height: 44px;
-    margin: -22px 0 0 -22px;
-    border-radius: 50%;
-    border: 1px solid rgb(22 35 44 / 0.4);
-    box-shadow: inset 0 0 0 1px rgb(247 242 232 / 0.9);
-    pointer-events: none;
-    transition:
-      width 0.3s,
-      height 0.3s,
-      margin 0.3s,
-      border-color 0.3s,
-      box-shadow 0.3s,
-      scale 0.3s;
-  }
-  .cursor::before,
-  .cursor::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-    background: rgb(22 35 44 / 0.7);
-  }
-  .cursor::before {
-    width: 1px;
-    height: 7px;
-  }
-  .cursor::after {
-    width: 7px;
-    height: 1px;
-  }
-  .cursor.big {
-    width: 58px;
-    height: 58px;
-    margin: -29px 0 0 -29px;
-    border-color: rgb(185 59 33 / 0.85);
-    box-shadow:
-      inset 0 0 0 1px rgb(240 190 76 / 0.9),
-      0 0 0 1px rgb(247 242 232 / 0.9);
-  }
-  .cursor.down {
-    scale: 0.7;
   }
 </style>
 
@@ -169,39 +115,5 @@ const ogImage = new URL("/og.png", Astro.site).href;
     update();
     addEventListener("scroll", queue, { passive: true });
     addEventListener("resize", queue);
-  }
-
-  // Trial-lens cursor. Eases toward the pointer and stops the loop once it has caught up.
-  const ring = document.querySelector<HTMLElement>("[data-cursor-ring]");
-  if (ring && matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) {
-    let x = -100, y = -100, tx = -100, ty = -100, running = false;
-    const loop = () => {
-      x += (tx - x) * 0.19;
-      y += (ty - y) * 0.19;
-      ring.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
-      running = Math.abs(tx - x) + Math.abs(ty - y) > 0.3;
-      if (running) requestAnimationFrame(loop);
-    };
-    addEventListener(
-      "pointermove",
-      (e) => {
-        if (e.pointerType !== "mouse") return;
-        tx = e.clientX;
-        ty = e.clientY;
-        if (ring.hidden) {
-          ring.hidden = false;
-          x = tx;
-          y = ty;
-        }
-        ring.classList.toggle("big", !!(e.target as Element).closest?.("a,button,label,summary,input,select,textarea,[data-cursor]"));
-        if (!running) {
-          running = true;
-          requestAnimationFrame(loop);
-        }
-      },
-      { passive: true }
-    );
-    addEventListener("pointerdown", () => ring.classList.add("down"));
-    addEventListener("pointerup", () => ring.classList.remove("down"));
   }
 </script>

@@ -1,0 +1,241 @@
+---
+// The glasses. They drop onto the eye chart as the page comes into focus, then travel with the reader: on scroll they
+// glide to each section headline and land on its [data-focus] word, which comes into focus as they arrive.
+// Without script, or with reduced motion, they rest on the chart and every headline is sharp.
+// Place inside the hero's .chart, which sets --lx/--ly (where they rest) and --gw (their width there).
+---
+
+<svg class="glasses" data-glasses viewBox="0 0 400 160" aria-hidden="true">
+  <g class="glasses-tint">
+    <circle cx="100" cy="80" r="66"></circle>
+    <circle cx="300" cy="80" r="66"></circle>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round">
+    <circle cx="100" cy="80" r="70"></circle>
+    <circle cx="300" cy="80" r="70"></circle>
+    <path d="M169 68Q200 46 231 68M31 66 6 58M369 66 394 58"></path>
+  </g>
+  <path class="glasses-glare" d="M52 68A50 50 0 0 1 86 32M252 68A50 50 0 0 1 286 32" fill="none" stroke-width="6" stroke-linecap="round"></path>
+</svg>
+<span class="glasses-rest" data-glasses-rest aria-hidden="true"></span>
+
+<style>
+  .glasses {
+    position: absolute;
+    left: var(--lx);
+    top: var(--ly);
+    width: var(--gw);
+    translate: -50% -50%;
+    color: var(--color-ink);
+    filter: drop-shadow(0 12px 14px rgb(22 35 44 / 0.2));
+    pointer-events: none;
+    transition: color 0.6s;
+  }
+  /* Where they rest on the chart. Invisible; the script measures it to fly back here. */
+  .glasses-rest {
+    position: absolute;
+    left: var(--lx);
+    top: var(--ly);
+    width: var(--gw);
+    translate: -50% 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .glasses-tint {
+    fill: rgb(255 255 255 / 0.18);
+    transition: fill 0.6s;
+  }
+  .glasses-glare {
+    stroke: var(--color-bone);
+    opacity: 0.85;
+  }
+  /* Lifted off the chart onto the page: the script sets width and transform in page coordinates. */
+  .glasses.travel {
+    left: 0;
+    top: 0;
+    z-index: 30;
+  }
+  /* Over the dark footer: butter rims, like the footer's other accents, and clear lenses so the wordmark reads through. */
+  .glasses.light {
+    color: var(--color-butter);
+  }
+  .glasses.light .glasses-tint {
+    fill: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .glasses:not(.travel) {
+      animation: glasses-on 0.8s cubic-bezier(0.3, 1.3, 0.6, 1) 0.2s backwards;
+    }
+  }
+  @keyframes glasses-on {
+    from {
+      translate: -50% -200%;
+      rotate: -10deg;
+      opacity: 0;
+    }
+  }
+
+  /* Headlines wait out of focus until the glasses reach them. Only while the script runs, so without it they're sharp. */
+  :global(html.guide-on [data-focus]) {
+    filter: blur(3px);
+    opacity: 0.45;
+    transition:
+      filter 0.7s var(--ease-out-expo),
+      opacity 0.7s var(--ease-out-expo);
+  }
+  :global(html.guide-on [data-focus].focused) {
+    filter: none;
+    opacity: 1;
+  }
+</style>
+
+<script>
+  // The glasses follow the headline nearest the reading line, on a spring, in page coordinates, so once they land
+  // they scroll with it. The loop only runs while they're moving.
+  const glasses = document.querySelector<SVGSVGElement>("[data-glasses]");
+  const rest = document.querySelector<HTMLElement>("[data-glasses-rest]");
+  if (glasses && rest && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    type Spot = { el: HTMLElement; focus: boolean; light: boolean; tilt: number; size: number };
+    const K = 0.03; // pull toward the target, per 60 Hz frame
+    const D = 0.79; // velocity kept per frame: a small overshoot, settled in about 0.8s
+    const spots: Spot[] = [
+      { el: rest, focus: false, light: false, tilt: 0, size: 0 },
+      ...[...document.querySelectorAll<HTMLElement>("[data-focus]")].map((el, i) => ({
+        el,
+        focus: true,
+        light: el.dataset.focus === "light",
+        tilt: i % 2 ? 2 : -2.5,
+        size: 0,
+      })),
+    ];
+    const measure = () => spots.forEach((spot) => (spot.size = parseFloat(getComputedStyle(spot.el).fontSize)));
+
+    // Landing point in page coordinates, and how wide the glasses are there.
+    const aim = (spot: Spot) => {
+      const b = spot.el.getBoundingClientRect();
+      if (!spot.focus) return { x: b.left + b.width / 2 + scrollX, y: b.top + scrollY, w: b.width };
+      // Headlines: about as tall as the word. The footer wordmark sits on a tight line, so a little smaller there.
+      const w = spot.light ? Math.min(spot.size * 1.8, 320) : Math.min(Math.max(spot.size * 2.6, 96), 260);
+      return { x: b.left + b.width / 2 + scrollX, y: b.top + b.height * 0.55 + scrollY, w };
+    };
+
+    // The spot whose middle is nearest a line 40% down the screen; keep the current one if none is in view.
+    const pick = (current: Spot) => {
+      let best = current;
+      let bestD = Infinity;
+      for (const spot of spots) {
+        const b = spot.el.getBoundingClientRect();
+        if (b.bottom < innerHeight * 0.08 || b.top > innerHeight * 0.85) continue;
+        const d = Math.abs(b.top + b.height / 2 - innerHeight * 0.4);
+        if (d < bestD) [best, bestD] = [spot, d];
+      }
+      return best;
+    };
+
+    let active = spots[0];
+    let w0 = 0, x = 0, y = 0, s = 1, r = 0, vx = 0, vy = 0, vs = 0, last = 0;
+    let lifted = false, moving = false, queued = false;
+
+    const paint = () => {
+      glasses.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${r.toFixed(2)}deg) scale(${s.toFixed(4)})`;
+    };
+
+    // Take the glasses off the chart and onto the page, exactly where they are.
+    const lift = () => {
+      glasses.getAnimations().forEach((a) => a.finish());
+      const b = glasses.getBoundingClientRect();
+      w0 = b.width;
+      x = b.left + b.width / 2 + scrollX;
+      y = b.top + b.height / 2 + scrollY;
+      glasses.style.width = `${w0}px`;
+      glasses.classList.add("travel");
+      document.body.append(glasses);
+      lifted = true;
+      paint();
+    };
+
+    const step = (now: number) => {
+      const f = Math.min((now - last) / 16.667, 3);
+      last = now;
+      const t = aim(active);
+      const ts = t.w / w0;
+      const keep = Math.pow(D, f);
+      vx = (vx + (t.x - x) * K * f) * keep;
+      vy = (vy + (t.y - y) * K * f) * keep;
+      vs = (vs + (ts - s) * K * f) * keep;
+      x += vx * f;
+      y += vy * f;
+      s += vs * f;
+      r += (active.tilt + Math.max(-14, Math.min(14, vx * 0.5)) - r) * Math.min(1, 0.2 * f);
+      if (Math.abs(t.x - x) + Math.abs(t.y - y) < 0.6 && Math.abs(vx) + Math.abs(vy) < 0.4 && Math.abs(ts - s) < 0.003) {
+        [x, y, s, r, vx, vy, vs] = [t.x, t.y, ts, active.tilt, 0, 0, 0];
+        paint();
+        moving = false;
+        glasses.style.willChange = "";
+        if (active.focus) active.el.classList.add("focused");
+        return;
+      }
+      paint();
+      requestAnimationFrame(step);
+    };
+
+    const go = () => {
+      if (moving) return;
+      moving = true;
+      glasses.style.willChange = "transform";
+      last = performance.now();
+      requestAnimationFrame(step);
+    };
+
+    const update = () => {
+      queued = false;
+      const next = pick(active);
+      if (next !== active) {
+        if (!lifted) lift();
+        active = next;
+        glasses.classList.toggle("light", next.light);
+        // Off screen and far away: come in from the nearest edge instead of crossing the whole page.
+        const h = w0 * s * 0.4;
+        const sy = y - scrollY;
+        if (sy < -h || sy > innerHeight + h) {
+          y = aim(next).y > y ? scrollY - h : scrollY + innerHeight + h;
+          vx = vy = 0;
+        }
+        go();
+      } else if (lifted && !moving) {
+        // The landing spot moved (fonts, reveals, resize): settle again.
+        const t = aim(active);
+        if (Math.abs(t.x - x) + Math.abs(t.y - y) > 1 || Math.abs(t.w / w0 - s) > 0.01) go();
+      }
+    };
+    const queue = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+
+    // Never leave a headline blurry: anything that has been on screen for 0.9s comes into focus anyway.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          io.unobserve(e.target);
+          setTimeout(() => e.target.classList.add("focused"), 900);
+        }
+      },
+      { rootMargin: "0px 0px -15% 0px" }
+    );
+
+    document.documentElement.classList.add("guide-on");
+    measure();
+    spots.forEach((spot) => spot.focus && io.observe(spot.el));
+    addEventListener("scroll", queue, { passive: true });
+    addEventListener("resize", () => {
+      measure();
+      queue();
+    });
+    document.fonts.ready.then(queue);
+    queue();
+  }
+</script>

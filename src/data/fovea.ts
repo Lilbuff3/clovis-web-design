@@ -19,7 +19,7 @@ export const nav = [
   { id: "pricing", label: "Fees" },
 ];
 
-/** The ruler across the top, the eye-chart rail on the right, and the card that lifts on load. */
+/** The ruler across the top and the eye-chart rail on the right. */
 export const chrome = {
   depth: "Reading depth",
   acuity: "Acuity",
@@ -36,7 +36,6 @@ export const chrome = {
     { id: "pricing", label: "20/20", name: "Fees" },
     { id: "book", label: "20/15", name: "Reception" },
   ],
-  curtain: "Chart № 1 · Snellen, revised",
   textMe: "Text me",
 };
 
@@ -62,18 +61,10 @@ export const hero = {
   priceLine: (price: number) => `Landing pages $${price} · live in a week · you own it`,
   ctaText: "Text me a question",
   ctaPrices: "See the fees",
-  lensOn: "Glasses on",
-  lensOff: "Glasses off",
-  lensHint: "Move to focus",
   examLink: "or take the two-minute eye exam →",
   /** Shown only when the visitor's real load time is known. {time} and {acuity} are filled in live. */
   reading: "This page on your device: {time} · {acuity}",
   figure: { caption: "Fig. 1 — found from forty feet away", meta: "1/60 · f2" },
-  plate: {
-    alt: "An optician's trial lens case, a trial frame and a pair of round glasses on warm paper, next to a Landolt C eye chart",
-    caption: "Trial case № 1",
-    meta: "Clovis, CA",
-  },
   /** Runs around a circle; about 30–40 characters fits best. */
   seal: "Clovis Web Design · Fresno, CA · ",
 };
@@ -118,6 +109,8 @@ export const duochrome = {
     { value: "1 wk", label: "First text to live", note: "For a one-page site" },
   ],
   tableCaption: "The same five things, side by side",
+  /** Screen readers hear this after each topic on phones, where the topic opens the longer answers. */
+  whyLabel: ", the longer answer",
   columns: { topic: "What you’d ask", agency: "Typical agency", me: "With me" },
   rows: [
     {

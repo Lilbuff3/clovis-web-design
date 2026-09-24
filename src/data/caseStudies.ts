@@ -14,6 +14,8 @@ export interface ExtendedCaseStudy extends CaseStudy {
   imageWidth: number;
   imageHeight: number;
   imageAlt: string;
+  /** Where the screenshot sits behind the shelf glasses (Glasses.astro viewBox units), so the lenses frame whole words. */
+  lens?: { x: number; y: number };
 }
 
 /** Screenshots ship at 1280px plus a 640px copy (`-640.webp`) so phones download the small one. */
@@ -36,6 +38,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
     imageWidth: 1280,
     imageHeight: 720,
     imageAlt: "Screenshot of the Kidney Specialist Inc. homepage: Expert Kidney Care for the Central Valley, with a call button and Spanish toggle",
+    lens: { x: 57, y: -30 },
     headline: "A medical site that never touches patient data, and scores 100 on Google's speed test.",
     summary:
       "Kidney Specialist Inc. runs nephrology clinics in Madera and Fresno. Their old site was a slow template with contact forms that asked patients about symptoms and insurance. I rebuilt it so the website never handles patient health information at all. It's built to 2026 HIPAA, HITECH, WCAG 2.1 AA and California patient-privacy requirements, and scores 100 on Google PageSpeed on both mobile and desktop.",
@@ -139,6 +142,7 @@ export const caseStudies: ExtendedCaseStudy[] = [
     imageWidth: 1280,
     imageHeight: 720,
     imageAlt: "Screenshot of the Big Bros Dumpster Rentals homepage: flat-rate 14 and 20 yard dumpster prices and a text-for-a-quote button",
+    lens: { x: 66, y: -8 },
     headline: "Number one on Google for dumpster rental in Fresno.",
     summary:
       "Big Bros is a family-owned roll-off dumpster company in Fresno. National booking brokers were outranking them and taking a cut of jobs Big Bros trucks were doing anyway. After the rebuild — in English and Spanish — they ranked #1 on Google for “dumpster rental Fresno” and averaged position 1–2 across several other high-intent searches.",

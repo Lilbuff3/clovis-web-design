@@ -14,7 +14,7 @@ const panes = [
     <SectionHead id="ledger-title" {...d.head} />
 
     <!-- The red layer is clipped at --r; the range input on top moves it. Without script it rests at 50/50. -->
-    <div class="duo relative mt-12 h-[470px] overflow-hidden rounded-[28px] border border-ink/15 select-none" style="--r:50%" data-duo data-cursor>
+    <div class="duo relative mt-12 h-[470px] overflow-hidden rounded-[28px] border border-ink/15 select-none" style="--r:50%" data-duo>
       {
         panes.map((p) => (
           <div class:list={["pane absolute inset-0 text-bone", p.side === "red" ? "pane-red" : "pane-green"]}>
@@ -74,7 +74,7 @@ const panes = [
           <div class="flex flex-col bg-bone p-6 md:p-7">
             <dt class="label order-2 mt-3 text-ink">{x.label}</dt>
             <dd class="order-1 font-display text-[clamp(2rem,4.4vw,3.2rem)] leading-none text-ink">{x.value}</dd>
-            <dd class="order-3 mt-1 max-w-[22ch] text-[13px] leading-snug text-ink-2">{x.note}</dd>
+            <dd class="order-3 mt-1 max-w-[22ch] text-[13px] leading-snug text-pretty text-ink-2">{x.note}</dd>
           </div>
         ))
       }
@@ -91,18 +91,23 @@ const panes = [
       </thead>
       <tbody>
         {
-          d.rows.map((r) => (
+          d.rows.map((r, i) => (
             <tr class="border-t border-ink/15">
               <th scope="row" class="py-6 pr-8 align-top font-display text-[1.6rem] leading-tight font-medium text-ink">
-                {r.topic}
+                <label for={`why-${i}`} class="why-toggle">
+                  {r.topic}
+                  <span class="sr-only md:hidden">{d.whyLabel}</span>
+                  <span class="why-icon" aria-hidden="true">+</span>
+                </label>
+                <input type="checkbox" id={`why-${i}`} class="why sr-only md:hidden" />
               </th>
               <td data-label={d.columns.agency} class="py-6 pr-8 align-top">
                 <strong class="block font-semibold text-vermilion">{r.agencyShort}</strong>
-                <span class="mt-1 block leading-relaxed text-ink-2">{r.agency}</span>
+                <span class="long mt-1 block leading-relaxed text-ink-2">{r.agency}</span>
               </td>
               <td data-label={d.columns.me} class="py-6 align-top">
                 <strong class="block font-semibold text-optic">{r.meShort}</strong>
-                <span class="mt-1 block leading-relaxed text-ink">{r.me}</span>
+                <span class="long mt-1 block leading-relaxed text-ink">{r.me}</span>
               </td>
             </tr>
           ))
@@ -131,6 +136,9 @@ const panes = [
   .duo-table th,
   .duo-table td {
     width: 33%;
+  }
+  .why-icon {
+    display: none;
   }
 
   /* Phones: each row becomes a stacked card; still a real table underneath. */
@@ -165,6 +173,40 @@ const panes = [
       text-transform: uppercase;
       color: var(--color-muted);
       margin-bottom: 0.25rem;
+    }
+    /* Same words, shorter page: each row shows the two short answers, and the topic opens the longer ones. */
+    .duo-table tr:not(:has(.why:checked)) .long {
+      display: none;
+    }
+    .why-toggle {
+      display: flex;
+      min-height: 48px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .why-icon {
+      display: grid;
+      width: 2.5rem;
+      height: 2.5rem;
+      flex-shrink: 0;
+      place-items: center;
+      border: 1px solid rgb(22 35 44 / 0.25);
+      border-radius: 50%;
+      font-family: var(--font-sans);
+      font-size: 1.125rem;
+      transition: rotate 0.3s;
+    }
+    .duo-table tr:has(.why:checked) .why-icon {
+      rotate: 45deg;
+      border-color: var(--color-vermilion);
+      background: var(--color-vermilion);
+      color: var(--color-bone);
+    }
+    .duo-table tr:has(.why:focus-visible) .why-toggle {
+      outline: 2px solid var(--color-vermilion);
+      outline-offset: 3px;
     }
   }
 </style>
