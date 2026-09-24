@@ -1,7 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
 import Nav from "@/components/Nav.astro";
-import Mark from "@/components/Mark.astro";
 import AcuityRail from "@/components/AcuityRail.astro";
 import Hero from "@/components/Hero.astro";
 import Ledger from "@/components/Ledger.astro";
@@ -17,7 +16,7 @@ import Footer from "@/components/Footer.astro";
 import StickyCall from "@/components/StickyCall.astro";
 import { homeSchema } from "@/lib/schema";
 import { PRICING_CONSTANTS } from "@/data/calculator";
-import { chrome, stats } from "@/data/fovea";
+import { stats } from "@/data/fovea";
 
 const landingPrice = `$${PRICING_CONSTANTS.tiers.landing.price}`;
 ---
@@ -33,14 +32,6 @@ const landingPrice = `$${PRICING_CONSTANTS.tiers.landing.price}`;
   >
     Skip to main content
   </a>
-
-  <!-- Opening card: the chart slides away on load. CSS only, so it can never trap anyone; skipped with reduced motion. -->
-  <div class="curtain pointer-events-none fixed inset-0 z-[80] grid place-items-center bg-bone" aria-hidden="true">
-    <div class="text-center">
-      <Mark class="mx-auto h-16 w-16 text-ink/80" />
-      <span class="label mt-6 block text-muted">{chrome.curtain}</span>
-    </div>
-  </div>
 
   <Nav />
   <AcuityRail />
@@ -78,21 +69,3 @@ const landingPrice = `$${PRICING_CONSTANTS.tiers.landing.price}`;
   <StickyCall />
 </Base>
 
-<style>
-  .curtain {
-    visibility: hidden;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .curtain {
-      visibility: visible;
-      animation: curtain 1s cubic-bezier(0.4, 0, 0.2, 1) 0.12s forwards;
-    }
-  }
-  @keyframes curtain {
-    to {
-      opacity: 0;
-      clip-path: inset(0 0 100% 0);
-      visibility: hidden;
-    }
-  }
-</style>

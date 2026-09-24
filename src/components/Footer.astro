@@ -21,7 +21,7 @@ const year = new Date().getFullYear();
           href={formatSmsUri()}
           class="group mt-7 inline-flex min-h-[48px] items-center gap-3 rounded-full border border-bone/30 px-6 transition-colors hover:border-butter hover:text-butter"
         >
-          <span class="label">{footer.cta}</span>
+          <span class="btn-label">{footer.cta}</span>
           <span class="transition-transform duration-500 group-hover:translate-x-1" aria-hidden="true">→</span>
         </a>
       </div>
@@ -59,7 +59,7 @@ const year = new Date().getFullYear();
     <!-- The wordmark, enormous. -->
     <div class="relative pt-8 pb-10" aria-hidden="true">
       <div class="w-full text-center font-display leading-[0.8] tracking-[-0.04em] text-bone" style="font-size:clamp(4rem,23vw,21rem)">
-        {footer.wordmark}
+        <span data-focus="light">{footer.wordmark}</span>
       </div>
       <span class="label absolute inset-x-0 bottom-2 text-center text-bone/60">{footer.wordmarkNote}</span>
     </div>

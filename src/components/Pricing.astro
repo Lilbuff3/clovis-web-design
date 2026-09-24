@@ -16,7 +16,7 @@ const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
     <!-- packages -->
     <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
       {
-        SCOPE_TIERS.map((tier) => {
+        SCOPE_TIERS.map((tier, i) => {
           const d = fees.tiers[tier.id];
           const featured = tier.id === fees.featured;
           return (
@@ -26,6 +26,7 @@ const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
                 featured ? "border-ink bg-butter shadow-[0_50px_90px_-60px_rgba(22,35,44,.9)] md:-mt-4 md:mb-4" : "border-ink/15 bg-bone hover:border-ink/35",
               ]}
               data-reveal
+              style={`--delay:${i * 90}ms`}
             >
               {featured && tier.regularPrice && LAUNCH_PROMO.active && (
                 <span class="label absolute -top-3 left-7 rounded-full bg-vermilion px-3 py-1.5 text-bone">{fees.badge}</span>
@@ -78,7 +79,7 @@ const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
                   href={formatSmsUri(tier.title)}
                   class:list={["wipe block rounded-full border py-3.5 text-center", featured ? "border-ink bg-ink text-bone" : "border-ink/25 text-ink hover:border-ink"]}
                 >
-                  <span class="label relative z-10">{fees.text}</span>
+                  <span class="btn-label relative z-10">{fees.text}</span>
                 </a>
               </div>
             </article>
@@ -128,8 +129,8 @@ const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
     </div>
 
     <p class="mt-8 text-center text-[15px] leading-relaxed text-ink-2">
-      {fees.unsure}
-      <a href={BRIEF_MAILTO} class="ml-1 inline-flex min-h-[48px] items-center text-vermilion underline underline-offset-4 hover:text-ink">
+      {fees.unsure}{" "}
+      <a href={BRIEF_MAILTO} class="inline-flex min-h-[48px] items-center text-vermilion underline underline-offset-4 hover:text-ink">
         {fees.brief}
       </a>
     </p>

@@ -1,5 +1,4 @@
 ---
-import AmbientVideo from "./AmbientVideo.astro";
 import SectionHead from "./SectionHead.astro";
 import { BRIEF_MAILTO, PRICING_CONSTANTS, formatSmsUri, smsUri } from "@/data/calculator";
 import { reception as r } from "@/data/fovea";
@@ -10,9 +9,6 @@ const input =
 ---
 
 <section id="book" class="paper relative scroll-mt-28 overflow-hidden border-b border-ink/12" aria-labelledby="book-title">
-  <AmbientVideo name="counter-phone" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[.14] mix-blend-multiply" />
-  <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-bone via-bone/85 to-bone" aria-hidden="true"></div>
-
   <div class="relative mx-auto max-w-[1500px] px-4 py-20 sm:px-6 md:py-28 lg:px-10">
     <SectionHead id="book-title" {...r.head} />
 
@@ -81,7 +77,7 @@ const input =
 
           <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
             <button type="submit" class="wipe inline-flex min-h-[52px] items-center rounded-full bg-ink px-8 text-bone">
-              <span class="label relative z-10">{r.form.send}</span>
+              <span class="btn-label relative z-10">{r.form.send}</span>
             </button>
             <a data-email href={BRIEF_MAILTO} class="label inline-flex min-h-[48px] items-center text-muted underline decoration-ink/25 underline-offset-4 hover:text-vermilion">
               {r.form.email}

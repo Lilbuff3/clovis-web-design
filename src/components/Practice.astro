@@ -32,7 +32,7 @@ import { practice as p } from "@/data/fovea";
           {p.label}
         </p>
         <h2 id="about-title" class="mt-5 max-w-[20ch] text-[clamp(2.2rem,5.4vw,4.4rem)] text-ink">
-          {p.title[0]}<br />{p.title[1]}
+          {p.title[0]}<br /><span data-focus>{p.title[1]}</span>
         </h2>
 
         <div class="mt-8 max-w-[58ch] space-y-5 text-[16.5px] leading-relaxed text-ink-2">
@@ -61,7 +61,7 @@ import { practice as p } from "@/data/fovea";
         </div>
 
         <a href={formatSmsUri()} class="wipe mt-8 inline-flex min-h-[52px] items-center rounded-full bg-ink px-7 text-bone">
-          <span class="label relative z-10">{p.cta}</span>
+          <span class="btn-label relative z-10">{p.cta}</span>
         </a>
       </div>
     </div>

@@ -133,6 +133,12 @@ const css = processSteps
   .readout {
     display: none;
   }
+  /* As in the original, each step prints out when it comes up. */
+  @media (prefers-reduced-motion: no-preference) {
+    .step-panel {
+      animation: printOut 0.6s var(--ease-out-expo) both;
+    }
+  }
   .dial {
     container-type: inline-size;
   }
