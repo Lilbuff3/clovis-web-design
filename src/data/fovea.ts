@@ -61,6 +61,10 @@ export const hero = {
   priceLine: (price: number) => `Landing pages $${price} · live in a week · you own it`,
   ctaText: "Text me a question",
   ctaPrices: "See the fees",
+  /** The switch under the chart, as in the original ("Lens in · move to focus"). The hint only shows with a mouse. */
+  lensOn: "Glasses on",
+  lensOff: "Glasses off · flat view",
+  lensHint: "move to focus",
   examLink: "or take the two-minute eye exam →",
   /** Shown only when the visitor's real load time is known. {time} and {acuity} are filled in live. */
   reading: "This page on your device: {time} · {acuity}",

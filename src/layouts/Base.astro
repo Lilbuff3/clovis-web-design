@@ -114,4 +114,25 @@ const ogImage = new URL("/og.png", Astro.site).href;
     addEventListener("scroll", queue, { passive: true });
     addEventListener("resize", queue);
   }
+
+  // Scroll reveals: each [data-reveal] fades up once as it comes into view. Anything already on screen just shows.
+  const reveals = document.querySelectorAll<HTMLElement>("[data-reveal]");
+  if (reveals.length && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add("in");
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px" }
+    );
+    for (const el of reveals) {
+      const r = el.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) el.classList.add("in", "now");
+      else io.observe(el);
+    }
+    document.documentElement.classList.add("reveal-on");
+  }
 </script>

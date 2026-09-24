@@ -1,8 +1,12 @@
 ---
-// The glasses. They drop onto the eye chart as the page comes into focus, then travel with the reader: on scroll they
-// glide to each section headline and land on its [data-focus] word, which comes into focus as they arrive.
-// Without script, or with reduced motion, they rest on the chart and every headline is sharp.
-// Place inside the hero's .chart, which sets --lx/--ly (where they rest) and --gw (their width there).
+// The glasses, as in the original's trial lens. On the eye chart the page is foggy but for the two lenses, and the
+// glasses drift over it like an optician's hand; with a mouse they glide after the pointer and drift again once it
+// rests. Scroll on and they travel with the reader: they glide to each section headline and land on its [data-focus]
+// word, which comes into focus as they arrive, then fly home to the chart. Without script, or with reduced motion,
+// they rest on a sharp chart and every headline is sharp.
+// Place inside the hero's .chart-lens, which carries --lx/--ly (where they rest) and --gw (their width there), next to
+// the lens window ([data-lens-window]) that moves with them; the script fills its [data-chart-sharp] with a copy of
+// the chart ([data-chart-base]).
 ---
 
 <svg class="glasses" data-glasses viewBox="0 0 400 160" aria-hidden="true">
@@ -20,18 +24,19 @@
 <span class="glasses-rest" data-glasses-rest aria-hidden="true"></span>
 
 <style>
+  /* Centred on (--lx, --ly) by their offsets, not translate: the drift animates their transform, and the browser only
+     runs that off the page's thread when nothing else moves them. The frame is 0.4 times as tall as it is wide. */
   .glasses {
     position: absolute;
-    left: var(--lx);
-    top: var(--ly);
+    left: calc(var(--lx) - var(--gw) / 2);
+    top: calc(var(--ly) - var(--gw) * 0.2);
     width: var(--gw);
-    translate: -50% -50%;
     color: var(--color-ink);
     filter: drop-shadow(0 12px 14px rgb(22 35 44 / 0.2));
     pointer-events: none;
     transition: color 0.6s;
   }
-  /* Where they rest on the chart. Invisible; the script measures it to fly back here. */
+  /* Where they rest on the chart. Invisible; the script measures it. */
   .glasses-rest {
     position: absolute;
     left: var(--lx);
@@ -49,10 +54,15 @@
     stroke: var(--color-bone);
     opacity: 0.85;
   }
+  /* Drifting on the chart: their own layer, so moving them never redraws them. */
+  :global(.fog-on) .glasses {
+    will-change: transform;
+  }
   /* Lifted off the chart onto the page: the script sets width and transform in page coordinates. */
   .glasses.travel {
     left: 0;
     top: 0;
+    translate: -50% -50%;
     z-index: 30;
   }
   /* Over the dark footer: butter rims, like the footer's other accents, and clear lenses so the wordmark reads through. */
@@ -62,16 +72,19 @@
   .glasses.light .glasses-tint {
     fill: transparent;
   }
+  :global(html.glasses-off) .glasses {
+    display: none;
+  }
 
   @media (prefers-reduced-motion: no-preference) {
     .glasses:not(.travel) {
       animation: glasses-on 0.8s cubic-bezier(0.3, 1.3, 0.6, 1) 0.2s backwards;
     }
   }
+  /* A transform, not translate and rotate: on an svg the browser can only run a transform off the page's thread. */
   @keyframes glasses-on {
     from {
-      translate: -50% -200%;
-      rotate: -10deg;
+      transform: translateY(-150%) rotate(-10deg);
       opacity: 0;
     }
   }
@@ -91,11 +104,178 @@
 </style>
 
 <script>
-  // The glasses follow the headline nearest the reading line, on a spring, in page coordinates, so once they land
-  // they scroll with it. The loop only runs while they're moving.
   const glasses = document.querySelector<SVGSVGElement>("[data-glasses]");
   const rest = document.querySelector<HTMLElement>("[data-glasses-rest]");
-  if (glasses && rest && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+  const lens = document.querySelector<HTMLElement>("[data-chart-lens]");
+  const win = document.querySelector<HTMLElement>("[data-lens-window]");
+  const sharp = document.querySelector<HTMLElement>("[data-chart-sharp]");
+  const base = document.querySelector<HTMLElement>("[data-chart-base]");
+  const chart = document.querySelector<HTMLElement>("[data-chart]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-lens-toggle]");
+  if (glasses && rest && lens && win && sharp && base && chart && toggle && matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+    const root = document.documentElement;
+    const frames = (now: number, last: number) => Math.min((now - last) / 16.667, 3); // 60 Hz frames since last
+
+    /* ── On the chart: fog but for the lenses, drifting like an optician's hand, or following the pointer ── */
+    let on = true;
+    let docked = true;
+    let landed = false;
+    let drifting = false;
+    let following = false;
+    let inView = true;
+    let cw = 0, ch = 0, rx = 0, ry = 0, rw = 0, lx = 0, ly = 0, lvx = 0, tilt = 0, t = 0, px = 0, py = 0, moved = -1e9, dLast = 0;
+
+    // The chart's size; where they rest on it, and how wide they are there. Measured only when the chart changes, so
+    // the drift itself never asks for layout.
+    const findRest = () => {
+      const r = rest.getBoundingClientRect();
+      const c = chart.getBoundingClientRect();
+      [cw, ch, rx, ry, rw] = [chart.clientWidth, chart.clientHeight, r.left + r.width / 2 - c.left, r.top - c.top, r.width];
+    };
+    const home = () => ([lx, ly] = [rx, ry]);
+
+    // What puts them at (x, y) on the chart, tilted a degrees. Transforms only, so nothing reflows or redraws: the
+    // glasses by their offset from where they rest, the lens window the same way, and the sharp chart inside it back
+    // again, so it lines up with the chart underneath.
+    const movers = [glasses, win, sharp];
+    const toPx = (n: number) => `${n.toFixed(1)}px`;
+    const place = (x: number, y: number, a: number) => {
+      const h = rw * 0.4; // the frame's height: its viewBox is 400 by 160
+      const turn = `rotate(${a.toFixed(2)}deg)`;
+      return [
+        `translate(${toPx(x - rx)},${toPx(y - ry)}) ${turn}`,
+        `translate(${toPx(x - rw / 2)},${toPx(y - h / 2)}) ${turn}`,
+        `translate(${toPx(rw / 2)},${toPx(h / 2)}) rotate(${(-a).toFixed(2)}deg) translate(${toPx(-x)},${toPx(-y)})`,
+      ];
+    };
+    const setLens = (x: number, y: number, a: number) => {
+      tilt = a;
+      place(x, y, a).forEach((transform, i) => (movers[i].style.transform = transform));
+    };
+
+    // The original's path: a slow figure that wanders the chart. Kept inside it, so the frame never leaves.
+    const path = (u: number) => {
+      const ax = Math.max(0, Math.min(0.3, ((cw - rw) / 2 / cw) * 0.9));
+      return [cw * (0.5 + ax * Math.sin(u * 1.1)), ch * (0.42 + 0.26 * Math.sin(u * 1.7 + 1.2))];
+    };
+    // Join it at its point nearest where they are, so they set off gently instead of darting across the chart.
+    const joinPath = () => {
+      let best = Infinity;
+      for (let u = 0; u < 63; u += 0.02) {
+        const [x, y] = path(u);
+        const d = Math.hypot(x - lx, y - ly);
+        if (d < best) [best, t] = [d, u];
+      }
+    };
+    // f frames of the original's motion, eased like a hand: after the pointer or, left alone, along the path.
+    const stepLens = (f: number, alone: boolean) => {
+      let [tx, ty] = [px, py];
+      if (alone) {
+        t += 0.0042 * f;
+        [tx, ty] = path(t);
+      }
+      const k = 1 - Math.pow(0.89, f);
+      lvx = (tx - lx) * k;
+      lx += lvx;
+      ly += (ty - ly) * k;
+      tilt = Math.max(-4, Math.min(4, lvx * 0.6));
+    };
+
+    // Left alone, where they'll go is known ahead. Play it three seconds at a time as animations the browser runs by
+    // itself (a keyframe every 0.1s), so the page does no work while they drift. One stretch at a time, or the browser
+    // runs them on the page's thread: at its end, hold its last frame in the elements' own style, let it go, and play
+    // the next from there.
+    type Stretch = { start: number; states: number[][]; runs: Animation[] };
+    const SPAN = 3000;
+    const KEY = 100;
+    let stretch: Stretch | null = null;
+    const plan = (start: number) => {
+      const states: number[][] = [];
+      const keys: Keyframe[][] = [[], [], []];
+      for (let i = 0; i <= SPAN / KEY; i++) {
+        if (i) stepLens(KEY / 16.667, true);
+        states.push([lx, ly, tilt, lvx, t]);
+        place(lx, ly, tilt).forEach((transform, j) => keys[j].push({ transform }));
+      }
+      const runs = movers.map((el, j) => {
+        const run = el.animate(keys[j], { duration: SPAN, fill: "forwards" });
+        run.startTime = start;
+        return run;
+      });
+      const s = (stretch = { start, states, runs });
+      runs[0].finished.then(
+        () => {
+          if (stretch !== s) return; // stopped as it ended
+          setLens(lx, ly, tilt);
+          runs.forEach((run) => run.cancel());
+          plan(document.timeline.currentTime as number);
+        },
+        () => {} // stopped early: see freeze
+      );
+    };
+    // Stop the stretch where it is now, and carry on from there.
+    const freeze = () => {
+      const s = stretch;
+      stretch = null;
+      if (!s) return;
+      const k = Math.min(Math.max(((document.timeline.currentTime as number) - s.start) / KEY, 0), s.states.length - 1.001);
+      const i = Math.floor(k);
+      const [a, b] = [s.states[i], s.states[i + 1]];
+      [lx, ly, tilt, lvx, t] = a.map((v, j) => v + (b[j] - v) * (k - i));
+      setLens(lx, ly, tilt);
+      s.runs.forEach((run) => run.cancel());
+    };
+
+    // With a mouse: frame by frame after the pointer, until it has rested 0.9s.
+    const follow = (now: number) => {
+      if (!following) return;
+      const f = frames(now, dLast);
+      dLast = now;
+      if (now - moved > 900) {
+        following = false;
+        joinPath();
+        plan(document.timeline.currentTime as number);
+        return;
+      }
+      stepLens(f, false);
+      setLens(lx, ly, tilt);
+      requestAnimationFrame(follow);
+    };
+    const startFollowing = () => {
+      following = true;
+      dLast = performance.now();
+      requestAnimationFrame(follow);
+    };
+
+    const startDrift = () => {
+      if (drifting || !landed || !on || !docked || !inView) return;
+      drifting = true;
+      if (performance.now() - moved < 900) startFollowing();
+      else {
+        joinPath();
+        plan(document.timeline.currentTime as number);
+      }
+    };
+    const stopDrift = () => {
+      drifting = following = false;
+      freeze();
+    };
+
+    chart.addEventListener("pointermove", (e) => {
+      if (e.pointerType === "touch") return; // a finger is scrolling, not pointing
+      const c = chart.getBoundingClientRect();
+      [px, py, moved] = [e.clientX - c.left, e.clientY - c.top, performance.now()];
+      if (!drifting || following) return;
+      freeze();
+      startFollowing();
+    });
+    new IntersectionObserver(([e]) => {
+      inView = e.isIntersecting;
+      if (inView) startDrift();
+      else stopDrift();
+    }).observe(chart);
+
+    /* ── Off the chart: travel to the headline nearest the reading line, on a spring, in page coordinates ── */
     type Spot = { el: HTMLElement; focus: boolean; light: boolean; tilt: number; size: number };
     const K = 0.03; // pull toward the target, per 60 Hz frame
     const D = 0.79; // velocity kept per frame: a small overshoot, settled in about 0.8s
@@ -135,7 +315,7 @@
 
     let active = spots[0];
     let w0 = 0, x = 0, y = 0, s = 1, r = 0, vx = 0, vy = 0, vs = 0, last = 0;
-    let lifted = false, moving = false, queued = false;
+    let moving = false, queued = false;
 
     const paint = () => {
       glasses.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${r.toFixed(2)}deg) scale(${s.toFixed(4)})`;
@@ -143,37 +323,55 @@
 
     // Take the glasses off the chart and onto the page, exactly where they are.
     const lift = () => {
+      stopDrift();
       glasses.getAnimations().forEach((a) => a.finish());
       const b = glasses.getBoundingClientRect();
-      w0 = b.width;
+      w0 = rw;
       x = b.left + b.width / 2 + scrollX;
       y = b.top + b.height / 2 + scrollY;
+      r = tilt;
+      s = 1;
+      win.style.visibility = "hidden"; // no lenses, no sharp spots
       glasses.style.width = `${w0}px`;
       glasses.classList.add("travel");
       document.body.append(glasses);
-      lifted = true;
+      docked = false;
       paint();
     };
 
+    // Back on the chart, where they left it, and drifting again.
+    const dock = () => {
+      glasses.classList.remove("travel", "light");
+      glasses.style.cssText = "animation:none"; // no second drop-in
+      lens.insertBefore(glasses, rest); // above the sharp layer, as in the markup
+      findRest();
+      home();
+      setLens(lx, ly, 0);
+      win.style.visibility = "";
+      docked = true;
+      startDrift();
+    };
+
     const step = (now: number) => {
-      const f = Math.min((now - last) / 16.667, 3);
+      const f = frames(now, last);
       last = now;
-      const t = aim(active);
-      const ts = t.w / w0;
+      const target = aim(active);
+      const ts = target.w / w0;
       const keep = Math.pow(D, f);
-      vx = (vx + (t.x - x) * K * f) * keep;
-      vy = (vy + (t.y - y) * K * f) * keep;
+      vx = (vx + (target.x - x) * K * f) * keep;
+      vy = (vy + (target.y - y) * K * f) * keep;
       vs = (vs + (ts - s) * K * f) * keep;
       x += vx * f;
       y += vy * f;
       s += vs * f;
       r += (active.tilt + Math.max(-14, Math.min(14, vx * 0.5)) - r) * Math.min(1, 0.2 * f);
-      if (Math.abs(t.x - x) + Math.abs(t.y - y) < 0.6 && Math.abs(vx) + Math.abs(vy) < 0.4 && Math.abs(ts - s) < 0.003) {
-        [x, y, s, r, vx, vy, vs] = [t.x, t.y, ts, active.tilt, 0, 0, 0];
+      if (Math.abs(target.x - x) + Math.abs(target.y - y) < 0.6 && Math.abs(vx) + Math.abs(vy) < 0.4 && Math.abs(ts - s) < 0.003) {
+        [x, y, s, r, vx, vy, vs] = [target.x, target.y, ts, active.tilt, 0, 0, 0];
         paint();
         moving = false;
         glasses.style.willChange = "";
         if (active.focus) active.el.classList.add("focused");
+        else dock();
         return;
       }
       paint();
@@ -190,9 +388,10 @@
 
     const update = () => {
       queued = false;
+      if (!on) return;
       const next = pick(active);
       if (next !== active) {
-        if (!lifted) lift();
+        if (docked) lift();
         active = next;
         glasses.classList.toggle("light", next.light);
         // Off screen and far away: come in from the nearest edge instead of crossing the whole page.
@@ -203,10 +402,10 @@
           vx = vy = 0;
         }
         go();
-      } else if (lifted && !moving) {
+      } else if (!docked && !moving) {
         // The landing spot moved (fonts, reveals, resize): settle again.
-        const t = aim(active);
-        if (Math.abs(t.x - x) + Math.abs(t.y - y) > 1 || Math.abs(t.w / w0 - s) > 0.01) go();
+        const target = aim(active);
+        if (Math.abs(target.x - x) + Math.abs(target.y - y) > 1 || Math.abs(target.w / w0 - s) > 0.01) go();
       }
     };
     const queue = () => {
@@ -227,7 +426,37 @@
       { rootMargin: "0px 0px -15% 0px" }
     );
 
-    document.documentElement.classList.add("guide-on");
+    /* ── The switch: glasses off is the flat view, everywhere ── */
+    const label = toggle.querySelector<HTMLElement>("[data-lens-label]")!;
+    toggle.addEventListener("click", () => {
+      on = !on;
+      chart.classList.toggle("fog-on", on);
+      root.classList.toggle("glasses-off", !on);
+      root.classList.toggle("guide-on", on);
+      toggle.setAttribute("aria-pressed", String(on));
+      label.textContent = on ? toggle.dataset.on! : toggle.dataset.off!;
+      if (on) {
+        startDrift();
+        queue();
+      } else stopDrift();
+    });
+
+    sharp.replaceChildren(...(base.cloneNode(true) as HTMLElement).children); // the chart, sharp, for the lenses
+    chart.classList.add("fog-on");
+    root.classList.add("guide-on");
+    findRest();
+    home();
+    setLens(lx, ly, 0);
+    // Fonts, or a new width, change the chart under them: find the rest spot again and line everything up.
+    new ResizeObserver(() => {
+      findRest();
+      if (!docked) return;
+      if (!landed) home();
+      if (drifting && !following) {
+        freeze();
+        plan(document.timeline.currentTime as number);
+      } else setLens(lx, ly, tilt);
+    }).observe(chart);
     measure();
     spots.forEach((spot) => spot.focus && io.observe(spot.el));
     addEventListener("scroll", queue, { passive: true });
@@ -237,5 +466,15 @@
     });
     document.fonts.ready.then(queue);
     queue();
+    // Start drifting once the glasses have landed (or soon, if their drop was over before this ran).
+    const land = () => {
+      if (landed) return;
+      landed = true;
+      // Let the drop go first: while the browser still counts it, it won't run the drift off the page's thread.
+      glasses.getAnimations().forEach((run) => run.cancel());
+      startDrift();
+    };
+    glasses.addEventListener("animationend", land, { once: true });
+    setTimeout(land, 1100);
   }
 </script>

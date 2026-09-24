@@ -16,7 +16,7 @@ const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
     <!-- packages -->
     <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
       {
-        SCOPE_TIERS.map((tier) => {
+        SCOPE_TIERS.map((tier, i) => {
           const d = fees.tiers[tier.id];
           const featured = tier.id === fees.featured;
           return (
@@ -26,6 +26,7 @@ const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
                 featured ? "border-ink bg-butter shadow-[0_50px_90px_-60px_rgba(22,35,44,.9)] md:-mt-4 md:mb-4" : "border-ink/15 bg-bone hover:border-ink/35",
               ]}
               data-reveal
+              style={`--delay:${i * 90}ms`}
             >
               {featured && tier.regularPrice && LAUNCH_PROMO.active && (
                 <span class="label absolute -top-3 left-7 rounded-full bg-vermilion px-3 py-1.5 text-bone">{fees.badge}</span>

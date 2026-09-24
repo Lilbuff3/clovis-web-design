@@ -21,7 +21,8 @@ const sizes = [
 ---
 
 <section id="hero" class="paper relative overflow-hidden pt-28 md:pt-32" aria-labelledby="hero-title">
-  <Mark class="pointer-events-none absolute top-1/3 -right-24 h-[560px] w-[560px] text-ink/[0.045]" />
+  <!-- set from the top, not a share of the height, so nothing that loads later further down moves it -->
+  <Mark class="pointer-events-none absolute top-[32rem] -right-24 h-[560px] w-[560px] text-ink/[0.045] lg:top-[25rem]" />
 
   <div class="relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-10">
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-ink/12 pb-4">
@@ -40,7 +41,7 @@ const sizes = [
       <!-- the chart -->
       <div class="lg:col-span-8">
         <div class="chart select-none" data-chart aria-hidden="true">
-          <div class="chart-base">
+          <div class="chart-base" data-chart-base>
             {
               hero.chart.map((row, i) => (
                 <div
@@ -63,10 +64,26 @@ const sizes = [
               ))
             }
           </div>
-          <GuideGlasses />
+          <div class="chart-lens" data-chart-lens>
+            <!-- the sharp view through the lenses: the script fills it with a copy of the chart -->
+            <div class="lens-window" data-lens-window><div class="chart-sharp" data-chart-sharp></div></div>
+            <GuideGlasses />
+          </div>
         </div>
 
-        <div class="mt-9 border-t border-ink/12 pt-5">
+        <!-- controls -->
+        <div class="mt-9 flex flex-wrap items-center gap-3 border-t border-ink/12 pt-5">
+          <button
+            type="button"
+            data-lens-toggle
+            data-on={hero.lensOn}
+            data-off={hero.lensOff}
+            aria-pressed="true"
+            class="group min-h-[48px] items-center gap-3 rounded-full border border-ink/15 py-2 pr-5 pl-3 transition-colors hover:border-ink/40"
+          >
+            <span class="lens-switch" aria-hidden="true"></span>
+            <span class="label text-ink-2 group-hover:text-ink"><span data-lens-label>{hero.lensOn}</span><span class="lens-hint"> · {hero.lensHint}</span></span>
+          </button>
           <a href="#exam" class="label inline-flex min-h-[48px] items-center text-muted underline decoration-ink/25 underline-offset-4 transition-colors hover:text-vermilion">
             {hero.examLink}
           </a>
@@ -102,15 +119,18 @@ const sizes = [
 
           <!-- rotating seal -->
           <div class="pointer-events-none absolute -top-6 -left-14 hidden h-[132px] w-[132px] place-items-center lg:grid" aria-hidden="true">
-            <svg viewBox="0 0 132 132" class="anim-spin-slow h-full w-full">
-              <path id="seal-path" d="M66,66 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0" fill="none"></path>
-              <circle cx="66" cy="66" r="64" fill="none" stroke="#16232c" stroke-opacity=".18"></circle>
-              <circle cx="66" cy="66" r="34" fill="none" stroke="#b93b21" stroke-opacity=".55" stroke-dasharray="2 3"></circle>
-              <text fill="#16232c" fill-opacity=".75" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2.4px;text-transform:uppercase">
-                <!-- textLength = the circle's circumference, so any seal text wraps exactly once. -->
-                <textPath href="#seal-path" textLength="307" lengthAdjust="spacing">{hero.seal}</textPath>
-              </text>
-            </svg>
+            <!-- spun by a wrapper, not the svg itself: turning the svg makes the browser lay its text out again every frame -->
+            <div class="anim-spin-slow h-full w-full">
+              <svg viewBox="0 0 132 132" class="h-full w-full">
+                <path id="seal-path" d="M66,66 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0" fill="none"></path>
+                <circle cx="66" cy="66" r="64" fill="none" stroke="#16232c" stroke-opacity=".18"></circle>
+                <circle cx="66" cy="66" r="34" fill="none" stroke="#b93b21" stroke-opacity=".55" stroke-dasharray="2 3"></circle>
+                <text fill="#16232c" fill-opacity=".75" style="font-family:var(--font-mono);font-size:10px;letter-spacing:2.4px;text-transform:uppercase">
+                  <!-- textLength = the circle's circumference, so any seal text wraps exactly once. -->
+                  <textPath href="#seal-path" textLength="307" lengthAdjust="spacing">{hero.seal}</textPath>
+                </text>
+              </svg>
+            </div>
             <span class="absolute grid h-11 w-11 place-items-center rounded-full bg-vermilion text-bone">
               <Mark class="h-4 w-4" />
             </span>
@@ -141,7 +161,7 @@ const sizes = [
 
 <style>
   /* The glasses rest at (--lx, --ly) and are --gw wide there (see GuideGlasses). Declared here so cqi means the chart's
-     own width. On phones they rest left of the acuity labels. */
+     own width. On phones they rest left of the acuity labels. Once the script runs, it moves them with transforms. */
   .chart {
     position: relative;
     container-type: inline-size;
@@ -154,18 +174,114 @@ const sizes = [
       --lx: 62%;
     }
   }
+  .chart-lens {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .lens-window {
+    display: none;
+  }
+
+  /* As in the original: once the script runs, the chart is foggy and only sharp through the two lenses. The window is
+     the glasses' own box and moves and tilts with them. It shows a sharp copy of the chart, moved back the other way so
+     it lines up, through two circles the size of the lenses (0.162 = inner rim radius 65/400) a quarter of the frame
+     either side of the bridge. The script moves both with transforms only, so nothing is redrawn as they go. */
+  .chart.fog-on .chart-base {
+    filter: blur(2.6px) saturate(0.9);
+    opacity: 0.62;
+  }
+  .chart.fog-on .lens-window {
+    --r: calc(var(--gw) * 0.162);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--gw);
+    height: calc(var(--gw) * 0.4);
+    mask-image:
+      radial-gradient(circle var(--r) at 25% 50%, #000 98%, transparent),
+      radial-gradient(circle var(--r) at 75% 50%, #000 98%, transparent);
+    will-change: transform;
+  }
+  .chart-sharp {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100cqi;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+  /* There from the first paint, so it never pushes the page down. It needs the script, which only runs when motion
+     is welcome. */
+  [data-lens-toggle] {
+    display: inline-flex;
+  }
+  @media (scripting: none), (prefers-reduced-motion: reduce) {
+    [data-lens-toggle] {
+      display: none;
+    }
+  }
+  @media (hover: none) {
+    .lens-hint {
+      display: none;
+    }
+  }
+  [aria-pressed="false"] .lens-hint {
+    display: none;
+  }
+
+  .lens-switch {
+    position: relative;
+    width: 32px;
+    height: 16px;
+    border-radius: 99px;
+    background: var(--color-optic);
+    transition: background-color 0.3s;
+  }
+  .lens-switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-bone);
+    transition: left 0.3s;
+  }
+  [aria-pressed="false"] .lens-switch {
+    background: rgb(22 35 44 / 0.2);
+  }
+  [aria-pressed="false"] .lens-switch::after {
+    left: 2px;
+  }
 
   @media (prefers-reduced-motion: no-preference) {
-    /* The page opens foggy and comes into focus as the glasses land. The pitch and buttons are never blurred. */
+    /* The page opens foggy and settles as the glasses land: sharp without script, foggy-but-for-the-lenses with it.
+       The pitch and buttons are never blurred. */
     .chart-base,
     .arch {
       animation: focus-pull 0.8s var(--ease-out-expo) 0.3s backwards;
+    }
+    .chart-base {
+      transition:
+        filter 0.7s,
+        opacity 0.7s;
+    }
+    .chart.fog-on .lens-window {
+      animation: fade-in 0.4s ease-out 0.85s backwards;
     }
   }
   @keyframes focus-pull {
     from {
       filter: blur(7px);
       opacity: 0.7;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
     }
   }
 </style>
