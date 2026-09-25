@@ -1,4 +1,10 @@
-# Clovis Web Design — cloviswebdesign.com
+# Clovis Web Design — retired Astro build (NOT the live site)
+
+> **Retired 2026-09-24.** cloviswebdesign.com is served by the React/Vite "Bloom" site:
+> `C:\Users\adam\Projects\clovis-web-design-bloom` → github.com/Lilbuff3/clovis-web-design-bloom
+> (Vercel project `clovis-web-design-bloom`). Make site changes there.
+> This repo's Vercel project (`clovis-web-design`) is disconnected from Git, so pushing
+> here deploys nothing. Kept for reference: the FOVEA design, `speedCost`, `dist-check`.
 
 Adam Youssef's web design site. Astro 7 (static output) + Tailwind v4 + a few small inline scripts (no framework runtime), hosted on Vercel.
 
@@ -10,7 +16,7 @@ npm test           # speedCost formula test → astro build → tests/dist-check
 npx astro check    # types
 ```
 
-## Deploy: a push to `main` is a production deploy
+## Deploy (historical; no longer active)
 
 - Vercel builds `main` to production in about 15s. Other branches get preview URLs (behind Vercel login; curl gets a 302).
 - Do work on a branch, check the preview, then fast-forward `main`.
